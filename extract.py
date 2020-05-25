@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
+import sys
 import json
 import re
 import datetime
+folderName = "data/" + sys.argv[1] + "/"
 
 #url = "https://dashboard.kerala.gov.in/index.php"
 #response = requests.request("GET", url)
@@ -79,7 +81,7 @@ with open("extract.meta", "r") as metaFile:
 
 def getDataForStates():
 	outputToWrite=[]
-	header = "State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Discharged\n"
+	header = "State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Discharged, State url\n"
 	outputToWrite.append(header)
 
 	for metaObject in metaArray:
@@ -91,14 +93,19 @@ def getDataForStates():
 	writeToOutputCsv("summary.csv", outputToWrite)
 
 def writeToOutputCsv(fileName, dataToWrite):
-	testingNumbersFile = open("data/" + fileName, "w")
+	testingNumbersFile = open(folderName + fileName, "w")
 	testingNumbersFile.writelines(dataToWrite)
 	testingNumbersFile.close()
 
 
 def stateDetailsExtractor(metaObject, outputString):
+	print("Data fetching for " + metaObject.stateName + ", " + metaObject.url)
 	url = metaObject.url
-	response = requests.request("GET", url)
+	try:
+		response = requests.request("GET", url)
+	except:
+		print("Error occurred while doing a request to " + url)
+		return False
 	soup = BeautifulSoup(response.content, 'html5lib')
     
 	if metaObject.stateName == "Andhra Pradesh":
@@ -108,7 +115,7 @@ def stateDetailsExtractor(metaObject, outputString):
 		active = soup.find("span", id = "lblActive").get_text()
 		discharged = soup.find("span", id = "lblDischarged").get_text()
 		lastUpdated = datetime.datetime.strptime(soup.find("span", id = "lblLast_Update").get_text(), "%d-%m-%Y %I:%M:%S %p")
-		outputString.append("Andhra Pradesh, " + lastUpdated.strftime("%d/%m/%Y") + ", " + samplesTested + ", " + confirmed +","+ samplesNegative + ",,"+ confirmed +","+ active +", "+ discharged + "\n")
+		outputString.append("Andhra Pradesh, " + lastUpdated.strftime("%d/%m/%Y") + ", " + samplesTested + ", " + confirmed +","+ samplesNegative + ",,"+ confirmed +","+ active +", "+ discharged + "," + url + "\n")
 		
 	if metaObject.stateName == "Arunachal Pradesh":
 		row = soup.find("tbody").find("tr")
@@ -126,7 +133,7 @@ def stateDetailsExtractor(metaObject, outputString):
 			if index == 5:
 				active = data.get_text()
 				
-		outputString.append("Arunachal Pradesh, " + lastUpdated.strftime("%d/%m/%Y") + ", " + samplesTested + ", " + samplesPositive + ", " + samplesNegative +","+ resultsAwaited +",," + active +",\n")
+		outputString.append("Arunachal Pradesh, " + lastUpdated.strftime("%d/%m/%Y") + ", " + samplesTested + ", " + samplesPositive + ", " + samplesNegative +","+ resultsAwaited +",," + active +",," +url + "\n")
 
 	if metaObject.stateName == "Chandigarh":
 		divs = soup.find("div", {"class": "col-lg-8 col-md-9 form-group pt-10"}).find_all("div", {"class": "col-md-3"})
@@ -138,7 +145,7 @@ def stateDetailsExtractor(metaObject, outputString):
 
 		rowString = "Chandigarh, " + datetime.date.today().strftime("%d/%m/%Y") 
 		orderArray = ['Total Sampled', 'Confirmed', 'Negative Cases', 'Result Awaited', 'Confirmed', '', 'Recovered']
-		rowString = buildRowString(orderArray, rowString, dataDictionary)
+		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 
 		outputString.append(rowString)
 
@@ -154,7 +161,7 @@ def stateDetailsExtractor(metaObject, outputString):
 
 		rowString = "Gujarat, " + date 
 		orderArray = ['Cases Tested for COVID19', 'Confirmed Positive Cases', '', '', 'Confirmed Positive Cases', '', 'Patients Recovered', 'People Under Quarantine']
-		rowString = buildRowString(orderArray, rowString, dataDictionary)
+		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 		outputString.append(rowString)
 
 	if metaObject.stateName == "Kerala":
@@ -178,12 +185,12 @@ def stateDetailsExtractor(metaObject, outputString):
 
 		rowString = "Kerala, " + date 
 		orderArray = ['Total  Sent', 'Tested Positive', 'Tested Negative', 'Result Awaiting', 'Total Confirmed', 'Active Cases ', 'Recovered ']
-		rowString = buildRowString(orderArray, rowString, dataDictionary)
+		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 		outputString.append(rowString)
 
 	if metaObject.stateName == "Nagaland":
 		keys = soup.find("div", {"class": "row"}).find_all('p')
-		values = soup.find("div", {"class": "row"}).find_all('h3')
+		values = soup.find("div", {"class": "row"}).find_all(['h1', 'h3'])
 			
 		dataDictionary = {}
 		for index, value in enumerate(values):
@@ -191,7 +198,7 @@ def stateDetailsExtractor(metaObject, outputString):
 
 		rowString = "Nagaland, " + datetime.date.today().strftime("%d/%m/%Y") 
 		orderArray = ['Samples Sent', 'Results Positive', 'Results Negative', 'Results awaited']
-		rowString = buildRowString(orderArray, rowString, dataDictionary)
+		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 
 		outputString.append(rowString)
 
@@ -206,7 +213,7 @@ def stateDetailsExtractor(metaObject, outputString):
 		
 		rowString = "Odisha, " + date 
 		orderArray = ['TotalTestsDone', 'PositiveResult', 'NegativeResult', '', 'Confirmed', 'Active', 'Recovered']
-		rowString = buildRowString(orderArray, rowString, dataDictionary)
+		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 		outputString.append(rowString)
 
 	header = "State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Discharged\n"
@@ -232,7 +239,7 @@ def stateDetailsExtractor(metaObject, outputString):
 		rowString = "Puducherry, " + date 
 
 		order = ['Total Samples Sent', 'Total Positive', 'Total Negative', 'Result Awaiting', 'Total Reported', 'Active Case', 'Cured']
-		rowString = buildRowString(order, rowString, dataDictionary)
+		rowString = buildRowString(url, order, rowString, dataDictionary)
 		outputString.append(rowString)
 
 	header = "State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Discharged\n"
@@ -251,17 +258,17 @@ def stateDetailsExtractor(metaObject, outputString):
 			
 		rowString = "Rajasthan, " + date
 		orderArray = ['TotalSample Collected', 'Positive  Cases', 'Negative  Cases', 'Report Awaited', 'Positive  Cases', '', 'Cured/Recovered']
-		rowString = buildRowString(orderArray, rowString, dataDictionary)
+		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 		outputString.append(rowString)
 
 
 
 
-def buildRowString(orderArray, rowString, dataDictionary):
+def buildRowString(url, orderArray, rowString, dataDictionary):
 
 	for key in orderArray:
 		rowString = rowString + "," + dataDictionary[key] if len(key) > 0 else rowString + ","
-	rowString += "\n"
+	rowString += "," + url + "\n"
 	return rowString
 
 	
@@ -306,10 +313,16 @@ def readAllEntriesForATable(table, outputString, itemToSearch, itemsToAppend, it
 
 
 def districtDetailsExtractor(metaObject):
+	print("Data fetching for " + metaObject.stateName + ", " + metaObject.url)
 	outputString = []
 	url = metaObject.url
 
-	response = requests.request("GET", url)
+	try:
+		response = requests.request("GET", url)
+	except:
+		print("Error occurred while doing a request to " + url)
+		return False
+		
 	soup = BeautifulSoup(response.content, 'html5lib')
 
 	if metaObject.stateName == "Nagaland":
@@ -325,16 +338,22 @@ def districtDetailsExtractor(metaObject):
 		for k, v in districtDictionary.items():
 			if str(k) != 'District':
 				outputString.append(str(v))
+		outputString.append("\n" + url)
 
 		writeToOutputCsv("nagalandDistrict.csv", outputString)
 	
 	if metaObject.stateName == 'Odisha':
 		url = "https://statedashboard.odisha.gov.in/ajax/heatMapHospital?type=Current"
-		response = requests.request("GET", url)
+		try:
+			response = requests.request("GET", url)
+		except:
+			print("Error occurred while doing a request to " + url)
+			return False
 		outputString.append("DistrictName,NoOfHospitals,NoOfBeds,NoOfICU\n")
 		for data in response.json():
 			dataString = data['vchDistrctName'] + "," + str(data['intNoOfHospital']) + "," + str(data['intNoOfBed']) + "," + str(data['intNoOfICU']) + "\n"
 			outputString.append(dataString)
+		outputString.append(url)
 		writeToOutputCsv("OdishaDistrictBeds.csv", outputString)
 
 	
@@ -346,6 +365,7 @@ def districtDetailsExtractor(metaObject):
 		readAllEntriesForATable(table, outputString, "th", date, '')
 		readAllEntriesForATable(table, outputString, "td", date, '')
 
+		outputString.append(url)
 		writeToOutputCsv("Puducherry.csv", outputString)
 	
 	
@@ -375,10 +395,16 @@ def districtDetailsExtractor(metaObject):
 				districtString = districtNames[index - 1] + "," + value
 				outputString.append(districtString)
 			
+		outputString.append(url)
 		writeToOutputCsv("GujaratDistrict.csv", outputString)
 	
 	if metaObject.stateName == 'Andhra Pradesh':
 		response = requests.request("POST", url).json()
+		try:
+			response = requests.request("POST", url).json()
+		except:
+			print("Error occurred while doing a request to " + url)
+			return False
 		districtDictionary = {}
 
 		districtDictionary['District'] = "Cases,Active,Recovered,Death,Total Samples,Total Positive,Total Negative,Total Inprogress, Total, Beds, Hall, Rooms"
@@ -395,6 +421,7 @@ def districtDetailsExtractor(metaObject):
 		for k, v in districtDictionary.items():
 			outputString.append(str(k) + "," + str(v) + "\n")
 
+		outputString.append(url)
 		writeToOutputCsv("APDistrict.csv", outputString)
 
 	if metaObject.stateName == 'Rajasthan':
@@ -427,6 +454,7 @@ def districtDetailsExtractor(metaObject):
 
 			outputString.append(row)
 
+		outputString.append(url)
 		writeToOutputCsv("Rajasthan.csv", outputString)
 
 		
