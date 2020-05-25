@@ -91,7 +91,7 @@ def getDataForStates():
 	writeToOutputCsv("summary.csv", outputToWrite)
 
 def writeToOutputCsv(fileName, dataToWrite):
-	testingNumbersFile = open(fileName, "w")
+	testingNumbersFile = open("data/" + fileName, "w")
 	testingNumbersFile.writelines(dataToWrite)
 	testingNumbersFile.close()
 
