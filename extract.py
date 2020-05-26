@@ -290,7 +290,8 @@ def nagalandTableExtractor(soupObject, districtDictionary, firstPass):
 		rowString = rowString.replace('-', '/')
 		if firstPass == False:
 			rowString = rowString + "\n"
-		districtDictionary[currentDistrict] = rowString if firstPass == True else districtDictionary[currentDistrict] + "," + rowString 
+#districtDictionary[currentDistrict] = rowString if firstPass == True else districtDictionary[currentDistrict] + "," + rowString 
+		districtDictionary[currentDistrict] = rowString
 		
 def readAllEntriesForATable(table, outputString, itemToSearch, itemsToAppend, itemsToRemove):
 	for index, row in enumerate(table):
