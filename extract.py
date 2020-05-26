@@ -330,9 +330,9 @@ def districtDetailsExtractor(metaObject):
 		districtDictionary = {}
 		nagalandTableExtractor(table, districtDictionary, True)
 
-		soup = BeautifulSoup(open("x.html"), 'html5lib')
-		table = soup.find("div", {"class":"modal-body"}).find("table").find_all("tr")
-		nagalandTableExtractor(table, districtDictionary, False)
+#soup = BeautifulSoup(open("x.html"), 'html5lib')
+#   	table = soup.find("div", {"class":"modal-body"}).find("table").find_all("tr")
+#   	nagalandTableExtractor(table, districtDictionary, False)
 
 		outputString.append(districtDictionary['District'])
 		for k, v in districtDictionary.items():
