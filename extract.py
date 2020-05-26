@@ -328,7 +328,7 @@ def districtDetailsExtractor(metaObject):
 	if metaObject.stateName == "Nagaland":
 		table = soup.find("table").find_all("tr")
 		districtDictionary = {}
-		nagalandTableExtractor(table, districtDictionary, True)
+		nagalandTableExtractor(table, districtDictionary, False)
 
 #soup = BeautifulSoup(open("x.html"), 'html5lib')
 #   	table = soup.find("div", {"class":"modal-body"}).find("table").find_all("tr")
