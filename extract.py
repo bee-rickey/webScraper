@@ -133,7 +133,7 @@ def stateDetailsExtractor(metaObject, outputString):
 			if index == 5:
 				active = data.get_text()
 				
-		outputString.append("Arunachal Pradesh, " + lastUpdated.strftime("%d/%m/%Y") + ", " + samplesTested + ", " + samplesPositive + ", " + samplesNegative +","+ resultsAwaited +",," + active +",," +url + "\n")
+		outputString.append("Arunachal Pradesh, " + lastUpdated + ", " + samplesTested + ", " + samplesPositive + ", " + samplesNegative +","+ resultsAwaited +",," + active +",," +url + "\n")
 
 	if metaObject.stateName == "Chandigarh":
 		divs = soup.find("div", {"class": "col-lg-8 col-md-9 form-group pt-10"}).find_all("div", {"class": "col-md-3"})
