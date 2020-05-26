@@ -1,39 +1,40 @@
-2,Alwar,8009,5,51,28,18
-3,Banswara,2810,0,85,66,65
-4,Baran,1994,0,5,4,3
-5,Barmer,3859,5,87,1,1
-6,Bharatpur,8811,0,141,123,117
-7,Bhilwara,18588,1,118,54,38
-8,Bikaner,7210,0,78,40,37
-9,Chittorgarh,7298,0,170,122,102
-10,Churu,6133,0,68,26,26
-11,Dausa,5450,0,43,30,30
-12,Dholpur,3103,0,41,22,10
-13,Dungarpur,4199,1,319,8,8
-14,Ganganagar,1575,0,1,0,0
-15,Hanumangarh,2920,0,14,14,12
-16,Jaipur,59182,12,1827,1185,1155
-17,Jaisalmer,4362,0,68,36,36
-18,Jalore,5168,4,153,8,8
-19,Jhalawar,6848,0,59,47,47
-20,Jhunjhunu,8031,0,88,52,47
-21,Jodhpur,36192,17,1241,872,867
-22,Karauli,1474,0,10,4,3
-23,Kota,20542,7,386,286,192
-24,Nagaur,12506,0,343,135,135
-25,Pali,5771,50,337,59,59
-26,Pratapgarh,1289,0,12,3,3
-27,Rajsamand,2076,2,114,31,28
-28,S. Madhopur,3831,1,18,8,6
-29,Sikar,8826,30,112,21,21
-30,Sirohi,5754,9,112,6,2
-31,Tonk,7142,0,159,158,142
-32,Udaipur,13312,1,481,70,6
-,Other District/State Sample,3100,0,12,0,0
-,Total,327836,145,7060,3755,3319
+1,Ajmer,13715,2,309,236,95
+2,Alwar,8459,0,51,28,18
+3,Banswara,2817,0,85,72,72
+4,Baran,2084,0,5,4,3
+5,Barmer,3865,4,91,1,1
+6,Bharatpur,9033,2,143,123,117
+7,Bhilwara,19248,4,122,56,38
+8,Bikaner,7503,5,83,40,37
+9,Chittorgarh,7313,4,174,122,102
+10,Churu,6301,0,85,50,26
+11,Dausa,5583,0,44,30,30
+12,Dholpur,3114,2,43,24,24
+13,Dungarpur,4394,0,319,8,8
+14,Ganganagar,1593,1,2,0,0
+15,Hanumangarh,2923,0,14,14,12
+16,Jaipur,60121,21,1849,1221,1162
+17,Jaisalmer,4363,0,68,44,44
+18,Jalore,5560,0,154,20,20
+19,Jhalawar,7090,12,71,48,47
+20,Jhunjhunu,8183,5,96,52,47
+21,Jodhpur,64008,4,1275,973,968
+22,Karauli,1502,0,10,4,3
+23,Kota,21444,10,396,302,196
+24,Nagaur,13030,7,398,148,146
+25,Pali,6418,10,347,80,80
+26,Pratapgarh,1388,1,13,3,3
+27,Rajsamand,2808,11,126,32,30
+28,S. Madhopur,3887,1,19,13,13
+29,Sikar,8858,19,145,28,28
+30,Sirohi,5756,27,139,6,6
+31,Tonk,7203,0,159,158,152
+32,Udaipur,14274,24,516,120,6
+,Other District/State Sample,3321,0,12,0,0
+,Total,337159,176,7363,4060,3534
 ,,Evacuess,0,61,61,61
 ,,BSF,0,50,42,42
-,,Grand Total,145,7173,3860,3424
+,,Grand Total,176,7476,4165,3639
 
 COVID Facilities in Rajasthan,COVID Facilities in Rajasthan,COVID Facilities in Rajasthan,
 http://www.rajswasthya.nic.in/
