@@ -1,41 +1,41 @@
 SR. No, District - Country,Total Sample Received,Todays Positive,Cumulative Positive,Recovered,Discharged
 1,Ajmer,13471,0,307,236,95
-2,Alwar,8009,5,51,28,18
+2,Alwar,8009,0,51,28,18
 3,Banswara,2810,0,85,66,65
 4,Baran,1994,0,5,4,3
-5,Barmer,3859,5,87,1,1
-6,Bharatpur,8811,0,141,123,117
-7,Bhilwara,18588,1,118,55,38
-8,Bikaner,7210,0,78,40,37
+5,Barmer,3859,0,87,1,1
+6,Bharatpur,8811,1,142,123,117
+7,Bhilwara,18588,0,118,55,38
+8,Bikaner,7210,5,83,40,37
 9,Chittorgarh,7298,0,170,122,102
-10,Churu,6133,17,85,26,26
-11,Dausa,5450,1,44,30,30
-12,Dholpur,3103,0,41,24,10
-13,Dungarpur,4199,1,319,8,8
+10,Churu,6133,0,85,26,26
+11,Dausa,5450,0,44,30,30
+12,Dholpur,3103,2,43,24,12
+13,Dungarpur,4199,0,319,8,8
 14,Ganganagar,1575,0,1,0,0
 15,Hanumangarh,2920,0,14,14,12
-16,Jaipur,59182,13,1828,1221,1162
-17,Jaisalmer,4362,0,68,40,40
-18,Jalore,5168,5,154,8,8
-19,Jhalawar,6848,0,59,48,47
-20,Jhunjhunu,8031,3,91,52,47
-21,Jodhpur,63192,47,1271,973,968
+16,Jaipur,59182,16,1844,1221,1162
+17,Jaisalmer,4362,0,68,44,44
+18,Jalore,5168,0,154,20,20
+19,Jhalawar,6848,12,71,48,47
+20,Jhunjhunu,8031,5,96,52,47
+21,Jodhpur,63192,0,1271,973,968
 22,Karauli,1474,0,10,4,3
-23,Kota,20542,7,386,302,192
-24,Nagaur,12506,48,391,148,135
-25,Pali,5771,50,337,80,80
+23,Kota,20542,4,390,302,196
+24,Nagaur,12506,4,395,148,146
+25,Pali,5771,3,340,80,80
 26,Pratapgarh,1289,0,12,3,3
-27,Rajsamand,2076,3,115,32,30
-28,S. Madhopur,3831,1,18,8,6
-29,Sikar,8826,44,126,21,21
-30,Sirohi,5754,9,112,6,2
-31,Tonk,7142,0,159,158,142
-32,Udaipur,13312,12,492,70,6
+27,Rajsamand,2076,11,126,32,30
+28,S. Madhopur,3831,0,18,8,6
+29,Sikar,8826,0,126,21,21
+30,Sirohi,5754,0,112,6,6
+31,Tonk,7142,0,159,158,152
+32,Udaipur,13312,13,505,70,6
 ,Other District/State Sample,3100,0,12,0,0
-,Total,327836,272,7187,3951,3454
+,Total,327836,76,7263,3967,3501
 ,,Evacuess,0,61,61,61
 ,,BSF,0,50,42,42
-,,Grand Total,272,7300,4056,3559
+,,Grand Total,76,7376,4072,3606
 
 COVID Facilities in Rajasthan,COVID Facilities in Rajasthan,COVID Facilities in Rajasthan,
 http://www.rajswasthya.nic.in/
