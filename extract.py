@@ -121,7 +121,7 @@ def stateDetailsExtractor(metaObject, outputString):
 		row = soup.find("tbody").find("tr")
 		for index, data in enumerate(row.find_all("td")):
 			if index == 0:
-				lastUpdated = datetime.datetime.strptime(data.get_text().split(' ')[0], "%d-%b-%Y")
+				lastUpdated = data.get_text()
 			if index == 1:
 				samplesTested = data.get_text()
 			if index == 2:
