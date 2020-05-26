@@ -290,8 +290,7 @@ def nagalandTableExtractor(soupObject, districtDictionary, firstPass):
 		rowString = rowString.replace('-', '/')
 		if firstPass == False:
 			rowString = rowString + "\n"
-#districtDictionary[currentDistrict] = rowString if firstPass == True else districtDictionary[currentDistrict] + "," + rowString 
-		districtDictionary[currentDistrict] = rowString
+		districtDictionary[currentDistrict] = rowString if firstPass == True else districtDictionary[currentDistrict] + "," + rowString 
 		
 def readAllEntriesForATable(table, outputString, itemToSearch, itemsToAppend, itemsToRemove):
 	for index, row in enumerate(table):
@@ -329,11 +328,12 @@ def districtDetailsExtractor(metaObject):
 	if metaObject.stateName == "Nagaland":
 		table = soup.find("table").find_all("tr")
 		districtDictionary = {}
-		nagalandTableExtractor(table, districtDictionary, False)
+		nagalandTableExtractor(table, districtDictionary, True)
 
-#soup = BeautifulSoup(open("x.html"), 'html5lib')
-#   	table = soup.find("div", {"class":"modal-body"}).find("table").find_all("tr")
-#   	nagalandTableExtractor(table, districtDictionary, False)
+		response = requests.request("GET", "https://covid19.nagaland.gov.in/")
+		soup = BeautifulSoup(response.content, 'html5lib')
+		table = soup.find("div", id="case-data").find("table").find_all("tr")
+		nagalandTableExtractor(table, districtDictionary, False)
 
 		outputString.append(districtDictionary['District'])
 		for k, v in districtDictionary.items():
