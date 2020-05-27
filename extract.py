@@ -196,6 +196,8 @@ def stateDetailsExtractor(metaObject, outputString):
 		for index, value in enumerate(values):
 			dataDictionary[keys[index].get_text().strip()] = value.get_text().strip()
 
+		print(dataDictionary)
+
 		rowString = "Nagaland, " + datetime.date.today().strftime("%d/%m/%Y") 
 		orderArray = ['Samples Sent', 'Results Positive', 'Results Negative', 'Results awaited']
 		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
