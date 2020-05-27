@@ -2,7 +2,7 @@ import requests
 import json
 
 class DeltaCalculator:
-	def __init__():
+	def __init__(self, stateName = ''):
 		self.covidDashboardData = requests.request("get", "https://api.covid19india.org/state_district_wise.json").json()
 		self.nameMapping = {}
 	
