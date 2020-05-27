@@ -1,9 +1,10 @@
-State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Discharged, State url
+State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Dischargedl, url
 Andhra Pradesh, 27/05/2020, 332378, 2787,329261,,2787,816, 1913,http://hmfw.ap.gov.in/covid_dashboard.aspx
-Arunachal Pradesh, 26-May-2020(19:27 Hrs), 6319, 1233, 5086,5083,,2,,http://covid19.itanagarsmartcity.in/covidstatus.php
+Arunachal Pradesh, 26-May-2020(19:27 Hrs), 6319, 2, 5083,1233,2,1,1,http://covid19.itanagarsmartcity.in/covidstatus.php
 Chandigarh, 27/05/2020,4332,279,3991,61,279,,187,http://chdcovid19.in/
-Gujarat, 26/05/2020 10:31:10 PM,189313,14821,,,14821,,7139,364603,https://gujcovid19.gujarat.gov.in/
+Gujarat, 27/05/2020 10:14:24 PM,193862,15195,,,15195,,7549,352319,https://gujcovid19.gujarat.gov.in/
 Kerala, 27-05-2020,58866,1003,56558,1305,1003,445,552,https://dashboard.kerala.gov.in/index.php
+Nagaland, 27/05/2020,,,,,9,9,0,https://covid19.nagaland.gov.in/
 Odisha, Updated @ 04:46 PM on 27th May ,136274,1.17 %,98.83 %,,1593,774,812,https://statedashboard.odisha.gov.in/
 Puducherry, Last Updated: 27-05-2020,6808,60,6711,37,51,39,12,https://covid19dashboard.py.gov.in/
-Rajasthan, As on 27.05.2020 at 02:00 AM,350600,7680,338611,4309,7680,,4341,http://www.rajswasthya.nic.in/
+Rajasthan, As on 27.05.2020 at 09:00 AM,350600,7816,338611,413,7816,,4562,http://www.rajswasthya.nic.in/

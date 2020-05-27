@@ -81,7 +81,7 @@ with open("extract.meta", "r") as metaFile:
 
 def getDataForStates():
 	outputToWrite=[]
-	header = "State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Discharged, State url\n"
+	header = "State, Last Updated, Samples Tested, Samples Positive, Samples Negative, Results Awaited, Total Confirmed, Total Active, Total Dischargedl, url\n"
 	outputToWrite.append(header)
 
 	for metaObject in metaArray:
@@ -124,16 +124,18 @@ def stateDetailsExtractor(metaObject, outputString):
 				lastUpdated = data.get_text()
 			if index == 1:
 				samplesTested = data.get_text()
-			if index == 2:
-				samplesNegative = data.get_text()
-			if index == 3:
-				samplesPositive = data.get_text()
 			if index == 4:
-				resultsAwaited = data.get_text()
+				samplesNegative = data.get_text()
 			if index == 5:
+				samplesPositive = data.get_text()
+			if index == 3:
+				resultsAwaited = data.get_text()
+			if index == 7:
 				active = data.get_text()
+			if index == 6:
+				cured = data.get_text()
 				
-		outputString.append("Arunachal Pradesh, " + lastUpdated + ", " + samplesTested + ", " + samplesPositive + ", " + samplesNegative +","+ resultsAwaited +",," + active +",," +url + "\n")
+		outputString.append("Arunachal Pradesh, " + lastUpdated + ", " + samplesTested + ", " + samplesPositive + ", " + samplesNegative +","+ resultsAwaited +"," + samplesPositive + "," + active +"," + cured + "," + url + "\n")
 
 	if metaObject.stateName == "Chandigarh":
 		divs = soup.find("div", {"class": "col-lg-8 col-md-9 form-group pt-10"}).find_all("div", {"class": "col-md-3"})
@@ -199,7 +201,7 @@ def stateDetailsExtractor(metaObject, outputString):
 		print(dataDictionary)
 
 		rowString = "Nagaland, " + datetime.date.today().strftime("%d/%m/%Y") 
-		orderArray = ['Samples Sent', 'Results Positive', 'Results Negative', 'Results awaited']
+		orderArray = ['', '', '', '', 'CONFIRMED', 'ACTIVE', 'RECOVERED']
 		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 
 		outputString.append(rowString)
