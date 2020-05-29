@@ -1,8 +1,8 @@
 curl https://api.covid19india.org/csv/latest/district_wise.csv | grep "Rajasthan" > rj.csv
-noOfLines=`wc -l < data/28_may_2020/Rajasthan.csv`
+noOfLines=`wc -l < data/29_may_2020/Rajasthan.csv`
 echo "$noOfLines"
 LinesToRead=$(( noOfLines ))
-tail -n $LinesToRead data/28_may_2020/Rajasthan.csv > .rjsite.csv
+tail -n $LinesToRead data/29_may_2020/Rajasthan.csv > .rjsite.csv
 LinesToRead=$(( noOfLines - 7 ))
 
 head -n $LinesToRead .rjsite.csv > rjsite.csv
