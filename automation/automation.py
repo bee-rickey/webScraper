@@ -247,6 +247,34 @@ def KLGetData():
 			if "data:" in line: 
 				print(line)
 
+def LAGetData():
+	response = requests.request("GET", metaDictionary['Ladakh'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	table = soup.find("table", id = "tableCovidData2").find_all("tr")
+
+	districtArray = []
+	districtDictionary = {}
+	confirmed = table[9].find_all("td")[1]
+	discharged = table[11].find_all("td")[1]
+	confirmedArray = dischargedArray = []
+	confirmedArray = re.sub(':', '', re.sub(' +', ' ', re.sub("\n", " ", confirmed.get_text().strip()))).split(' ')
+	dischargedArray = re.sub(':', '', re.sub(' +', ' ', re.sub("\n", " ", discharged.get_text().strip()))).split(' ')
+
+	districtDictionary['districtName'] = confirmedArray[0]
+	districtDictionary['confirmed'] = int(confirmedArray[1])
+	districtDictionary['recovered'] = int(dischargedArray[1])
+	districtDictionary['deceased'] = -999
+	districtArray.append(districtDictionary)
+
+	districtDictionary = {}
+	districtDictionary['districtName'] = confirmedArray[2]
+	districtDictionary['confirmed'] = int(confirmedArray[3])
+	districtDictionary['recovered'] = int(dischargedArray[3])
+	districtDictionary['deceased'] = -999
+	districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Ladakh", districtArray, option)
+    	
 
 def main():
 
