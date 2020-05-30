@@ -3,5 +3,11 @@ Odisha, OR, https://health.odisha.gov.in/js/distDtls.js
 Rajasthan, RJ, http://www.rajswasthya.nic.in/
 Maharashtra, MH, https://services5.arcgis.com/h1qecetkQkV9PbPV/arcgis/rest/services/COVID19_Location_Summary/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*
 Telangana, TS, 
-Gujarat, GJ,
+Gujarat, GJ,https://gujcovid19.gujarat.gov.in/DrillDownCharts.aspx/GetDistDataForLineCovidDisrtict
 Uttar Pradesh, UP,
+Nagaland, NL, https://covid19.nagaland.gov.in/
+Assam, AS, https://covid19.assam.gov.in/all-districts/
+Tripura, TR, https://covid19.tripura.gov.in/Visitor/ViewStatus.aspx
+Puducherry, PY, https://covid19dashboard.py.gov.in/Reporting/DateWise
+Chandigarh, CH, http://chdcovid19.in/
+#Kerala, KL, https://dashboard.kerala.gov.in/dailyreporting.php

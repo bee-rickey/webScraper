@@ -34,12 +34,14 @@ def fetchData(stateName):
 def loadMetaData():
 	with open("automation.meta", "r") as metaFile:
 		for line in metaFile:
+			if line.startswith('#'):
+				continue
 			lineArray = line.strip().split(',') 
 			metaObject = AutomationMeta(lineArray[0].strip(), lineArray[1].strip(), lineArray[2].strip())
 			metaDictionary[lineArray[0].strip()] = metaObject
 
 def APGetData():
-	stateDashboard = requests.request("post", "http://covid19.ap.gov.in/Covid19_Admin/api/CV/DashboardCountAPI").json()
+	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
 
 	districtArray = []
 	for districtDetails in (stateDashboard['cases_district']):
@@ -54,7 +56,6 @@ def APGetData():
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
-	stateDashboard = requests.request("get", "https://health.odisha.gov.in/js/distDtls.js")
 	os.system("curl -sk https://health.odisha.gov.in/js/distDtls.js | grep -i 'District_id' | sed 's/\"//g' | sed 's/,/:/g'| cut -d':' -f4,8,12,14,18,22 |sed 's/:/,/g' > orsite.csv")
 
 	districtArray = []
@@ -73,7 +74,7 @@ def ORGetData():
 
 
 def MHGetData():
-	stateDashboard = requests.request("get", "https://services5.arcgis.com/h1qecetkQkV9PbPV/arcgis/rest/services/COVID19_Location_Summary/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*").json()
+	stateDashboard = requests.request("get", metaDictionary['Maharashtra'].url).json()
 
 	districtArray = []
 	for districtDetails in stateDashboard['features']:
@@ -84,12 +85,11 @@ def MHGetData():
 		districtDictionary['deceased'] = districtDetails['attributes']['Death']
 		districtArray.append(districtDictionary)
 
-	print(option)
 	deltaCalculator.getStateDataFromSite("Maharashtra", districtArray, option)
 		
 
 def RJGetData():
-	response = requests.request("GET", "http://www.rajswasthya.nic.in/")
+	response = requests.request("GET", metaDictionary['Rajasthan'].url)
 	soup = BeautifulSoup(response.content, 'html5lib')
 	table = soup.find('blockquote').find('table').find_all('tr')
 
@@ -112,13 +112,141 @@ def RJGetData():
 
 
 def GJGetData():
-  print("GJ")
+	response = requests.request("GET", metaDictionary['Gujarat'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	table = soup.find("tbody").find_all("tr")
+	
+	districtArray = []
+	for index, row in enumerate(table):
+		if index == len(table) - 1:
+			continue
+    	
+		dataPoints = row.find_all("td")
+		districtDictionary = {}
+		districtDictionary['districtName'] = dataPoints[0].get_text()
+		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip())
+		districtDictionary['recovered'] = int(dataPoints[3].get_text().strip())
+		districtDictionary['deceased'] = int(dataPoints[5].get_text().strip())
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Gujarat", districtArray, option)
+
 
 def TSGetData():
   print("TS")
 
 def UPGetData():
-  print("UP")
+  print("TS")
+
+def NLGetData():
+	print("NL has no proper table yet")
+#os.system("curl -sk https://covid19.nagaland.gov.in > nl.html")
+#	soup = BeautifulSoup(open("nl.html"), 'html5lib')
+#	table = soup.find_all("script")[21].get_text()
+#	print(table)
+
+def ASGetData():
+	response = requests.request("GET", metaDictionary['Assam'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	table = soup.find("tbody").find_all("tr")
+
+	districtArray = []
+	for index, row in enumerate(table):
+		if index == 1:
+			continue
+		dataPoints = row.find_all("td")
+    	
+		districtDictionary = {}
+		districtDictionary['districtName'] = dataPoints[0].get_text().strip()
+		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip())
+		districtDictionary['recovered'] = int(dataPoints[3].get_text().strip())
+		districtDictionary['deceased'] = int(dataPoints[4].get_text().strip())
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Assam", districtArray, option)
+
+def TRGetData():
+	response = requests.request("GET", metaDictionary['Tripura'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	table = soup.find("tbody").find_all("tr")
+
+	districtArray = []
+	for index, row in enumerate(table):
+		dataPoints = row.find_all("td")
+    	
+		districtDictionary = {}
+		districtDictionary['districtName'] = dataPoints[1].get_text().strip()
+		districtDictionary['confirmed'] = int(dataPoints[8].get_text().strip())
+		districtDictionary['recovered'] = int(dataPoints[10].get_text().strip())
+		districtDictionary['deceased'] = int(dataPoints[12].get_text().strip())
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Tripura", districtArray, option)
+
+def PYGetData():
+	response = requests.request("GET", metaDictionary['Puducherry'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	table = soup.find_all("tbody")[1].find_all("tr")
+
+	districtArray = []
+	for index, row in enumerate(table):
+		dataPoints = row.find_all("td")
+    	
+		districtDictionary = {}
+		districtDictionary['districtName'] = dataPoints[0].get_text().strip()
+		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip())
+		districtDictionary['recovered'] = int(dataPoints[2].get_text().strip())
+		districtDictionary['deceased'] = -999
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Puducherry", districtArray, option)
+
+def CHGetData():
+	response = requests.request("GET", metaDictionary['Chandigarh'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	divs = soup.find("div", {"class": "col-lg-8 col-md-9 form-group pt-10"}).find_all("div", {"class": "col-md-3"})
+
+	districtDictionary = {}
+	districtArray = []
+	districtDictionary['districtName'] = 'Chandigarh'
+	
+	for index, row in enumerate(divs):
+
+		if index > 2:
+			continue
+
+		dataPoints = row.find("div", {"class": "card-body"}).get_text()
+
+		if index == 0:
+			districtDictionary['confirmed'] = int(dataPoints)
+		if index == 1:
+			districtDictionary['recovered'] = int(dataPoints)
+		if index == 2:
+			districtDictionary['deceased'] = int(dataPoints)
+
+	districtArray.append(districtDictionary)
+	deltaCalculator.getStateDataFromSite("Chandigarh", districtArray, option)
+
+
+def KLGetData():
+	response = requests.request("GET", metaDictionary['Kerala'].url)
+	soup = BeautifulSoup(response.content, 'html5lib')
+	table = soup.find_all("script")
+
+	klData = open("kl.txt", "w")
+	klData.writelines(table[len(table) - 1].get_text())
+	klData.close()
+	districtList = ""
+
+	with open("kl.txt", "r") as klFile:
+		for line in klFile:
+			if "labels:" in line:
+				print(line)
+				distrctList = re.sub("labels: ", "", line)
+				print(line)
+			if "data:" in line: 
+				print(line)
+
 
 def main():
 

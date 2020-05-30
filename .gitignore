@@ -4,3 +4,6 @@ x.html
 automation/orsite.csv
 *.swp
 *.swp
+automation/deltaCalculator.log
+automation/automated.txt
+automation/__pycache__/deltaCalculator.cpython-37.pyc

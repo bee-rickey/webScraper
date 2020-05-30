@@ -30,7 +30,7 @@ class DeltaCalculator:
 	def getStateDataFromSite(self, stateName, stateDataFromStateDashboard, options):
 		logging.info(stateDataFromStateDashboard)
 		stateData = self.covidDashboardData[stateName]['districtData']
-		print('*' * 20 + stateName + '*' * 20)
+		print("\n" + '*' * 20 + stateName + '*' * 20)
 		try:
 			nameMapping = self.nameMapping[stateName]
 		except KeyError:
@@ -54,12 +54,9 @@ class DeltaCalculator:
 				print(outputString)
 			if options == "detailed":
 				districts.append(districtName)
-				if confirmedDelta != 0 and confirmedDelta != "NA":
-					confirmedDeltaArray.append(confirmedDelta)
-				if recoveredDelta != 0 and recoveredDelta != "NA":
-					recoveredDeltaArray.append(recoveredDelta)
-				if deceasedDelta != 0 and deceasedDelta != "NA":
-					deceasedDeltaArray.append(deceasedDelta)
+				confirmedDeltaArray.append(confirmedDelta)
+				recoveredDeltaArray.append(recoveredDelta)
+				deceasedDeltaArray.append(deceasedDelta)
 
 		if options == "detailed":
 			self.printDistricts(self.printDeltas(confirmedDeltaArray, "Confirmed"), districts)
@@ -70,8 +67,9 @@ class DeltaCalculator:
 		print('-' * 20 + category + '-' * 20)
 		printIndex = []
 		for index, data in enumerate(deltaArray):
-			print(data)
-			printIndex.append(index)
+			if data != 0 and data != "NA":
+				print(data)
+				printIndex.append(index)
 
 		return printIndex
 
