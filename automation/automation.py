@@ -7,10 +7,12 @@ import os
 import re
 import datetime
 import logging
+import argparse
 
 logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 deltaCalculator = DeltaCalculator()
 metaDictionary = {}
+option = ""
 
 
 class AutomationMeta:
@@ -22,8 +24,10 @@ class AutomationMeta:
 def fetchData(stateName):
 	if stateName == "All States":
 		for key, metaObject in metaDictionary.items():
+			logging.info("Calling delta calculator for: " + metaObject.stateCode)
 			eval(metaObject.stateCode + "GetData()")
 	else:
+		logging.info("Calling delta calculator for: " + metaDictionary[stateName].stateCode)
 		eval(metaDictionary[stateName].stateCode + "GetData()")
 
 
@@ -47,7 +51,7 @@ def APGetData():
 
 		districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray)
+	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
 	stateDashboard = requests.request("get", "https://health.odisha.gov.in/js/distDtls.js")
@@ -65,7 +69,7 @@ def ORGetData():
 		
 			districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Odisha", districtArray)
+	deltaCalculator.getStateDataFromSite("Odisha", districtArray, option)
 
 
 def MHGetData():
@@ -80,7 +84,8 @@ def MHGetData():
 		districtDictionary['deceased'] = districtDetails['attributes']['Death']
 		districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Maharashtra", districtArray)
+	print(option)
+	deltaCalculator.getStateDataFromSite("Maharashtra", districtArray, option)
 		
 
 def RJGetData():
@@ -103,7 +108,7 @@ def RJGetData():
 		districtDictionary['deceased'] = -999
 		districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Rajasthan", districtArray)
+	deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
 
 
 def GJGetData():
@@ -119,14 +124,17 @@ def main():
 
 	loadMetaData()
 	stateName = ""
+
 	if len(sys.argv) > 1:
 		stateName = sys.argv[1]
 
+	global option 
+	if len(sys.argv) == 3:
+		option = sys.argv[2]
+
 	if not stateName:
 		stateName = "All States"
-	logging.info('Starting automation for state ' + stateName)
 	fetchData(stateName)
 
 if __name__ == '__main__':
 	main()
-	logging.info('Program end')
