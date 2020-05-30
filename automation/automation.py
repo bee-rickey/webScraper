@@ -26,9 +26,11 @@ def fetchData(stateName):
 		for key, metaObject in metaDictionary.items():
 			logging.info("Calling delta calculator for: " + metaObject.stateCode)
 			eval(metaObject.stateCode + "GetData()")
+			print("Dashboard url: " + metaObject.url)
 	else:
 		logging.info("Calling delta calculator for: " + metaDictionary[stateName].stateCode)
 		eval(metaDictionary[stateName].stateCode + "GetData()")
+		print("Dashboard url: " + metaDictionary[stateName].url)
 
 
 def loadMetaData():
@@ -152,8 +154,6 @@ def ASGetData():
 
 	districtArray = []
 	for index, row in enumerate(table):
-		if index == 1:
-			continue
 		dataPoints = row.find_all("td")
     	
 		districtDictionary = {}

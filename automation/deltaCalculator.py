@@ -40,10 +40,20 @@ class DeltaCalculator:
 		recoveredDeltaArray = []
 		deceasedDeltaArray = []
 		districts = []
+		stateTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
+		siteTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
 
 		for districtDetails in stateDataFromStateDashboard:
 			districtName = nameMapping[districtDetails['districtName']] if districtDetails['districtName'] in nameMapping else districtDetails['districtName']
 			outputString = ""
+
+			stateTotalFromStateDashboard['confirmed'] += districtDetails['confirmed'] if districtDetails['confirmed'] != -999 else 0
+			stateTotalFromStateDashboard['recovered'] += districtDetails['recovered'] if districtDetails['recovered'] != -999 else 0
+			stateTotalFromStateDashboard['deceased'] += districtDetails['deceased'] if districtDetails['deceased'] != -999 else 0
+
+			siteTotalFromStateDashboard['confirmed'] += stateData[districtName]['confirmed']
+			siteTotalFromStateDashboard['recovered'] += stateData[districtName]['recovered']
+			siteTotalFromStateDashboard['deceased'] += stateData[districtName]['deceased']
 
 			confirmedDelta = districtDetails['confirmed'] - stateData[districtName]['confirmed'] if districtDetails['confirmed'] != -999 else "NA"
 			recoveredDelta = districtDetails['recovered'] - stateData[districtName]['recovered'] if districtDetails['recovered'] != -999 else "NA"
@@ -58,10 +68,26 @@ class DeltaCalculator:
 				recoveredDeltaArray.append(recoveredDelta)
 				deceasedDeltaArray.append(deceasedDelta)
 
+		stateConfirmedDelta = stateTotalFromStateDashboard['confirmed'] - siteTotalFromStateDashboard['confirmed'] 
+		stateRecoveredDelta = stateTotalFromStateDashboard['recovered'] - siteTotalFromStateDashboard['recovered']
+		stateDeceasedDelta = stateTotalFromStateDashboard['deceased'] - siteTotalFromStateDashboard['deceased']
+
+
+
 		if options == "detailed":
-			self.printDistricts(self.printDeltas(confirmedDeltaArray, "Confirmed"), districts)
-			self.printDistricts(self.printDeltas(recoveredDeltaArray, "Recovered"), districts)
-			self.printDistricts(self.printDeltas(deceasedDeltaArray, "Deceased"), districts)
+				districts.append('Total')
+				confirmedDeltaArray.append(stateConfirmedDelta)
+				recoveredDeltaArray.append(stateRecoveredDelta)
+				deceasedDeltaArray.append(stateDeceasedDelta)
+
+				self.printDistricts(self.printDeltas(confirmedDeltaArray, "Confirmed"), districts)
+				self.printDistricts(self.printDeltas(recoveredDeltaArray, "Recovered"), districts)
+				self.printDistricts(self.printDeltas(deceasedDeltaArray, "Deceased"), districts)
+		else:
+			print("Total delta, {}, {}, {}".format(stateConfirmedDelta, stateRecoveredDelta, stateDeceasedDelta))
+
+		print("StateTotal, {}, {}, {}".format(stateTotalFromStateDashboard['confirmed'], stateTotalFromStateDashboard['recovered'], stateTotalFromStateDashboard['deceased']))
+		print("SiteTotal, {}, {}, {}".format(siteTotalFromStateDashboard['confirmed'], siteTotalFromStateDashboard['recovered'], siteTotalFromStateDashboard['deceased']))
 
 	def printDeltas(self, deltaArray, category):
 		print('-' * 20 + category + '-' * 20)
