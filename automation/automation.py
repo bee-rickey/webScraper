@@ -138,7 +138,22 @@ def TSGetData():
   print("TS")
 
 def UPGetData():
-  print("TS")
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	with open("up.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split(',')
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0]
+			districtDictionary['confirmed'] = int(linesArray[2])
+			districtDictionary['recovered'] = int(linesArray[4])
+			districtDictionary['deceased'] = int(linesArray[6])
+			districtArray.append(districtDictionary)
+
+	print(districtArray)
+	deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
+			
 
 def NLGetData():
 	print("NL has no proper table yet")
