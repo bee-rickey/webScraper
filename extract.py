@@ -162,7 +162,7 @@ def stateDetailsExtractor(metaObject, outputString):
 			dataDictionary[key[len(key)-1].get_text().strip()] = value.get_text()
 
 		rowString = "Gujarat, " + date 
-		orderArray = ['Cases Tested for COVID19', 'Confirmed Positive Cases', '', '', 'Confirmed Positive Cases', '', 'Patients Recovered', 'People Under Quarantine']
+		orderArray = ['Cases Tested for COVID19', '', '', '', '', '', 'Patients Recovered', 'People Under Quarantine']
 		rowString = buildRowString(url, orderArray, rowString, dataDictionary)
 		outputString.append(rowString)
 

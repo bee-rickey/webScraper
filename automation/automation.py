@@ -144,6 +144,9 @@ def UPGetData():
 	with open("up.txt", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split(',')
+			if len(linesArray) != 8:
+				print("Issue with " + linesArray[0] + " Ignoring and continuing ")
+				continue
 			districtDictionary = {}
 			districtDictionary['districtName'] = linesArray[0]
 			districtDictionary['confirmed'] = int(linesArray[2])
@@ -151,7 +154,6 @@ def UPGetData():
 			districtDictionary['deceased'] = int(linesArray[6])
 			districtArray.append(districtDictionary)
 
-	print(districtArray)
 	deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
 			
 
