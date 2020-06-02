@@ -74,6 +74,8 @@ class ExtractMeta:
 
 with open("extract.meta", "r") as metaFile:
 	for line in metaFile:
+		if line.startswith('#'):
+			continue
 		lineArray = line.strip().split(',') 
 		metaObject = ExtractMeta(lineArray[0].strip(), lineArray[1].strip(), lineArray[2].strip())
 		metaArray.append(metaObject)
