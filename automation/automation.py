@@ -184,7 +184,7 @@ def UPGetData():
 					data.insert(colIndex, masterColumnArray[colIndex].strip())
 
 			if len(rowValues) != 8 or len(data) != 8:
-				print("Issue with data: {} ".format(rowValues))
+				print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
 				continue
 
 			districtDictionary = {}
@@ -195,8 +195,6 @@ def UPGetData():
 			districtArray.append(districtDictionary)
 			print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
 					
-
-
 	deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
 
 def BRGetData():
