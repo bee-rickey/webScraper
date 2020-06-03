@@ -231,6 +231,22 @@ def PBGetData():
 
 	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
 			
+def TNGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	with open("tn.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split(',')
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0]
+			districtDictionary['confirmed'] = int(linesArray[1])
+			districtDictionary['recovered'] = int(linesArray[2])
+			districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+			districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
+
 
 def NLGetData():
 	print("NL has no proper table yet")
