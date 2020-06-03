@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from bs4 import BeautifulSoup
 from deltaCalculator import DeltaCalculator
 import requests
@@ -141,12 +142,28 @@ def UPGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	with open("up.txt", "r") as upFile:
+	secondRunArray = []
+	masterColumnList = ""
+	masterColumnArray = []
+	splitArray = []
+	with open("up1.txt", "r") as upFile:
 		for line in upFile:
-			linesArray = line.split(',')
-			if len(linesArray) != 8:
-				print("Issue with " + linesArray[0] + " Ignoring and continuing ")
+			splitArray = re.sub('\n', '', line.strip()).split('|')
+			linesArray = splitArray[0].split(',')
+			columnList = splitArray[1].split(',')
+
+			if len(linesArray) != 8 or len(columnList) != 8:
+				secondRunArray.append(linesArray)
+				secondRunArray.append(columnList)
 				continue
+			else:
+				if len(masterColumnList) == 0:
+					masterColumnList = splitArray[1].strip()
+				elif masterColumnList != splitArray[1].strip():
+					print("Issue with " + line + "columns don't match. Ignoring and continuing")
+					continue
+				else:
+					masterColumnArray = columnList
 			districtDictionary = {}
 			districtDictionary['districtName'] = linesArray[0]
 			districtDictionary['confirmed'] = int(linesArray[2])
@@ -154,7 +171,65 @@ def UPGetData():
 			districtDictionary['deceased'] = int(linesArray[6])
 			districtArray.append(districtDictionary)
 
+#Second run to correct possible misses with -999
+	correctionIndex = ""
+	for index, data in enumerate(secondRunArray):
+		correctionIndex = ""
+		if index % 2 == 1:
+			rowValues = secondRunArray[index - 1]
+			for colIndex, colValue in enumerate(data):
+				if colValue.strip() != masterColumnArray[colIndex].strip():
+					correctionIndex += "," + str(colIndex) if len(correctionIndex) != 0 else str(colIndex) 
+					rowValues.insert(colIndex, -999)
+					data.insert(colIndex, masterColumnArray[colIndex].strip())
+
+			if len(rowValues) != 8 or len(data) != 8:
+				print("Issue with data: {} ".format(rowValues))
+				continue
+
+			districtDictionary = {}
+			districtDictionary['districtName'] = rowValues[0]
+			districtDictionary['confirmed'] = int(rowValues[2])
+			districtDictionary['recovered'] = int(rowValues[4])
+			districtDictionary['deceased'] = int(rowValues[6])
+			districtArray.append(districtDictionary)
+			print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
+					
+
+
 	deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
+
+def BRGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	with open("bihar.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split('|')[0].split(',')
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0]
+			districtDictionary['confirmed'] = int(linesArray[1])
+			districtDictionary['recovered'] = int(linesArray[2])
+			districtDictionary['deceased'] = int(linesArray[3])
+			districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Bihar", districtArray, option)
+
+def PBGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	with open("pb.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split(',')[0].split(',')
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0]
+			districtDictionary['confirmed'] = int(linesArray[1])
+			districtDictionary['recovered'] = int(linesArray[3])
+			districtDictionary['deceased'] = int(linesArray[4])
+			districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
 			
 
 def NLGetData():
