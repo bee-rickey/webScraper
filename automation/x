@@ -1,0 +1,2342 @@
+<!--
+=========================================================
+Material Dashboard - v2.1.2
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-dashboard
+Copyright 2020 Creative Tim (https://www.creative-tim.com)
+Coded by Creative Tim
+
+=========================================================
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="https://covid19.nagaland.gov.in/img/favicon.png">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="keywords" content="covid-19 nagaland, offical government of nagalan dashboard, statistics, war room, coronavirus, covid19 nagaland dashboard">
+  <meta name="description" content="Official Dashboard of the COVID-19 War Room : Government of Nagaland.">
+  <title>
+    COVID19 WarRoom: Government of Nagaland
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet" type="text/css">
+  <!-- CSS Files -->
+  <link href="https://covid19.nagaland.gov.in/materialDashboard/css/material-dashboard.css" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="https://covid19.nagaland.gov.in/materialDashboard/demo/demo.css" rel="stylesheet" />
+
+  <!--   Core JS Files   -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/core/jquery.min.js"></script>
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/core/popper.min.js"></script>
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/core/bootstrap-material-design.min.js"></script>
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!-- Plugin for the momentJs  -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/moment.min.js"></script>
+  <!--  Plugin for Sweet Alert -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/sweetalert2.js"></script>
+  <!-- Forms Validations Plugin -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/jquery.validate.min.js"></script>
+  <!-- Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/jquery.bootstrap-wizard.js"></script>
+  <!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/bootstrap-selectpicker.js"></script>
+  <!--  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/bootstrap-datetimepicker.min.js"></script>
+  <!--  DataTables.net Plugin, full documentation here: https://datatables.net/  -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/jquery.dataTables.min.js"></script>
+  <!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/bootstrap-tagsinput.js"></script>
+  <!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/jasny-bootstrap.min.js"></script>
+  <!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
+  <!-- <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/fullcalendar.min.js"></script> -->
+  <!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
+  <!-- <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/jquery-jvectormap.js"></script> -->
+  <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+  <!-- <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/nouislider.min.js"></script> -->
+  <!-- Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
+  <!-- Library for adding dinamically elements -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/arrive.min.js"></script>
+  <!--  Google Maps Plugin    -->
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> -->
+  <!-- Chartist JS -->
+  <!-- <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/chartist.min.js"></script> -->
+  <!--  Notifications Plugin    -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/plugins/bootstrap-notify.js"></script>
+  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/js/material-dashboard.js" type="text/javascript"></script>
+  <!-- Material Dashboard DEMO methods, don't include it in your project! -->
+  <script  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+  <script src="https://covid19.nagaland.gov.in/materialDashboard/demo/demo.js"></script>
+  <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://covid19.nagaland.gov.in/lightbox/css/lightbox.css" rel="stylesheet">
+  <link href="https://covid19.nagaland.gov.in/css/jqueryui.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" media="screen, print" href="https://covid19.nagaland.gov.in/css/slickmap.css" />
+  <link rel="stylesheet" type="text/css" media="screen, print" href="https://covid19.nagaland.gov.in/css/material.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+  <style media="screen">
+    .sidebar-wrapper{background:#1e1e27}
+    .sidebar .nav li a{color:#fff}
+    .sidebar .logo{background: #1e1e27;color:#fff}
+    .nav-item:hover p{color:#fff}
+    .nav-item:hover a .sidebar-normal{color:#fff}
+    .nav-item:hover a .sidebar-mini{color:#fff}
+    .sidebar .nav li.active>[data-toggle="collapse"]{background:rgb(156, 39, 176);color:#fff}
+    #access-block{background:#fff;box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);border-radius:6px}
+    #access-block li .nav-link{margin-right:1px;padding:10px 8px;font-size:12px;}
+    #access-block li #access-text{font-size:13px;background:#c80713;border-top-left-radius:6px;
+      border-bottom-left-radius:6px;padding-left:10px;padding-top:14px;padding-right:10px;color:#fff;font-size:16px;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+    }
+    .primaryNav > ul > li{max-width:19%}
+    .dataTable>tbody>tr>td{padding:10px !important;}
+    body{background: #f7f7f7}
+    .my-table tr td,.my-table thead tr th{font-size:12px}
+    .my-table thead tr th{font-size:12px;text-transform:uppercase;font-weight: 700}
+  </style>
+</head>
+
+<body class="">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+      <div class="logo"><a href="https://covid19.nagaland.gov.in/" class="simple-text logo-normal">
+          <Strong style="color:#fff">COVID19 DASHBOARD</Strong><br/>
+          <span style="font-size:12px;color:#ababab">Government of Nagaland</span>
+        </a></div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item active" id="dashboard">
+            <a class="nav-link" href="https://covid19.nagaland.gov.in/">
+              <i class="material-icons">dashboard</i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item dropdown" id="verticle">
+            <a class="nav-link collapsed" href="#verticles" data-toggle="collapse" aria-haspopup="true" aria-expanded="false">
+              <i class="material-icons">view_headline</i>
+              <p>Verticals <b class="caret"></b></p>
+            </a>
+            <div class="collapse" id="verticles" aria-labelledby="navbarDropdown">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a href="https://covid19.nagaland.gov.in/health-main" class="nav-link">
+                  <span class="sidebar-mini">
+                    H
+                  </span>
+                  <span class="sidebar-normal">Health</span>
+                </a>
+              </li>
+                <li class="nav-item">
+                  <a href="https://covid19.nagaland.gov.in/homeDelivery" class="nav-link">
+                  <span class="sidebar-mini">
+                    EG
+                  </span>
+                  <span class="sidebar-normal">Essential Goods</span>
+                </a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://covid19.nagaland.gov.in/cbr-main" class="nav-link">
+                  <span class="sidebar-mini">
+                    CBR
+                  </span>
+                  <span class="sidebar-normal">Community Based Response</span>
+                </a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://covid19.nagaland.gov.in/incidentReport" class="nav-link">
+                  <span class="sidebar-mini">
+                    PO
+                  </span>
+                  <span class="sidebar-normal">Public Order</span>
+                </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="nav-item" id="notification">
+            <a class="nav-link" href="https://covid19.nagaland.gov.in/advisories">
+              <i class="material-icons">notification_important</i>
+              <p>Advisory/Notification</p>
+            </a>
+          </li>
+
+          <li class="nav-item dropdown" id="medias">
+            <a class="nav-link collapsed" href="#media" data-toggle="collapse" aria-haspopup="true" aria-expanded="false">
+              <i class="material-icons">perm_media</i>
+              <p>Media <b class="caret"></b></p>
+            </a>
+            <div class="collapse" id="media" aria-labelledby="navbarDropdown">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a href="https://covid19.nagaland.gov.in/annonceMain" class="nav-link">
+                  <span class="sidebar-mini">
+                    MC
+                  </span>
+                  <span class="sidebar-normal">Media &amp; Communication</span>
+                </a>
+              </li>
+                <li class="nav-item">
+                  <a href="https://covid19.nagaland.gov.in/iecMain" class="nav-link">
+                  <span class="sidebar-mini">
+                    IEC
+                  </span>
+                  <span class="sidebar-normal">IEC Medical</span>
+                </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item" id="districts">
+            <a class="nav-link" href="https://covid19.nagaland.gov.in/distIndex">
+              <i class="material-icons">content_paste</i>
+              <p>District Data</p>
+            </a>
+          </li>
+          <li class="nav-item" id="fact">
+            <a class="nav-link" href="https://covid19.nagaland.gov.in/factcheckmain">
+              <i class="material-icons">library_books</i>
+              <p>Fact Check</p>
+            </a>
+          </li>
+          <li class="nav-item" id="sdrf">
+            <a class="nav-link" href="https://covid19.nagaland.gov.in/sdrfStatus">
+              <i class="material-icons">bubble_chart</i>
+              <p>SDRF Deployment Status</p>
+            </a>
+          </li>
+          <li class="nav-item" id="contacts">
+            <a class="nav-link" href="https://covid19.nagaland.gov.in/contact-main">
+              <i class="material-icons">contact_mail</i>
+              <p>Contacts</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <a class="navbar-brand" href="javascript:;"><img src="https://covid19.nagaland.gov.in/img/CovidWarRoom-Logo.png" width="220"></a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end">
+
+            <ul class="navbar-nav ml-auto">
+              <ul class="navbar-nav ml-auto" id="access-block">
+                <li class="nav-it"><span class="nav-link" id="access-text"><strong><i class="fa fa-universal-access fa-lg"></i></strong></span></li>
+                <li class="nav-item"><a href=# class="nav-link increase">A+</a></li>
+                <li class="nav-item"><a href=# class="nav-link resetMe">A</a></li>
+                <li class="nav-item"><a href=# class="nav-link decrease">A-</a></li>
+                <li class="nav-item"><a href=# class="nav-link js-acessibility" id="hi-contrast"><i class="fa fa-adjust fa-sm"></i></a></li>
+                <li class="nav-item"><span href=# class="nav-link"> </span></li>
+              </ul>
+
+                <!-- Authentication Links -->
+                                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary btn-round" href="https://covid19.nagaland.gov.in/login" style="color:#fff;font-weight:600">
+                           Login here </a>
+                    </li>
+                            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-warning card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">addchart</i>
+          </div>
+          <p class="card-category" style="color:#000;font-weight:700">CONFIRMED</p><br>
+          <h3 class="card-title" style="font-weight:700"><b style="font-size:24px">80</b>
+          </h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">pageview</i> <a href=# data-toggle="collapse" data-target="#case-data" aria-expanded="true" aria-controls="collapseOne" style="color:#fd960e">Daily Testing Data</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">local_hotel</i>
+          </div>
+          <p class="card-category" style="color:#000;font-weight:700">ACTIVE</p><br>
+          <h3 class="card-title" style="font-weight:700"><b style="font-size:24px">80</b></h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">pageview</i>  <a href=# data-toggle="collapse" data-target="#case-data" aria-expanded="true" aria-controls="collapseOne" style="color:#52ab56">Daily Testing Data</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-info card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">done_all</i>
+          </div>
+          <p class="card-category" style="color:#000;font-weight:700">RECOVERED</p><br>
+          <h3 class="card-title" style="font-weight:700"><b style="font-size:24px">0</b></h3>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">pageview</i>  <a href=# data-toggle="collapse" data-target="#case-data" aria-expanded="true" aria-controls="collapseOne" style="color:#10b7cb">Daily Testing Data</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-danger card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">person_remove_alt_1</i>
+          </div>
+          <p class="card-category" style="color:#000;font-weight:700">DEATHS</p><br>
+          <h1 class="card-title" style="color:red;"><b style="font-size:50px"> 0 </b></h1>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="material-icons">pageview</i>  <a href=# data-toggle="collapse" data-target="#case-data" aria-expanded="true" aria-controls="collapseOne" style="color:#e8403c">Daily Testing Data</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row collapse" aria-labelledby="headingOne" data-parent="#accordion" id="case-data">
+    <div class="col-md-12">
+      <table class="table table-responsive my-table table-hover table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th>Male</th>
+            <th>Female</th>
+            <th>0 - 17 Years</th>
+            <th>18 - 44 Years</th>
+            <th>45 - 64 Years</th>
+            <th>65 - 74 Years</th>
+            <th>above 75 years</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:center;"><b>56</b></td>
+            <td style="text-align:center;"><b>24</b></td>
+            <td style="text-align:center;"><b>2</b></td>
+            <td style="text-align:center;"><b>78</b></td>
+            <td style="text-align:center;"><b>0</b></td>
+            <td style="text-align:center;"><b>0</b></td>
+            <td style="text-align:center;"><b>0</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card card-chart" style="margin-bottom:1px">
+        <div class="card-header card-header-primary">
+            <canvas id="caseChart" class="chart-canvas"></canvas>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title"><b> Covid-19 Status (Cumulative)</b></h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-chart">
+        <div class="card-header card-header-info">
+          <canvas id="newCaseChart" class="chart-canvas"></canvas>
+        </div>
+        <div class="card-body">
+          <b>New Cases</b>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-md-12 text-right mb-4">
+      <a href="https://covid19.nagaland.gov.in/coviddashboardmain" class="btn btn-info">View full District Data<i class="fa fa-arrow-right"></i></a>
+    </div> -->
+  </div>
+
+
+  <!-- slider block -->
+  <div class="row">
+    <div class="col-md-8 mb-4">
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="https://covid19.nagaland.gov.in/slide/advisoryReturnees.png" alt="First slide">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://covid19.nagaland.gov.in/xyz/1589956500.jpg" alt="Second slide">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://covid19.nagaland.gov.in/slide/slide2.jpg" alt="Third slide">
+          </div>
+          <!-- <div class="carousel-item">
+            <img class="d-block w-100" src="https://covid19.nagaland.gov.in/slide/slide3.jpg" alt="Third slide">
+          </div> -->
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://covid19.nagaland.gov.in/slide/slide5.jpg" alt="Fourth slide">
+          </div>
+          <div class="carousel-item">
+            <a href="https://www.mygov.in/aarogya-setu-app/"><img class="d-block w-100" src="https://covid19.nagaland.gov.in/slide/slide4.jpg" alt="Fifth slide"></a>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header card-header-success">
+          <h4 class="card-title"><Strong>SHRAMIK SPECIAL TRAINS</Strong></h4>
+          <!-- <p class="card-category"></p> -->
+        </div>
+        <div class="card-body">
+                    <table class="table table-resposive table-striped">
+            <tbody>
+              <tr>
+                <td colspan=2><b>Bengaluru to Dimapur</b></td>
+              </tr>
+              <tr>
+                <td>Train No.</td>
+                <td>07331</td>
+              </tr>
+              <tr>
+                <td>Departure</td>
+                <td>02/06/2020 20:30 Hrs</td>
+              </tr>
+              <tr>
+                <td>ETA</td>
+                <td>05/06/2020 07:00 Hrs<br/></td>
+              </tr>
+              <tr>
+              <tr>
+                <td>Status</td>
+                <td><span style="color:Red">Current Location (14:45 hrs): Malda, West Bengal</span></td>
+              </tr>
+              <tr>
+                <td>Total Passenger</td>
+                <td><b>1501*</b></td>
+              </tr>
+            </tbody>
+          </table>
+                    <!-- <b>1. Goa to Dimapur</b><hr>
+          <p style="line-height:23px">Train No : 04859<br>
+          Departure : 28/05/2020 19:00 Hrs <br>
+          ETA - 31/05/2020 00:15 Hrs &nbsp;&nbsp;<b style="color:red;font-weight:700px;">CHANGE AT LUMDING</b><br>
+          <b>Total Passengers : 435</b></p>
+          <hr> -->
+          <!-- <b>2. Vijayawada to Dibrugarh</b><hr>
+          <p style="line-height:23px">Train No : 07243<br>
+          Departure : 26/05/2020 18:00 Hrs <br>
+          ETA - 28/05/2020 18:00 Hrs &nbsp;&nbsp;<b style="color:red;font-weight:700px;">EN ROUTE</b><br>
+          <b>Total Passengers : 100</b></p> -->
+        </div>
+        <!-- <div class="card-body table-responsive">
+          <b>2. Dimapur to Bihar</b><hr>
+          <p style="line-height:23px">Train No : 05609<br>
+          Departure : 23/05/2020 21:00 Hrs&nbsp;&nbsp;<b style="color:red;font-weight:700px;">ARRIVED</b><br>
+          <b>Total Passengers : 1300</b></p>
+        </div> -->
+      </div>
+      <!-- <div class="alert alert-danger" style="text-align: justify; padding:10px;">
+        <p>Those who have not received Chief Minister's Special Package for Stranded Students, Workers & Medical patients, please
+        send an email mentioning your NAME and MOBILE No. to <strong style="color:yellow;">warroomnagaland@gmail.com</strong> OR <strong style="color:yellow;">outsidenagaland@gmail.com</strong> with the subject <strong style="color:yellow;">"CM Special Package" </strong>alongwith the following documents:-</p>
+        <b><ol class="pl-4">
+          <li>Any Document issued by the Government of Nagaland in your Name.</li>
+          <li>Copy of Bank Passbook / Statement / Account clearly indicating Name of Account Holder and Account Number.</li>
+        </ol></b>
+      </div> -->
+    </div>
+    <!-- <div class="col-md-12">
+      <div class="alert alert-danger">
+        <h5 style="font-weight:700">Notification : </h5>
+          <p style="font-weight:400;color:#fff;font-size:13px">Those who have not received Chief Minister's Special Package for Stranded Students, Workers & Medical patients, please send an email mentioning your NAME and MOBILE No. to <strong style="color:yellow;">warroomnagaland@gmail.com</strong> OR <strong style="color:yellow;">outsidenagaland@gmail.com</strong> with the subject <strong style="color:yellow;">"CM Special Package" </strong>alongwith the following documents:-</p>
+          <ol class="pl-4">
+            <li style="font-weight:400;color:#fff;font-size:13px">Any Document issued by the Government of Nagaland in your Name.</li>
+            <li style="font-weight:400;color:#fff;font-size:13px">Copy of Bank Passbook / Statement / Account clearly indicating Name of Account Holder and Account Number.</li>
+          </ol>
+      </div>
+    </div> -->
+    <!-- <div class="col-md-4">
+      <div class="card">
+        <div class="card-header card-header-success">
+          <h4 class="card-title"><Strong>ASSISTANCE PROVIDED</Strong></h4>
+          <p class="card-category">Assistance provided to stranded migrants</p>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover">
+            <thead>
+
+            </thead>
+            <tbody>
+              <tr>
+                <td>Total Local Migrants</td>
+                <td>81801</td>
+              </tr>
+              <tr>
+                <td>Total Non-Local Migrants</td>
+                <td>72424</td>
+              </tr>
+              <tr>
+                <td>Other Needy Persons</td>
+                <td>56828</td>
+              </tr>
+              <tr>
+                <td>Total till date</td>
+                <td>211053</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="card card-chart">
+        <div class="card-header card-header-success">
+            <canvas id="myChart3" class="chart-canvas"></canvas>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title"> Covid-19 PPE Status</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-chart">
+        <div class="card-header card-header-warning">
+
+            <canvas id="myChart2" class="chart-canvas"></canvas>
+
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Covid-19 Hospital Beds Statistics</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-chart">
+        <div class="card-header card-header-danger">
+          <canvas id="myChart5" class="chart-canvas"></canvas>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Facility Quarantine Status</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-chart">
+        <div class="card-header card-header-info">
+          <canvas id="myChart9"></canvas>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title">Covid19 Hospital Status</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <div class="col-md-6">
+      <div class="card shadow-lg rounded mb-5">
+        <div class="card-body">
+          <a href="https://covid19.nagaland.gov.in/docs/1587304003.pdf" target="_blank"><img src="https://covid19.nagaland.gov.in/xyz/1587377449.jpg" alt="How to make face cover at home" class="img-fluid"/></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body shadow-lg rounded">
+            <a href="https://covid19.nagaland.gov.in/docs/1590648258.pdf" target="_blank">  <img src="https://covid19.nagaland.gov.in/xyz/1587377387.jpg" alt="Rational use of PPE" class="img-fluid"/></a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="alert alert-danger">
+        <h5 style="font-weight:700">Disclaimer : </h5>
+          <p style="font-weight:400;color:#fff;font-size:12px">The collection of data from various sources is an ongoing process and therefore the information shown on this dashboard is subject to change depending on ongoing developments.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- modals -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js" charset="utf-8"></script>
+<script src="https://covid19.nagaland.gov.in/js/welcome.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+var ctx = document.getElementById('myChart1').getContext('2d');
+var chart = new Chart(ctx, {
+	// The type of chart we want to create
+	type: 'bar',
+	// The data for our dataset
+	data: {
+			labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+			datasets: [{
+					label: 'Sample Sent',
+					backgroundColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						1531,
+						18,
+						1420,
+						47,
+						138,
+						199,
+						239,
+						49,
+						50,
+						18,
+						30
+					],
+			},
+			{
+					label: '-ve Cases',
+					backgroundColor: '#4AD36A',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						1081,
+						15,
+						721,
+						28,
+						93,
+						107,
+						13,
+						47,
+						1,
+						15,
+						30
+					],
+			},
+			{
+					label: 'Results awaited',
+					backgroundColor: '#FA9120',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						397,
+						0,
+						681,
+						19,
+						45,
+						87,
+						226,
+						1,
+						49,
+						3,
+						0
+					],
+			},
+			{
+					label: 'Results awaited',
+					backgroundColor: '#FA2020',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						57,
+						0,
+						17,
+						0,
+						0,
+						0,
+						1,
+						0,
+						5,
+						0,
+						0
+					],
+			}
+		]
+	},
+
+	// Configuration options go here
+	options: {}
+});
+</script>
+<script type="text/javascript">
+var bedsChart = document.getElementById('myChart2').getContext('2d');
+var chart = new Chart(bedsChart, {
+	// The type of chart we want to create
+	type: 'bar',
+	// The data for our dataset
+	data: {
+			labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+			datasets: [{
+					label: 'COVID-19 Hospital Beds',
+					backgroundColor: '#fff',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						76,
+						10,
+						90,
+						15,
+						84,
+						32,
+						20,
+						26,
+						54,
+						21,
+						50
+					],
+			},
+			{
+				label: 'COVID-19 Isolation Beds',
+				backgroundColor: '#4CBCBF ',
+				borderColor: 'rgb(255, 99, 132)',
+				data: [
+					86,
+					22,
+					41,
+					5,
+					75,
+					6,
+					6,
+					11,
+					33,
+					68,
+					32
+				],
+			},
+			{
+					label: 'COVID-19 ICU Beds',
+					backgroundColor: '#9766AA',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						22,
+						2,
+						23,
+						0,
+						5,
+						2,
+						1,
+						2,
+						4,
+						4,
+						3
+					],
+			},
+      {
+					label: 'COVID-19 Ventilators',
+					backgroundColor: '#7E797F',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+            13,
+            1,
+            10,
+            1,
+            4,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+					],
+			}
+
+		]
+	},
+
+	// Configuration options go here
+	options: {
+    responsive : true,
+    maintainAspectRatio : true,
+    legend: {
+             labels: {
+                  fontColor: '#fff'
+                 }
+              },
+        title: {
+            fontColor: '#fff',
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    fontColor: '#fff'
+                },
+            }],
+          xAxes: [{
+                ticks: {
+                    fontColor: '#fff'
+                },
+            }]
+        }
+  }
+});
+</script>
+
+<script type="text/javascript">
+var bedsChart = document.getElementById('myChart3').getContext('2d');
+var chart = new Chart(bedsChart, {
+	// The type of chart we want to create
+	type: 'bar',
+	// The data for our dataset
+	data: {
+			labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+			datasets: [
+			{
+					label: 'COVID-19 PPE Availability Status',
+					backgroundColor: '#fff',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						4741,
+						801,
+						6505,
+						1250,
+						2400,
+						2300,
+						1540,
+						1583,
+						1430,
+						1430,
+						1300
+					],
+			},
+			{
+					label: 'COVID-19 N95 Availability Status',
+					backgroundColor: ' #78FC82 ',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						600,
+						306,
+						550,
+						300,
+						300,
+						300,
+						300,
+						300,
+						350,
+						350,
+						350
+					],
+			}
+
+		]
+	},
+
+	// Configuration options go here
+  options: {
+    responsive : true,
+    maintainAspectRatio : true,
+    legend: {
+             labels: {
+                  fontColor: '#fff'
+                 }
+              },
+        title: {
+            fontColor: '#fff',
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false,
+                    fontColor: '#fff'
+                },
+            }],
+          xAxes: [{
+                ticks: {
+                    fontColor: '#fff'
+                },
+            }]
+        }
+  }
+});
+</script>
+
+</script>
+
+<script type="text/javascript">
+var docsChart = document.getElementById('myChart4').getContext('2d');
+var chart = new Chart(docsChart, {
+	// The type of chart we want to create
+	type: 'bar',
+	// The data for our dataset
+	data: {
+			labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+			datasets: [{
+					label: 'COVID-19 Ventilators',
+					backgroundColor: ' #2ecc71 ',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						81,
+						26,
+						110,
+						21,
+						54,
+						36,
+						32,
+						47,
+						40,
+						42,
+						33
+					],
+			},
+
+			{
+					label: 'COVID-19 PPE Availability Status',
+					backgroundColor: '#f39c12',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						293,
+						84,
+						359,
+						55,
+						320,
+						159,
+						93,
+						196,
+						172,
+						152,
+						152
+					],
+			}
+		]
+	},
+
+	// Configuration options go here
+  options: {
+    responsive : true,
+    maintainAspectRatio : true,
+  }
+});
+</script>
+<script type="text/javascript">
+var bedsChart = document.getElementById('myChart5').getContext('2d');
+var chart = new Chart(bedsChart, {
+	// The type of chart we want to create
+	type: 'bar',
+	// The data for our dataset
+	data: {
+			labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+			datasets: [{
+					label: 'COVID-19 Facility Quarantine Total Capacity',
+					backgroundColor: '#fff',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						4643,
+						223,
+						2373,
+						204,
+						561,
+						1035,
+						1262,
+						800,
+						1003,
+						626,
+						277
+					],
+			},
+			{
+				label: 'COVID-19 Persons under Facility Quarantine',
+				backgroundColor: '#4CBCBF ',
+				borderColor: 'rgb(255, 99, 132)',
+				data: [
+					2525,
+					21,
+					1301,
+					47,
+					129,
+					233,
+					61,
+					25,
+					188,
+					35,
+					21
+				],
+			}
+		]
+	},
+
+	// Configuration options go here
+	options: {
+    responsive : true,
+    maintainAspectRatio : true,
+    legend: {
+             labels: {
+                  fontColor: '#fff'
+                 }
+              },
+        title: {
+            fontColor: '#fff',
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    fontColor: '#fff'
+                },
+            }],
+          xAxes: [{
+                ticks: {
+                    fontColor: '#fff'
+                },
+            }]
+        }
+  }
+});
+</script>
+<script type="text/javascript">
+var bedsChart = document.getElementById('myChart9').getContext('2d');
+var chart = new Chart(bedsChart, {
+	// The type of chart we want to create
+	type: 'bar',
+	// The data for our dataset
+	data: {
+			labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+			datasets: [{
+					label: 'COVID-19 Hospital Beds',
+					backgroundColor: '#fff',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+						76,
+						10,
+						90,
+						15,
+						84,
+						32,
+						20,
+						26,
+						54,
+						21,
+						50
+					],
+			},
+			{
+				label: 'COVID-19 Active Cases',
+				backgroundColor: '#000 ',
+				borderColor: 'rgb(255, 99, 132)',
+				data: [
+					57,
+					0,
+					17,
+					0,
+					0,
+					0,
+					1,
+					0,
+					5,
+					0,
+					0
+				],
+			}
+		]
+	},
+
+	// Configuration options go here
+	options: {
+    responsive : true,
+    maintainAspectRatio : true,
+    legend: {
+             labels: {
+                  fontColor: '#fff'
+                 }
+              },
+        title: {
+            fontColor: '#fff',
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    fontColor: '#fff'
+                },
+            }],
+          xAxes: [{
+                ticks: {
+                    fontColor: '#fff'
+                },
+            }]
+        }
+  }
+});
+</script>
+
+<!-- <script type="text/javascript">
+new Chart(document.getElementById("myChart9"), {
+    type: 'bar',
+    data: {
+      labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+
+      datasets: [{
+        label: "Total persons under home Quarantine",
+        backgroundColor: '#fff',
+        data: [
+          361,
+          22,
+          12,
+          0,
+          4,
+          2,
+          54,
+          76,
+          67,
+          70,
+          20
+        ]
+      },{
+          label: "Total persons under Facility Quarantine",
+          backgroundColor: '#8AF8FF',
+          data: [
+            2525,
+            21,
+            1301,
+            47,
+            129,
+            233,
+            61,
+            25,
+            188,
+            35,
+            21
+          ]
+        }
+    ]},
+    options: {
+      legend: {
+               labels: {
+                    fontColor: '#fff'
+                   }
+                },
+      title: {
+        display: true,
+      },
+      responsive : true,
+      responsive: true,
+					scales: {
+						xAxes: [{
+							stacked: true,
+              ticks: {
+                  beginAtZero:true,
+                  fontColor: '#fff'
+                }
+						}],
+						yAxes: [{
+							stacked: true,
+              ticks: {
+                  beginAtZero:true,
+                  fontColor: '#fff'
+                }
+						}]
+					}
+    }
+});
+</script> -->
+
+<script type="text/javascript">
+new Chart(document.getElementById("myChart10"), {
+    type: 'bar',
+    data: {
+      labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+
+      datasets: [{
+        label: "Oxygen A Type",
+        backgroundColor: '#2685C5',
+        data: [
+          2,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },{
+          label: "Nitrous B-Type",
+          backgroundColor: '#26C57F',
+          data: [
+            106,
+            55,
+            288,
+            34,
+            70,
+            87,
+            36,
+            72,
+            103,
+            41,
+            45
+          ]
+        },
+        {
+            label: "Jumbo D-Type",
+            backgroundColor: '#fa681e',
+            data: [
+              5,
+              1,
+              25,
+              0,
+              19,
+              3,
+              0,
+              1,
+              0,
+              0,
+              0
+            ]
+          }
+    ]},
+    options: {
+      title: {
+        display: true,
+      },
+      responsive : true,
+      responsive: true,
+					scales: {
+						xAxes: [{
+							stacked: true,
+						}],
+						yAxes: [{
+							stacked: true
+						}]
+					}
+    }
+});
+</script>
+
+
+
+<script type="text/javascript">
+new Chart(document.getElementById("myChart11"), {
+    type: 'pie',
+    data: {
+      labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+
+      datasets: [{
+        label: "Total persons completed Facility Quarantine",
+        backgroundColor: ["#3e98cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",'#E74C3C','#F1C40F','#283747','#4A235A','#117A65','#2E4053'],
+        data: [
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          
+        ]
+      }
+    ]},
+    options: {
+      title: {
+        display: true,
+      },
+      responsive : true,
+      maintainAspectRatio : true,
+    }
+});
+</script>
+<script type="text/javascript">
+new Chart(document.getElementById("myChart12"), {
+    type: 'pie',
+    data: {
+      labels: ['Dimapur', 'Kiphire', 'Kohima', 'Longleng', 'Mokokchung', 'Mon', 'Peren','Phek','Tuensang','Wokha','Zunheboto'],
+
+      datasets: [{
+        label: "Total persons under Facility Quarantine",
+        backgroundColor: ["#3e98cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850",'#E74C3C','#F1C40F','#283747','#4A235A','#117A65','#2E4053'],
+        data: [
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          ,
+          
+        ]
+      }
+    ]},
+    options: {
+      title: {
+        display: true,
+      },
+      responsive : true,
+      maintainAspectRatio : true,
+    }
+});
+</script>
+
+
+<script type="text/javascript">
+new Chart(document.getElementById("myChart6"), {
+type: 'line',
+data: {
+  labels: [
+        '17-04-2020',
+        '18-04-2020',
+        '19-04-2020',
+        '20-04-2020',
+        '21-04-2020',
+        '22-04-2020',
+        '23-04-2020',
+        '24-04-2020',
+        '25-04-2020',
+        '26-04-2020',
+        '27-04-2020',
+        '28-04-2020',
+        '29-04-2020',
+        '30-04-2020',
+        '01-05-2020',
+        '02-05-2020',
+        '03-05-2020',
+        '04-05-2020',
+        '05-05-2020',
+        '06-05-2020',
+        '07-05-2020',
+        '08-05-2020',
+        '09-05-2020',
+        '10-05-2020',
+        '11-05-2020',
+        '12-05-2020',
+        '13-05-2020',
+        '14-05-2020',
+        '15-05-2020',
+        '16-05-2020',
+        '17-05-2020',
+        '18-05-2020',
+        '19-05-2020',
+        '20-05-2020',
+        '21-05-2020',
+        '22-05-2020',
+        '23-05-2020',
+        '24-05-2020',
+        '25-05-2020',
+        '26-05-2020',
+        '27-05-2020',
+        '28-05-2020',
+        '29-05-2020',
+        '30-05-2020',
+        '31-05-2020',
+        '01-06-2020',
+        '02-06-2020',
+        '03-06-2020',
+        '04-06-2020',
+      ],
+  datasets: [{
+      data: [
+                194,
+                296,
+                296,
+                321,
+                419,
+                419,
+                481,
+                487,
+                487,
+                487,
+                496,
+                504,
+                509,
+                512,
+                516,
+                525,
+                535,
+                539,
+                554,
+                563,
+                579,
+                598,
+                641,
+                655,
+                668,
+                675,
+                681,
+                681,
+                696,
+                699,
+                700,
+                705,
+                722,
+                729,
+                738,
+                742,
+                762,
+                777,
+                824,
+                857,
+                896,
+                966,
+                1022,
+                1087,
+                1152,
+                1191,
+                1295,
+                1409,
+                1531,
+              ],
+      label: "Dimapur",
+      borderColor: "#145A32",
+      fill: false
+    },
+    {
+        data: [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    18,
+                    18,
+                    18,
+                    18,
+                    18,
+                    18,
+                    18,
+                    18,
+                    18,
+                    18,
+                  ],
+        label: "Kiphire",
+        borderColor: "#F08080",
+        fill: false
+      },
+      {
+          data: [
+                        72,
+                        88,
+                        88,
+                        93,
+                        93,
+                        99,
+                        101,
+                        101,
+                        101,
+                        101,
+                        106,
+                        106,
+                        106,
+                        112,
+                        119,
+                        119,
+                        119,
+                        139,
+                        140,
+                        170,
+                        177,
+                        177,
+                        177,
+                        177,
+                        177,
+                        177,
+                        178,
+                        180,
+                        184,
+                        188,
+                        222,
+                        226,
+                        226,
+                        226,
+                        233,
+                        236,
+                        243,
+                        259,
+                        470,
+                        473,
+                        485,
+                        579,
+                        660,
+                        784,
+                        969,
+                        1061,
+                        1264,
+                        1289,
+                        1420,
+                      ],
+          label: "Kohima",
+          borderColor: "#EC7063",
+          fill: false
+        },
+        {
+            data: [
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            26,
+                            26,
+                            28,
+                            28,
+                            28,
+                            28,
+                            28,
+                            47,
+                          ],
+            label: "Longleng",
+            borderColor: "#34495E",
+            fill: false
+          },
+          {
+              data: [
+                                1,
+                                1,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                2,
+                                4,
+                                4,
+                                5,
+                                6,
+                                6,
+                                63,
+                                52,
+                                113,
+                                132,
+                                132,
+                                132,
+                                138,
+                                138,
+                                138,
+                              ],
+              label: "Mokokchung",
+              borderColor: "#F1C40F",
+              fill: false
+            },
+            {
+                data: [
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    4,
+                                    6,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    8,
+                                    33,
+                                    36,
+                                    36,
+                                    39,
+                                    44,
+                                    45,
+                                    24,
+                                    61,
+                                    148,
+                                    190,
+                                    192,
+                                    198,
+                                    199,
+                                    199,
+                                  ],
+                label: "Mon",
+                borderColor: "#D35400",
+                fill: false
+              },
+              {
+                  data: [
+                                        0,
+                                        0,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        11,
+                                        38,
+                                        11,
+                                        58,
+                                        11,
+                                        13,
+                                        87,
+                                        162,
+                                        222,
+                                        239,
+                                        239,
+                                      ],
+                  label: "Peren",
+                  borderColor: "#52BE80",
+                  fill: false
+                },
+                {
+                    data: [
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            1,
+                                            8,
+                                            28,
+                                            28,
+                                            28,
+                                            48,
+                                            48,
+                                            48,
+                                            48,
+                                            48,
+                                            48,
+                                            49,
+                                          ],
+                    label: "Phek",
+                    borderColor: "#5DADE2",
+                    fill: false
+                  },
+                  {
+                      data: [
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                0,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                7,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                1,
+                                                50,
+                                              ],
+                      label: "Tuensang",
+                      borderColor: "#A569BD",
+                      fill: false
+                    },
+                    {
+                        data: [
+                                                    2,
+                                                    2,
+                                                    2,
+                                                    2,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    7,
+                                                    705,
+                                                    700,
+                                                    7,
+                                                    7,
+                                                    15,
+                                                    15,
+                                                    18,
+                                                  ],
+                        label: "Wokha",
+                        borderColor: "#85C1E9",
+                        fill: false
+                      },
+                      {
+                          data: [
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        6,
+                                                        30,
+                                                        30,
+                                                        30,
+                                                        30,
+                                                        30,
+                                                        30,
+                                                        30,
+                                                      ],
+                          label: "Zunheboto",
+                          borderColor: "#BDC3C7",
+                          fill: false
+                        }
+
+  ]
+},
+options: {
+  title: {
+    display: true,
+    text: 'District-wise Testing Trends'
+  },
+  responsive : true,
+  maintainAspectRatio : true,
+}
+});
+</script>
+
+<script type="text/javascript">
+var ctx = document.getElementById('caseChart').getContext('2d');
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data:{
+    labels: ['24-05-2020','25-05-2020','26-05-2020','27-05-2020','28-05-2020','29-05-2020','30-05-2020','31-05-2020','01-06-2020','02-06-2020','03-06-2020','04-06-2020',],
+    datasets: [{
+				label: 'Confirmed Cases',
+				backgroundColor: '#fff',
+				borderColor: '#fff',
+				fill: false,
+				data: [0, 3, 4, 9, 18, 25, 36, 43, 43, 49, 58, 80, ],
+			}, {
+				label: 'Deaths',
+				backgroundColor: '#fd3069',
+				borderColor: '#fd3069',
+				fill: false,
+				data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ],
+			}]
+  },
+  options: {
+    legend: {
+             labels: {
+                  fontColor: '#fff'
+                 }
+              },
+        title: {
+            fontColor: '#fff',
+        },
+			responsive: true,
+			title: {
+				display: false,
+				text: 'COVID-19 STATUS : NAGALAND'
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+          ticks: {
+              beginAtZero:true,
+              fontColor: '#fff'
+            }
+				}],
+				yAxes: [{
+					display: true,
+          ticks: {
+              beginAtZero:true,
+              fontColor: '#fff'
+            }
+				}]
+			}
+		}
+});
+</script>
+<script type="text/javascript">
+var ctx = document.getElementById('newCaseChart').getContext('2d');
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data:{
+    labels: ['24-05-2020','25-05-2020','26-05-2020','27-05-2020','28-05-2020','29-05-2020','30-05-2020','31-05-2020','01-06-2020','02-06-2020','03-06-2020','04-06-2020',],
+    datasets: [{
+				label: 'New Cases',
+				backgroundColor: '#fff',
+				borderColor: '#fff',
+				fill: false,
+				data: [0, 3, 1, 5, 9, 7, 11, 7, 0, 6, 9, 22, ],
+			}]
+    },
+  options: {
+    legend: {
+             labels: {
+                  fontColor: '#fff'
+                 }
+              },
+        title: {
+            fontColor: '#fff',
+        },
+			responsive: true,
+			title: {
+				display: false,
+				text: 'COVID-19 STATUS : NAGALAND'
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+          ticks: {
+              beginAtZero:true,
+              fontColor: '#fff'
+            }
+				}],
+				yAxes: [{
+					display: true,
+          ticks: {
+              beginAtZero:true,
+              fontColor: '#fff'
+            }
+				}]
+			}
+		}
+});
+</script>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <nav class="float-left">
+            <ul>
+              <li>
+                <a href="https://covid19.nagaland.gov.in/">
+                  COVID19 WARROOM
+                </a>
+              </li>
+
+              <li>
+                <a href="https://covid19.nagaland.gov.in/contact-main">
+                  Contacts
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="copyright float-right">
+            <span style="font-size:14px">
+            &copy;
+            <script>
+              document.write(new Date().getFullYear())
+            </script>,<b> COVID19 WarRoom </b>: Government of Nagaland.</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+
+  <!-- <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+
+        $sidebar_img_container = $sidebar.find('.sidebar-background');
+
+        $full_page = $('.full-page');
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+
+        window_width = $(window).width();
+
+        fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
+
+        if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
+          if ($('.fixed-plugin .dropdown').hasClass('show-dropdown')) {
+            $('.fixed-plugin .dropdown').addClass('open');
+          }
+
+        }
+
+        $('.fixed-plugin a').click(function(event) {
+          // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .active-color span').click(function() {
+          $full_page_background = $('.full-page-background');
+
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data-color', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data-color', new_color);
+          }
+        });
+
+        $('.fixed-plugin .background-color .badge').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('background-color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data-background-color', new_color);
+          }
+        });
+
+        $('.fixed-plugin .img-holder').click(function() {
+          $full_page_background = $('.full-page-background');
+
+          $(this).parent('li').siblings().removeClass('active');
+          $(this).parent('li').addClass('active');
+
+
+          var new_image = $(this).find("img").attr('src');
+
+          if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+            $sidebar_img_container.fadeOut('fast', function() {
+              $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+              $sidebar_img_container.fadeIn('fast');
+            });
+          }
+
+          if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+            $full_page_background.fadeOut('fast', function() {
+              $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+              $full_page_background.fadeIn('fast');
+            });
+          }
+
+          if ($('.switch-sidebar-image input:checked').length == 0) {
+            var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
+            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+            $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+            $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
+          }
+        });
+
+        $('.switch-sidebar-image input').change(function() {
+          $full_page_background = $('.full-page-background');
+
+          $input = $(this);
+
+          if ($input.is(':checked')) {
+            if ($sidebar_img_container.length != 0) {
+              $sidebar_img_container.fadeIn('fast');
+              $sidebar.attr('data-image', '#');
+            }
+
+            if ($full_page_background.length != 0) {
+              $full_page_background.fadeIn('fast');
+              $full_page.attr('data-image', '#');
+            }
+
+            background_image = true;
+          } else {
+            if ($sidebar_img_container.length != 0) {
+              $sidebar.removeAttr('data-image');
+              $sidebar_img_container.fadeOut('fast');
+            }
+
+            if ($full_page_background.length != 0) {
+              $full_page.removeAttr('data-image', '#');
+              $full_page_background.fadeOut('fast');
+            }
+
+            background_image = false;
+          }
+        });
+
+        $('.switch-sidebar-mini input').change(function() {
+          $body = $('body');
+
+          $input = $(this);
+
+          if (md.misc.sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            md.misc.sidebar_mini_active = false;
+
+            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
+
+          } else {
+
+            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar('destroy');
+
+            setTimeout(function() {
+              $('body').addClass('sidebar-mini');
+
+              md.misc.sidebar_mini_active = true;
+            }, 300);
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+
+        });
+      });
+    });
+  </script> -->
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
+    });
+  </script>
+  <script src="https://covid19.nagaland.gov.in/js/jquery.Cookie.js"></script>
+
+  <script src="https://covid19.nagaland.gov.in/js/fontAc.js"></script>
+
+  <script type="text/javascript">
+  $(document).ready(function(){
+      var conState = "0";
+      if($.cookie('conState') == '0' || 'conState' == null){
+        $("*").css("background-color","black");
+        $("*").css("color","white");
+        conState = "1";
+      }
+      $("#hi-contrast").click(function(){
+      if(conState=="0"){
+        $("*").css("background-color","black");
+        $("*").css("color","white");
+        conState = "1";
+        $.cookie('conState' ,'0');
+      }else{
+        $("*").css("background-color","");
+        $("*").css("color","");
+        conState = "0";
+        $.cookie('conState' ,'1');
+      }
+    });
+  });
+  </script>
+</body>
+
+</html>

@@ -217,15 +217,64 @@ def PBGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
+	secondRunArray = []
+	masterColumnList = ""
+	masterColumnArray = []
+	splitArray = []
 	with open("pb.txt", "r") as upFile:
 		for line in upFile:
-			linesArray = line.split(',')[0].split(',')
+			splitArray = re.sub('\n', '', line.strip()).split('|')
+			linesArray = splitArray[0].split(',')
+			columnList = splitArray[1].split(',')
+
+			if len(linesArray) != 5:
+				secondRunArray.append(linesArray)
+				secondRunArray.append(columnList)
+				continue
+			else:
+				if len(masterColumnList) == 0:
+					masterColumnList = splitArray[1].strip()
+				elif masterColumnList != splitArray[1].strip():
+					print("Issue with " + line + "columns don't match. Ignoring and continuing")
+					continue
+				else:
+					masterColumnArray = columnList
+			if linesArray[0].strip() == "Total":
+				continue
 			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0]
+			districtDictionary['districtName'] = linesArray[0].strip()
 			districtDictionary['confirmed'] = int(linesArray[1])
 			districtDictionary['recovered'] = int(linesArray[3])
 			districtDictionary['deceased'] = int(linesArray[4])
 			districtArray.append(districtDictionary)
+
+	correctionIndex = ""
+	for index, data in enumerate(secondRunArray):
+		correctionIndex = ""
+		if index % 2 == 1:
+			rowValues = secondRunArray[index - 1]
+			for masterIndex, masterValue in enumerate(masterColumnArray):
+				try:
+					if data[masterIndex].strip() != masterValue.strip():
+						correctionIndex += "," + str(masterIndex) if len(correctionIndex) != 0 else str(masterIndex) 
+						rowValues.insert(masterIndex, -999)
+						data.insert(masterIndex, masterValue.strip())
+				except IndexError:
+					data.insert(masterIndex, masterValue.strip())
+					rowValues.insert(masterIndex, -999)
+
+
+			if len(rowValues) != 5 or len(data) != 5:
+				print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
+				continue
+
+			districtDictionary = {}
+			districtDictionary['districtName'] = rowValues[0].strip()
+			districtDictionary['confirmed'] = int(rowValues[1])
+			districtDictionary['recovered'] = int(rowValues[3])
+			districtDictionary['deceased'] = int(rowValues[4])
+			districtArray.append(districtDictionary)
+			print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
 
 	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
 			
