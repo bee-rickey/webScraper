@@ -44,20 +44,24 @@ class DeltaCalculator:
 		siteTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
 
 		for districtDetails in stateDataFromStateDashboard:
-			districtName = nameMapping[districtDetails['districtName']] if districtDetails['districtName'] in nameMapping else districtDetails['districtName']
-			outputString = ""
+			try:
+				districtName = nameMapping[districtDetails['districtName']] if districtDetails['districtName'] in nameMapping else districtDetails['districtName']
+				outputString = ""
 
-			stateTotalFromStateDashboard['confirmed'] += districtDetails['confirmed'] if districtDetails['confirmed'] != -999 else 0
-			stateTotalFromStateDashboard['recovered'] += districtDetails['recovered'] if districtDetails['recovered'] != -999 else 0
-			stateTotalFromStateDashboard['deceased'] += districtDetails['deceased'] if districtDetails['deceased'] != -999 else 0
+				stateTotalFromStateDashboard['confirmed'] += districtDetails['confirmed'] if districtDetails['confirmed'] != -999 else 0
+				stateTotalFromStateDashboard['recovered'] += districtDetails['recovered'] if districtDetails['recovered'] != -999 else 0
+				stateTotalFromStateDashboard['deceased'] += districtDetails['deceased'] if districtDetails['deceased'] != -999 else 0
 
-			siteTotalFromStateDashboard['confirmed'] += stateData[districtName]['confirmed']
-			siteTotalFromStateDashboard['recovered'] += stateData[districtName]['recovered']
-			siteTotalFromStateDashboard['deceased'] += stateData[districtName]['deceased']
+				siteTotalFromStateDashboard['confirmed'] += stateData[districtName]['confirmed']
+				siteTotalFromStateDashboard['recovered'] += stateData[districtName]['recovered']
+				siteTotalFromStateDashboard['deceased'] += stateData[districtName]['deceased']
 
-			confirmedDelta = districtDetails['confirmed'] - stateData[districtName]['confirmed'] if districtDetails['confirmed'] != -999 else "NA"
-			recoveredDelta = districtDetails['recovered'] - stateData[districtName]['recovered'] if districtDetails['recovered'] != -999 else "NA"
-			deceasedDelta = districtDetails['deceased'] - stateData[districtName]['deceased'] if districtDetails['deceased'] != -999 else "NA"
+				confirmedDelta = districtDetails['confirmed'] - stateData[districtName]['confirmed'] if districtDetails['confirmed'] != -999 else "NA"
+				recoveredDelta = districtDetails['recovered'] - stateData[districtName]['recovered'] if districtDetails['recovered'] != -999 else "NA"
+				deceasedDelta = districtDetails['deceased'] - stateData[districtName]['deceased'] if districtDetails['deceased'] != -999 else "NA"
+			except KeyError:
+				print("ERROR: Failed to find key mapping for district: {}, state: {}".format(districtName, stateName))
+				continue
 
 			if not options:
 				outputString = districtName + ", " + str(confirmedDelta) + ", " + str(recoveredDelta) + ", " + str(deceasedDelta) 

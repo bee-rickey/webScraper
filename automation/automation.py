@@ -30,9 +30,12 @@ def fetchData(stateName):
 			eval(metaObject.stateCode + "GetData()")
 			print("Dashboard url: " + metaObject.url)
 	else:
-		logging.info("Calling delta calculator for: " + metaDictionary[stateName].stateCode)
-		eval(metaDictionary[stateName].stateCode + "GetData()")
-		print("Dashboard url: " + metaDictionary[stateName].url)
+		try:
+			logging.info("Calling delta calculator for: " + metaDictionary[stateName].stateCode)
+			eval(metaDictionary[stateName].stateCode + "GetData()")
+			print("Dashboard url: " + metaDictionary[stateName].url)
+		except KeyError:
+			print("No entry found for state {} in automation.meta file".format(stateName))
 
 
 def loadMetaData():
@@ -248,7 +251,6 @@ def RJGetData():
 			districtDictionary['deceased'] = -999
 			districtArray.append(districtDictionary)
 
-	print(districtArray)
 	deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
 
 def PBGetData():
