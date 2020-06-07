@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from deltaCalculator import DeltaCalculator
 import requests
+import pdftotext
 import sys
 import json
 import os
@@ -111,6 +112,7 @@ def RJGetData():
 		districtDictionary['deceased'] = -999
 		districtArray.append(districtDictionary)
 
+	print(districtArray)
 	deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
 
 
@@ -213,6 +215,42 @@ def BRGetData():
 
 	deltaCalculator.getStateDataFromSite("Bihar", districtArray, option)
 
+def JHGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	with open("jh.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split('|')[0].split(',')
+			if len(linesArray) != 7:
+				print(linesArray)
+				continue;
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0].strip()
+			districtDictionary['confirmed'] = int(linesArray[4]) + int(linesArray[5])
+			districtDictionary['recovered'] = -999
+			districtDictionary['deceased'] = -999
+			districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
+
+def RJGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	with open("rj.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split('|')[0].split(',')
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0].strip().title()
+			districtDictionary['confirmed'] = int(linesArray[3])
+			districtDictionary['recovered'] = int(linesArray[4])
+			districtDictionary['deceased'] = -999
+			districtArray.append(districtDictionary)
+
+	print(districtArray)
+	deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
+
 def PBGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -282,14 +320,18 @@ def TNGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	with open("tn.txt", "r") as upFile:
+	convertTnPDFToCSV()
+	with open("tn.csv", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split(',')
+			if len(linesArray) != 4:
+				print("Issue with {}".format(linesArray))
+				continue
 			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0]
+			districtDictionary['districtName'] = linesArray[0].strip()
 			districtDictionary['confirmed'] = int(linesArray[1])
 			districtDictionary['recovered'] = int(linesArray[2])
-			districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+			districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 			districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
@@ -430,6 +472,45 @@ def LAGetData():
 
 	deltaCalculator.getStateDataFromSite("Ladakh", districtArray, option)
     	
+
+
+def convertTnPDFToCSV():
+	try:
+		with open("tn.pdf", "rb") as f:
+				pdf = pdftotext.PDF(f)
+	except FileNotFoundError:
+		print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
+		return
+
+	tnTextFile = open("tn.pdf.txt", "w")
+	pid = input("Enter district page:")
+	print(pdf[int(pid)], file = tnTextFile)
+	tnTextFile.close()
+
+	tnFile = open('tn.pdf.txt', 'r') 
+	lines = tnFile.readlines() 
+	tnOutputFile = open('tn.csv', 'w') 
+
+	startedReadingDistricts = False
+	for line in lines:
+		if 'Ariyalur' in line:
+			startedReadingDistricts = True
+		if 'Airport' in line:
+			startedReadingDistricts = False
+
+		if startedReadingDistricts == False:
+			continue
+		line = re.sub(' +', ',', re.sub("^ ", '', re.sub(',', '', line)))
+		linesArray = line.split(',')
+
+		if len(linesArray) != 6:
+			linesArray.insert(5, "0\n")
+		linesArray[5] = re.sub('\#', '', re.sub('\*', '', str(linesArray[5])))
+
+		print("{}, {}, {}, {}".format(linesArray[1], linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile, end = " ")
+
+	tnOutputFile.close()
+	tnTextFile.close()
 
 def main():
 
