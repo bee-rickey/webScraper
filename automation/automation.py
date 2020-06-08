@@ -151,7 +151,7 @@ def UPGetData():
 	masterColumnList = ""
 	masterColumnArray = []
 	splitArray = []
-	with open("up1.txt", "r") as upFile:
+	with open("up.txt", "r") as upFile:
 		for line in upFile:
 			splitArray = re.sub('\n', '', line.strip()).split('|')
 			linesArray = splitArray[0].split(',')
@@ -206,7 +206,7 @@ def BRGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	with open("bihar.txt", "r") as upFile:
+	with open("br.txt", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split('|')[0].split(',')
 			districtDictionary = {}
@@ -571,8 +571,13 @@ def convertTnPDFToCSV():
 
 		if startedReadingDistricts == False:
 			continue
-		line = re.sub(' +', ',', re.sub("^ ", '', re.sub(',', '', line)))
+		line = re.sub(' +', ',', re.sub("^ +", '', re.sub(',', '', line)))
 		linesArray = line.split(',')
+
+		print(linesArray)
+
+		if len(linesArray) < 5:
+			continue
 
 		if len(linesArray) != 6:
 			linesArray.insert(5, "0\n")
