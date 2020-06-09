@@ -9,11 +9,14 @@ Comment lines in automation.meta that do not need to be run.
   ./automation.py "state name" -- to get all details for that state.  
   ./automation.py "state name" "detailed" -- to get state details based on C, R, D categories.  
 
-Automation support:
-TN, AP, OR, AS, TR, CH, PY, LA, GJ, MH
+Automation support through URL fetch/scraping:
+AP, OR, AS, TR, CH, PY, LA, GJ, MH
 
 Automation through OCR:
 BR, UP, RJ, PB
+
+Automation support through pdf:
+HR, PB, TN
 
 Future support:
 KA, KL, MP
