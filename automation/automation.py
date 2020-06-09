@@ -225,7 +225,7 @@ def JHGetData():
 	with open("jh.txt", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split('|')[0].split(',')
-			if len(linesArray) != 7:
+			if len(linesArray) != 9:
 				print(linesArray)
 				continue;
 			districtDictionary = {}
@@ -244,6 +244,7 @@ def RJGetData():
 	with open("rj.txt", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split('|')[0].split(',')
+			print(linesArray)
 			districtDictionary = {}
 			districtDictionary['districtName'] = linesArray[0].strip().title()
 			districtDictionary['confirmed'] = int(linesArray[3])
@@ -324,7 +325,7 @@ def PBGetData():
 	districtDictionary = {}
 	districtArray = []
 	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Amritsar", "Total")
-	with open("pb.csv", "r") as upFile:
+	with open("pb.txt", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split(',')
 			if len(linesArray) != 5:
