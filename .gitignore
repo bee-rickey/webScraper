@@ -7,3 +7,9 @@ automation/orsite.csv
 automation/deltaCalculator.log
 automation/automated.txt
 automation/__pycache__/deltaCalculator.cpython-37.pyc
+automation/br.txt
+.DS_Store
+automation/HR.txt
+automation/hr.pdf.txt
+automation/hr.pdf
+automation/hr.csv

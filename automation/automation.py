@@ -339,6 +339,26 @@ def PBGetData():
 			districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
+
+def HRGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	readFileFromURL(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
+	with open("hr.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split(',')
+			if len(linesArray) != 4:
+				print("Issue with {}".format(linesArray))
+				continue
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0].strip()
+			districtDictionary['confirmed'] = int(linesArray[1])
+			districtDictionary['recovered'] = int(linesArray[2])
+			districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+			districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Haryana", districtArray, option)
 			
 def TNGetData():
 	linesArray = []
@@ -510,7 +530,34 @@ def PBFormatLine(line):
 		else:
 			outputString += "," + str(data)
 	return outputString
+
+def HRFormatLine(line):
+	line = re.sub(' +', ',', re.sub('^ +', '', line))
+
+	linesArray = line.split(',')
+
+	if len(linesArray) > 1 and linesArray[1] == "Charkhi":
+		linesArray.remove("Dadri")
+		linesArray[1] = "Charkhi Dadri"
+
+	if len(linesArray) != 9:
+		print("Ignoring: {}".format(linesArray))
+		return "\n"
 	
+	recovery = 0
+	if '[' in linesArray[4]:
+		recovery = linesArray[4].split('[')[0]
+	else:
+		recovery = linesArray[4]
+
+	deaths = 0
+	if '[' in linesArray[5]:
+		deaths = linesArray[5].split('[')[0]
+	else:
+		deaths = linesArray[5]
+
+	outputString = linesArray[1] + "," + linesArray[3] + "," + str(recovery) + "," + str(deaths) + "\n"
+	return outputString
 
 def readFileFromURL(url, stateName, startKey, endKey):
 	r = requests.get(url, allow_redirects=True)
