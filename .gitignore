@@ -17,3 +17,6 @@ automation/hr.csv
 *.csv
 *.pdf
 *.jpg
+*.png
+automation/ocr/ocrconfig.meta
+automation/ocr/ocrconfig.meta

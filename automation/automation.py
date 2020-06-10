@@ -182,6 +182,7 @@ def UPGetData():
 		correctionIndex = ""
 		if index % 2 == 1:
 			rowValues = secondRunArray[index - 1]
+			print("Trying to correct: {}".format(rowValues))
 			for colIndex, colValue in enumerate(data):
 				if colValue.strip() != masterColumnArray[colIndex].strip():
 					correctionIndex += "," + str(colIndex) if len(correctionIndex) != 0 else str(colIndex) 
@@ -344,7 +345,7 @@ def KAGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL('', "Karnataka", "Yadagiri", "Total")
+	readFileFromURL('', "Karnataka", "Bengaluru Urban", "Total")
 	with open("ka.txt", "r") as upFile:
 		for line in upFile:
 			linesArray = line.split(',')

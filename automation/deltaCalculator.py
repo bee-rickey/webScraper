@@ -6,10 +6,22 @@ import sys
 logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 class DeltaCalculator:
-	def __init__(self, stateName = ''):
-		self.covidDashboardData = requests.request("get", "https://api.covid19india.org/state_district_wise.json").json()
+	def __init__(self, lightLoad = False):
+		if lightLoad == False:
+			self.covidDashboardData = requests.request("get", "https://api.covid19india.org/state_district_wise.json").json()
 		self.nameMapping = {}
 		self.loadMetaData()
+
+	def getNameMapping(self, stateName, districtName):
+		mappedDistrict = ""
+		try:
+			nameMapping = self.nameMapping[stateName]
+			mappedDistrict = nameMapping[districtName]
+		except KeyError:
+			mappedDistrict = districtName
+
+		return mappedDistrict
+
 
 	def loadMetaData(self):
 		with open("nameMapping.meta", "r") as metaFile:
