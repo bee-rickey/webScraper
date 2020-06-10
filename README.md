@@ -10,7 +10,7 @@ Comment lines in automation.meta that do not need to be run.
   ./automation.py "state name" "detailed" -- to get state details based on C, R, D categories.  
 
 Automation support through URL fetch/scraping:
-AP, OR, AS, TR, CH, PY, LA, GJ, MH
+AP, OR, AS, TR, CH, PY, LA, GJ, MH, KA - district numbers only
 
 Automation through OCR:
 BR, UP, RJ, PB
@@ -18,5 +18,6 @@ BR, UP, RJ, PB
 Automation support through pdf:
 HR, PB, TN
 
+
 Future support:
-KA, KL, MP
+KL, MP
