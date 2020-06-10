@@ -340,6 +340,26 @@ def PBGetData():
 
 	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
 
+def KAGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	readFileFromURL('', "Karnataka", "Yadagiri", "Total")
+	with open("ka.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split(',')
+			if len(linesArray) != 8:
+				print("Issue with {}".format(linesArray))
+				continue
+			districtDictionary = {}
+			districtDictionary['districtName'] = linesArray[0].strip()
+			districtDictionary['confirmed'] = int(linesArray[2])
+			districtDictionary['recovered'] = int(linesArray[4])
+			districtDictionary['deceased'] = int(linesArray[6]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
+			districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Karnataka", districtArray, option)
+
 def HRGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -516,9 +536,22 @@ def LAGetData():
 
 	deltaCalculator.getStateDataFromSite("Ladakh", districtArray, option)
     	
-
 def PBFormatLine(line):
 	line = re.sub(' +', ',', re.sub("^ +", '', line))
+	linesArray = line.split(',')
+
+	outputString = ""
+	for index, data in enumerate(linesArray):
+		if index == 0:
+			continue
+		if is_number(data) == False:
+			outputString = outputString + " " + data if len(outputString) != 0 else data
+		else:
+			outputString += "," + str(data)
+	return outputString
+
+def KAFormatLine(line):
+	line = re.sub(' +', ',', re.sub('^ +', '', line))
 	linesArray = line.split(',')
 
 	outputString = ""
@@ -560,9 +593,10 @@ def HRFormatLine(line):
 	return outputString
 
 def readFileFromURL(url, stateName, startKey, endKey):
-	r = requests.get(url, allow_redirects=True)
 	stateFileName = metaDictionary[stateName].stateCode 
-	open(stateFileName + ".pdf", 'wb').write(r.content)
+	if len(url) > 0:
+		r = requests.get(url, allow_redirects=True)
+		open(stateFileName + ".pdf", 'wb').write(r.content)
 
 	with open(stateFileName + ".pdf", "rb") as f:
 		pdf = pdftotext.PDF(f)
@@ -579,7 +613,6 @@ def readFileFromURL(url, stateName, startKey, endKey):
 	startedReadingDistricts = False
 	outputLines = []
 	for line in lines:
-		deaths = True
 		if startKey in line:
 			startedReadingDistricts = True
 		if endKey in line:

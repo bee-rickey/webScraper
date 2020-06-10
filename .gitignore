@@ -13,3 +13,7 @@ automation/HR.txt
 automation/hr.pdf.txt
 automation/hr.pdf
 automation/hr.csv
+*.txt
+*.csv
+*.pdf
+*.jpg

@@ -34,7 +34,7 @@ def detect_text(path):
 
 
 def main():
-	os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "../visionapi.json"
+	os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "../../../visionapi.json"
 	path = fileName
 
 # Do OCR
