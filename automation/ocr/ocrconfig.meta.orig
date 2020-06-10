@@ -1,0 +1,5 @@
+startingText:@@startingtext@@
+enableTranslation:@@translationvalue@@
+translationFile:@@statename@@_districts.meta
+yInterval:0
+xInterval:0
