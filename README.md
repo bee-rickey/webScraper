@@ -12,7 +12,7 @@ Comment lines in automation.meta that do not need to be run.
 
 OCR:  
   cd ocr
-  ./ocr.sh <Image Name> <State Name> [Starting String] <IsTranslationRequired>
+  ./ocr.sh "Image Name" "State Name" "Starting String" "IsTranslationRequired"
 
 **Automation support through URL fetch/scraping:**  
 AP, OR, AS, TR, CH, PY, LA, GJ, MH, RJ (_RJ has stopped giving tables on their site_).
@@ -26,4 +26,4 @@ UP, RJ, PB, BR (Daily updates and bulletins)
 HR, PB, TN
 
 **Future support:**
-KL (url), MP (pdf + ocr)
+KL (url), MP (pdf + ocr), HR (ocr)
