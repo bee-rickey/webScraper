@@ -7,7 +7,7 @@ fi
 echo -e "\n********************* If you want to see the ocr data, cat output.txt *********************\n"
 
 echo -e "\n******** Calling google vision api *******"
-#python3 ocr_vision.py $1 > bounds.txt
+python3 ocr_vision.py $1 > bounds.txt
 
 stateCode=""
 case $2 in
