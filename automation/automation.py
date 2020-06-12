@@ -15,6 +15,7 @@ logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name
 deltaCalculator = DeltaCalculator()
 metaDictionary = {}
 option = ""
+typeOfAutomation = "ocr"
 
 
 class AutomationMeta:
@@ -96,6 +97,9 @@ def MHGetData():
 		
 
 def RJGetData():
+	if typeOfAutomation == "ocr" or typeOfAutomation == "pdf":
+		print("RJ Getdata using url is deprecated")
+		return
 	response = requests.request("GET", metaDictionary['Rajasthan'].url)
 	soup = BeautifulSoup(response.content, 'html5lib')
 	table = soup.find('blockquote').find('table').find_all('tr')
@@ -151,256 +155,288 @@ def UPGetData():
 	masterColumnList = ""
 	masterColumnArray = []
 	splitArray = []
-	with open("up.txt", "r") as upFile:
-		for line in upFile:
-			splitArray = re.sub('\n', '', line.strip()).split('|')
-			linesArray = splitArray[0].split(',')
-			columnList = splitArray[1].split(',')
+	try:
+		with open("up.txt", "r") as upFile:
+			for line in upFile:
+				splitArray = re.sub('\n', '', line.strip()).split('|')
+				linesArray = splitArray[0].split(',')
+				columnList = splitArray[1].split(',')
 
-			if len(linesArray) != 8 or len(columnList) != 8:
-				secondRunArray.append(linesArray)
-				secondRunArray.append(columnList)
-				continue
-			else:
-				if len(masterColumnList) == 0:
-					masterColumnList = splitArray[1].strip()
-				elif masterColumnList != splitArray[1].strip():
-					print("Issue with " + line + "columns don't match. Ignoring and continuing")
+				if len(linesArray) != 8 or len(columnList) != 8:
+					secondRunArray.append(linesArray)
+					secondRunArray.append(columnList)
 					continue
 				else:
-					masterColumnArray = columnList
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0]
-			districtDictionary['confirmed'] = int(linesArray[2])
-			districtDictionary['recovered'] = int(linesArray[4])
-			districtDictionary['deceased'] = int(linesArray[6])
-			districtArray.append(districtDictionary)
+					if len(masterColumnList) == 0:
+						masterColumnList = splitArray[1].strip()
+					elif masterColumnList != splitArray[1].strip():
+						print("Issue with " + line + "columns don't match. Ignoring and continuing")
+						continue
+					else:
+						masterColumnArray = columnList
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0]
+				districtDictionary['confirmed'] = int(linesArray[2])
+				districtDictionary['recovered'] = int(linesArray[4])
+				districtDictionary['deceased'] = int(linesArray[6])
+				districtArray.append(districtDictionary)
 
 #Second run to correct possible misses with -999
-	correctionIndex = ""
-	for index, data in enumerate(secondRunArray):
 		correctionIndex = ""
-		if index % 2 == 1:
-			rowValues = secondRunArray[index - 1]
-			print("Trying to correct: {}".format(rowValues))
-			for colIndex, colValue in enumerate(data):
-				if colValue.strip() != masterColumnArray[colIndex].strip():
-					correctionIndex += "," + str(colIndex) if len(correctionIndex) != 0 else str(colIndex) 
-					rowValues.insert(colIndex, -999)
-					data.insert(colIndex, masterColumnArray[colIndex].strip())
+		for index, data in enumerate(secondRunArray):
+			correctionIndex = ""
+			if index % 2 == 1:
+				rowValues = secondRunArray[index - 1]
+				print("Trying to correct: {}".format(rowValues))
+				for colIndex, colValue in enumerate(data):
+					if colValue.strip() != masterColumnArray[colIndex].strip():
+						correctionIndex += "," + str(colIndex) if len(correctionIndex) != 0 else str(colIndex) 
+						rowValues.insert(colIndex, -999)
+						data.insert(colIndex, masterColumnArray[colIndex].strip())
 
-			if len(rowValues) != 8 or len(data) != 8:
-				print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
-				continue
+				if len(rowValues) != 8 or len(data) != 8:
+					print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
+					continue
 
-			districtDictionary = {}
-			districtDictionary['districtName'] = rowValues[0]
-			districtDictionary['confirmed'] = int(rowValues[2])
-			districtDictionary['recovered'] = int(rowValues[4])
-			districtDictionary['deceased'] = int(rowValues[6])
-			districtArray.append(districtDictionary)
-			print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
-					
-	deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
+				districtDictionary = {}
+				districtDictionary['districtName'] = rowValues[0]
+				districtDictionary['confirmed'] = int(rowValues[2])
+				districtDictionary['recovered'] = int(rowValues[4])
+				districtDictionary['deceased'] = int(rowValues[6])
+				districtArray.append(districtDictionary)
+				print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
+						
+		deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
+	except FileNotFoundError:
+		print("up.txt missing. Generate through pdf or ocr and rerun.")
 
 def BRGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	with open("br.txt", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split('|')[0].split(',')
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0]
-			districtDictionary['confirmed'] = int(linesArray[1])
-			districtDictionary['recovered'] = int(linesArray[2])
-			districtDictionary['deceased'] = int(linesArray[3])
-			districtArray.append(districtDictionary)
+	try:
+		with open("br.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0]
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3])
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Bihar", districtArray, option)
+		deltaCalculator.getStateDataFromSite("Bihar", districtArray, option)
+	except FileNotFoundError:
+		print("br.txt missing. Generate through pdf or ocr and rerun.")
 
 def JHGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	with open("jh.txt", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split('|')[0].split(',')
-			if len(linesArray) != 9:
-				print(linesArray)
-				continue;
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0].strip()
-			districtDictionary['confirmed'] = int(linesArray[4]) + int(linesArray[5])
-			districtDictionary['recovered'] = -999
-			districtDictionary['deceased'] = -999
-			districtArray.append(districtDictionary)
+	try:
+		with open("jh.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				if len(linesArray) != 9:
+					print(linesArray)
+					continue;
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[4]) + int(linesArray[5])
+				districtDictionary['recovered'] = -999
+				districtDictionary['deceased'] = -999
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
+		deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
+	except FileNotFoundError:
+		print("jh.txt missing. Generate through pdf or ocr and rerun.")
 
 def RJGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	with open("rj.txt", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split('|')[0].split(',')
-			print(linesArray)
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0].strip().title()
-			districtDictionary['confirmed'] = int(linesArray[3])
-			districtDictionary['recovered'] = int(linesArray[4])
-			districtDictionary['deceased'] = -999
-			districtArray.append(districtDictionary)
+	try:
+		with open("rj.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				print(linesArray)
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip().title()
+				districtDictionary['confirmed'] = int(linesArray[3])
+				districtDictionary['recovered'] = int(linesArray[4])
+				districtDictionary['deceased'] = -999
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
+		deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
+	except FileNotFoundError:
+		print("rj.txt missing. Generate through pdf or ocr and rerun.")
 
-#def PBGetData():
-#	linesArray = []
-#	districtDictionary = {}
-#	districtArray = []
-#	secondRunArray = []
-#	masterColumnList = ""
-#	masterColumnArray = []
-#	splitArray = []
-#	readFileFromURL("http://pbhealth.gov.in/Media%20Bulletin%20COVID-19%2007-06-2020.pdf", "Punjab", "Amritsar", "Total")
-#	with open("pb.txt", "r") as upFile:
-#		for line in upFile:
-#			splitArray = re.sub('\n', '', line.strip()).split('|')
-#			linesArray = splitArray[0].split(',')
-#			columnList = splitArray[1].split(',')
-#
-#			if len(linesArray) != 5:
-#				secondRunArray.append(linesArray)
-#				secondRunArray.append(columnList)
-#				continue
-#			else:
-#				if len(masterColumnList) == 0:
-#					masterColumnList = splitArray[1].strip()
-#				elif masterColumnList != splitArray[1].strip():
-#					print("Issue with " + line + "columns don't match. Ignoring and continuing")
-#					continue
-#				else:
-#					masterColumnArray = columnList
-#			if linesArray[0].strip() == "Total":
-#				continue
-#			districtDictionary = {}
-#			districtDictionary['districtName'] = linesArray[0].strip()
-#			districtDictionary['confirmed'] = int(linesArray[1])
-#			districtDictionary['recovered'] = int(linesArray[3])
-#			districtDictionary['deceased'] = int(linesArray[4])
-#			districtArray.append(districtDictionary)
-#
-#	correctionIndex = ""
-#	for index, data in enumerate(secondRunArray):
-#		correctionIndex = ""
-#		if index % 2 == 1:
-#			rowValues = secondRunArray[index - 1]
-#			for masterIndex, masterValue in enumerate(masterColumnArray):
-#				try:
-#					if data[masterIndex].strip() != masterValue.strip():
-#						correctionIndex += "," + str(masterIndex) if len(correctionIndex) != 0 else str(masterIndex) 
-#						rowValues.insert(masterIndex, -999)
-#						data.insert(masterIndex, masterValue.strip())
-#				except IndexError:
-#					data.insert(masterIndex, masterValue.strip())
-#					rowValues.insert(masterIndex, -999)
-#
-#
-#			if len(rowValues) != 5 or len(data) != 5:
-#				print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
-#				continue
-#
-#			districtDictionary = {}
-#			districtDictionary['districtName'] = rowValues[0].strip()
-#			districtDictionary['confirmed'] = int(rowValues[1])
-#			districtDictionary['recovered'] = int(rowValues[3])
-#			districtDictionary['deceased'] = int(rowValues[4])
-#			districtArray.append(districtDictionary)
-#			print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
-#
-#	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
-
-def PBGetData():
+def PBGetDataThroughPdf():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
 	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Amritsar", "Total")
-	with open("pb.txt", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split(',')
-			if len(linesArray) != 5:
-				print("Issue with {}".format(linesArray))
-				continue
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0].strip()
-			districtDictionary['confirmed'] = int(linesArray[1])
-			districtDictionary['recovered'] = int(linesArray[3])
-			districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
-			districtArray.append(districtDictionary)
+	try:
+		with open("pb.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split(',')
+				if len(linesArray) != 5:
+					print("Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[3])
+				districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
+		deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
+	except FileNotFoundError:
+		print("pb.txt missing. Generate through pdf or ocr and rerun.")
+
+def PBGetData():
+	if typeOfAutomation == "pdf":
+		PBGetDataThroughPdf()
+	else:
+		PBGetDataThroughOcr()
+
+def PBGetDataThroughOcr():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	secondRunArray = []
+	masterColumnList = ""
+	masterColumnArray = []
+	splitArray = []
+	try:
+		with open("pb.txt", "r") as upFile:
+			for line in upFile:
+				splitArray = re.sub('\n', '', line.strip()).split('|')
+				linesArray = splitArray[0].split(',')
+				columnList = splitArray[1].split(',')
+
+				if len(linesArray) != 5:
+					secondRunArray.append(linesArray)
+					secondRunArray.append(columnList)
+					continue
+				else:
+					if len(masterColumnList) == 0:
+						masterColumnList = splitArray[1].strip()
+					elif masterColumnList != splitArray[1].strip():
+						print("Issue with " + line + "columns don't match. Ignoring and continuing")
+						continue
+					else:
+						masterColumnArray = columnList
+				if linesArray[0].strip() == "Total":
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[3])
+				districtDictionary['deceased'] = int(linesArray[4])
+				districtArray.append(districtDictionary)
+
+		correctionIndex = ""
+		for index, data in enumerate(secondRunArray):
+			correctionIndex = ""
+			if index % 2 == 1:
+				rowValues = secondRunArray[index - 1]
+				for masterIndex, masterValue in enumerate(masterColumnArray):
+					try:
+						if data[masterIndex].strip() != masterValue.strip():
+							correctionIndex += "," + str(masterIndex) if len(correctionIndex) != 0 else str(masterIndex) 
+							rowValues.insert(masterIndex, -999)
+							data.insert(masterIndex, masterValue.strip())
+					except IndexError:
+						data.insert(masterIndex, masterValue.strip())
+						rowValues.insert(masterIndex, -999)
+
+
+				if len(rowValues) != 5 or len(data) != 5:
+					print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
+					continue
+
+				districtDictionary = {}
+				districtDictionary['districtName'] = rowValues[0].strip()
+				districtDictionary['confirmed'] = int(rowValues[1])
+				districtDictionary['recovered'] = int(rowValues[3])
+				districtDictionary['deceased'] = int(rowValues[4])
+				districtArray.append(districtDictionary)
+				print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
+
+		deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
+	except FileNotFoundError:
+		print("pb.txt missing. Generate through pdf or ocr and rerun.")
 
 def KAGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
 	readFileFromURL('', "Karnataka", "Bengaluru Urban", "Total")
-	with open("ka.txt", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split(',')
-			if len(linesArray) != 8:
-				print("Issue with {}".format(linesArray))
-				continue
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0].strip()
-			districtDictionary['confirmed'] = int(linesArray[2])
-			districtDictionary['recovered'] = int(linesArray[4])
-			districtDictionary['deceased'] = int(linesArray[6]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
-			districtArray.append(districtDictionary)
+	try:
+		with open("ka.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split(',')
+				if len(linesArray) != 8:
+					print("Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[2])
+				districtDictionary['recovered'] = int(linesArray[4])
+				districtDictionary['deceased'] = int(linesArray[6]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Karnataka", districtArray, option)
+		deltaCalculator.getStateDataFromSite("Karnataka", districtArray, option)
+	except FileNotFoundError:
+		print("ka.txt missing. Generate through pdf or ocr and rerun.")
 
 def HRGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
-	with open("hr.txt", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split(',')
-			if len(linesArray) != 4:
-				print("Issue with {}".format(linesArray))
-				continue
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0].strip()
-			districtDictionary['confirmed'] = int(linesArray[1])
-			districtDictionary['recovered'] = int(linesArray[2])
-			districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
-			districtArray.append(districtDictionary)
+	if typeOfAutomation == "pdf":
+		readFileFromURL(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
+	try:
+		with open("hr.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split(',')
+				if len(linesArray) != 4:
+					print("Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Haryana", districtArray, option)
+		deltaCalculator.getStateDataFromSite("Haryana", districtArray, option)
+	except FileNotFoundError:
+		print("hr.txt missing. Generate through pdf or ocr and rerun.")
 			
 def TNGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
 	convertTnPDFToCSV()
-	with open("tn.csv", "r") as upFile:
-		for line in upFile:
-			linesArray = line.split(',')
-			if len(linesArray) != 4:
-				print("Issue with {}".format(linesArray))
-				continue
-			districtDictionary = {}
-			districtDictionary['districtName'] = linesArray[0].strip()
-			districtDictionary['confirmed'] = int(linesArray[1])
-			districtDictionary['recovered'] = int(linesArray[2])
-			districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
-			districtArray.append(districtDictionary)
+	try:
+		with open("tn.csv", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split(',')
+				if len(linesArray) != 4:
+					print("Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+				districtArray.append(districtDictionary)
 
-	deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
-
+		deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
+	except FileNotFoundError:
+		print("tn.txt missing. Generate through pdf or ocr and rerun.")
 
 def NLGetData():
 	print("NL has no proper table yet")
@@ -681,14 +717,25 @@ def main():
 
 	loadMetaData()
 	stateName = ""
+	global option 
+	global typeOfAutomation
 
-	if len(sys.argv) > 1:
+	if len(sys.argv) not in [1, 2, 3, 4]:
+		print('Usage: ./automation "[StateName]" "[detailed]" "[ocr/pdf]"')
+		return
+
+	if len(sys.argv) == 2:
 		stateName = sys.argv[1]
 
-	global option 
 	if len(sys.argv) == 3:
+		stateName = sys.argv[1]
 		option = sys.argv[2]
 
+	if len(sys.argv) == 4:
+		stateName = sys.argv[1]
+		option = sys.argv[2]
+		typeOfAutomation = sys.argv[3]
+	
 	if not stateName:
 		stateName = "All States"
 	fetchData(stateName)
