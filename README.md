@@ -11,7 +11,7 @@ Comment lines in automation.meta that do not need to be run.
   ./automation.py "state name" "detailed" "pdf/ocr" -- currently supported only for PB.
 
 OCR:  
-  cd ocr
+  cd ocr  
   ./ocr.sh "Image Name" "State Name" "Starting String" "IsTranslationRequired"
 
 **Automation support through URL fetch/scraping:**  
