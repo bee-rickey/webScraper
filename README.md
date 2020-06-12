@@ -8,16 +8,22 @@ Comment lines in automation.meta that do not need to be run.
   ./automation.py -- to run all for all states.  
   ./automation.py "state name" -- to get all details for that state.  
   ./automation.py "state name" "detailed" -- to get state details based on C, R, D categories.  
+  ./automation.py "state name" "detailed" "pdf/ocr" -- currently supported only for PB.
 
-Automation support through URL fetch/scraping:
-AP, OR, AS, TR, CH, PY, LA, GJ, MH, KA - district numbers only
+OCR:
+  cd ocr
+  ./ocr.sh <Image Name> <State Name> [Starting String] <IsTranslationRequired>
 
-Automation through OCR:
-BR, UP, RJ, PB
+**Automation support through URL fetch/scraping:**
+AP, OR, AS, TR, CH, PY, LA, GJ, MH, RJ (_RJ has stopped giving tables on their site_).
 
-Automation support through pdf:
+KA - district numbers and individual support (beta).
+
+**Automation through OCR:**
+UP, RJ, PB, BR (Daily updates and bulletins)
+
+**Automation support through pdf:**
 HR, PB, TN
 
-
-Future support:
-KL, MP
+**Future support:**
+KL (url), MP (pdf + ocr)
