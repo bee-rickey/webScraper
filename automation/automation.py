@@ -15,7 +15,7 @@ logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name
 deltaCalculator = DeltaCalculator()
 metaDictionary = {}
 option = ""
-typeOfAutomation = "ocr"
+typeOfAutomation = "pdf"
 
 
 class AutomationMeta:
@@ -47,6 +47,7 @@ def loadMetaData():
 			lineArray = line.strip().split(',') 
 			metaObject = AutomationMeta(lineArray[0].strip(), lineArray[1].strip(), lineArray[2].strip())
 			metaDictionary[lineArray[0].strip()] = metaObject
+	metaFile.close()
 
 def APGetData():
 	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
@@ -156,7 +157,7 @@ def UPGetData():
 	masterColumnArray = []
 	splitArray = []
 	try:
-		with open("up.txt", "r") as upFile:
+		with open(".tmp/up.txt", "r") as upFile:
 			for line in upFile:
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
@@ -180,6 +181,7 @@ def UPGetData():
 				districtDictionary['recovered'] = int(linesArray[4])
 				districtDictionary['deceased'] = int(linesArray[6])
 				districtArray.append(districtDictionary)
+		upFile.close()
 
 #Second run to correct possible misses with -999
 		correctionIndex = ""
@@ -215,7 +217,7 @@ def BRGetData():
 	districtDictionary = {}
 	districtArray = []
 	try:
-		with open("br.txt", "r") as upFile:
+		with open(".tmp/br.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
 				districtDictionary = {}
@@ -225,6 +227,7 @@ def BRGetData():
 				districtDictionary['deceased'] = int(linesArray[3])
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Bihar", districtArray, option)
 	except FileNotFoundError:
 		print("br.txt missing. Generate through pdf or ocr and rerun.")
@@ -234,7 +237,7 @@ def JHGetData():
 	districtDictionary = {}
 	districtArray = []
 	try:
-		with open("jh.txt", "r") as upFile:
+		with open(".tmp/jh.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
 				if len(linesArray) != 9:
@@ -247,6 +250,7 @@ def JHGetData():
 				districtDictionary['deceased'] = -999
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
 	except FileNotFoundError:
 		print("jh.txt missing. Generate through pdf or ocr and rerun.")
@@ -256,7 +260,7 @@ def RJGetData():
 	districtDictionary = {}
 	districtArray = []
 	try:
-		with open("rj.txt", "r") as upFile:
+		with open(".tmp/rj.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
 				print(linesArray)
@@ -267,6 +271,7 @@ def RJGetData():
 				districtDictionary['deceased'] = -999
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
 	except FileNotFoundError:
 		print("rj.txt missing. Generate through pdf or ocr and rerun.")
@@ -277,7 +282,7 @@ def PBGetDataThroughPdf():
 	districtArray = []
 	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Amritsar", "Total")
 	try:
-		with open("pb.txt", "r") as upFile:
+		with open(".tmp/PB.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 5:
@@ -290,6 +295,7 @@ def PBGetDataThroughPdf():
 				districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
 	except FileNotFoundError:
 		print("pb.txt missing. Generate through pdf or ocr and rerun.")
@@ -309,7 +315,7 @@ def PBGetDataThroughOcr():
 	masterColumnArray = []
 	splitArray = []
 	try:
-		with open("pb.txt", "r") as upFile:
+		with open(".tmp/pb.txt", "r") as upFile:
 			for line in upFile:
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
@@ -336,6 +342,7 @@ def PBGetDataThroughOcr():
 				districtDictionary['deceased'] = int(linesArray[4])
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		correctionIndex = ""
 		for index, data in enumerate(secondRunArray):
 			correctionIndex = ""
@@ -374,7 +381,7 @@ def KAGetData():
 	districtArray = []
 	readFileFromURL('', "Karnataka", "Bengaluru Urban", "Total")
 	try:
-		with open("ka.txt", "r") as upFile:
+		with open(".tmp/ka.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 8:
@@ -387,6 +394,7 @@ def KAGetData():
 				districtDictionary['deceased'] = int(linesArray[6]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Karnataka", districtArray, option)
 	except FileNotFoundError:
 		print("ka.txt missing. Generate through pdf or ocr and rerun.")
@@ -398,7 +406,7 @@ def HRGetData():
 	if typeOfAutomation == "pdf":
 		readFileFromURL(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
 	try:
-		with open("hr.txt", "r") as upFile:
+		with open(".tmp/hr.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 4:
@@ -411,6 +419,7 @@ def HRGetData():
 				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Haryana", districtArray, option)
 	except FileNotFoundError:
 		print("hr.txt missing. Generate through pdf or ocr and rerun.")
@@ -421,7 +430,7 @@ def TNGetData():
 	districtArray = []
 	convertTnPDFToCSV()
 	try:
-		with open("tn.csv", "r") as upFile:
+		with open(".tmp/tn.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 4:
@@ -434,6 +443,7 @@ def TNGetData():
 				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
+		upFile.close()
 		deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
 	except FileNotFoundError:
 		print("tn.txt missing. Generate through pdf or ocr and rerun.")
@@ -544,6 +554,7 @@ def KLGetData():
 				print(line)
 			if "data:" in line: 
 				print(line)
+	klFile.close()
 
 def LAGetData():
 	response = requests.request("GET", metaDictionary['Ladakh'].url)
@@ -633,19 +644,19 @@ def readFileFromURL(url, stateName, startKey, endKey):
 	stateFileName = metaDictionary[stateName].stateCode 
 	if len(url) > 0:
 		r = requests.get(url, allow_redirects=True)
-		open(stateFileName + ".pdf", 'wb').write(r.content)
+		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
 
-	with open(stateFileName + ".pdf", "rb") as f:
+	with open(".tmp/" + stateFileName + ".pdf", "rb") as f:
 		pdf = pdftotext.PDF(f)
 
-	fileToWrite = open(stateFileName + ".pdf.txt", "w")
+	fileToWrite = open(".tmp/" + stateFileName + ".pdf.txt", "w")
 	pid = input("Enter district page:")
 	print(pdf[int(pid)], file = fileToWrite)
 	fileToWrite.close()
 
-	fileToWrite = open(stateFileName + '.pdf.txt', 'r') 
+	fileToWrite = open(".tmp/" + stateFileName + '.pdf.txt', 'r') 
 	lines = fileToWrite.readlines() 
-	stateOutputFileName = open(stateFileName + '.txt', 'w') 
+	stateOutputFileName = open(".tmp/" + stateFileName + '.txt', 'w') 
 
 	startedReadingDistricts = False
 	outputLines = []
@@ -661,24 +672,25 @@ def readFileFromURL(url, stateName, startKey, endKey):
 		print(eval(stateFileName + "FormatLine")(line), file = stateOutputFileName, end = " ")
 
 	stateOutputFileName.close()
+	fileToWrite.close()
 
 
 def convertTnPDFToCSV():
 	try:
-		with open("tn.pdf", "rb") as f:
+		with open(".tmp/" + "tn.pdf", "rb") as f:
 				pdf = pdftotext.PDF(f)
 	except FileNotFoundError:
 		print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
 		return
 
-	tnTextFile = open("tn.pdf.txt", "w")
+	tnTextFile = open(".tmp/" + "tn.pdf.txt", "w")
 	pid = input("Enter district page:")
 	print(pdf[int(pid)], file = tnTextFile)
 	tnTextFile.close()
 
-	tnFile = open('tn.pdf.txt', 'r') 
+	tnFile = open(".tmp/" + 'tn.pdf.txt', 'r') 
 	lines = tnFile.readlines() 
-	tnOutputFile = open('tn.csv', 'w') 
+	tnOutputFile = open(".tmp/" + 'tn.csv', 'w') 
 
 	startedReadingDistricts = False
 	for line in lines:

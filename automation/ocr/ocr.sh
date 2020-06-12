@@ -37,7 +37,7 @@ cat ocrconfig.meta
 echo -e "******** ++++++++ *******"
 
 python3 googlevision.py ocrconfig.meta
-cp output.txt ../$stateCode.txt
+cp output.txt ../.tmp/$stateCode.txt
 
 cd ..
 echo -e "\n******** Calling automation.py for $2  ******* "
