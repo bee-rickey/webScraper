@@ -25,5 +25,5 @@ UP, RJ, PB, BR (Daily updates and bulletins)
 **Automation support through pdf:**  
 HR, PB, TN
 
-**Future support:**
+**Future support:**  
 KL (url), MP (pdf + ocr), HR (ocr)
