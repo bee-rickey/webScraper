@@ -26,4 +26,4 @@ UP, RJ, PB, BR (Daily updates and bulletins)
 HR, PB, TN
 
 **Future support:**  
-KL (url), MP (pdf + ocr), HR (ocr)
+KL (url), MP (pdf + ocr), HR (ocr), HP (ocr)
