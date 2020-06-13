@@ -7,7 +7,7 @@ fi
 echo -e "\n********************* If you want to see the ocr data, cat output.txt *********************\n"
 
 echo -e "\n******** Calling google vision api *******"
-python3 ocr_vision.py $1 > bounds.txt
+#python3 ocr_vision.py $1 > bounds.txt
 
 stateCode=""
 case $2 in
@@ -26,6 +26,12 @@ case $2 in
 	"Rajasthan")
 		stateCode="rj"
 		;;
+	"Punjab")
+		stateCode="pb"
+		;;
+	"Jammu")
+		stateCode="jk"
+		;;
 	*)
 		stateCode="invalid"
 esac
@@ -36,7 +42,7 @@ echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y
 cat ocrconfig.meta
 echo -e "******** ++++++++ *******"
 
-python3 googlevision.py ocrconfig.meta
+python3 googlevision.py ocrconfig.meta $1
 cp output.txt ../.tmp/$stateCode.txt
 
 cd ..

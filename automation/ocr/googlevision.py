@@ -1,4 +1,8 @@
 import sys
+from PIL import Image
+import numpy as np
+from matplotlib import pyplot as plt
+import matplotlib.patches as patches
 
 dataDictionary = {}
 dataDictionaryArray = []
@@ -12,7 +16,7 @@ yInterval = 0
 startingText = ""
 enableTranslation = False
 translationFile = ""
-
+fileName = ""
 
 
 def is_number(s):
@@ -23,13 +27,17 @@ def is_number(s):
 		return False
 
 class cellItem:
-	def __init__(self, value, x, y, col, row, index):
+	def __init__(self, value, x, y, lbx, lby, h, w, col, row, index):
 		self.value = value
 		self.x = x
 		self.y = y
 		self.col = col
 		self.row = row
 		self.index = index
+		self.lbx = lbx
+		self.lby = lby
+		self.h = h
+		self.w = w
 
 def buildCells():
 	global xInterval
@@ -72,7 +80,7 @@ def buildCells():
 #Use these intervals as a possible error in mid point calculation
 		xInterval = (int(lowerRight[0]) - int(lowerLeft[0]))/2 if (int(lowerRight[0]) - int(lowerLeft[0]))/2 > xInterval else xInterval
 		yInterval = (int(upperLeft[1]) - int(lowerLeft[1]))/2 if (int(upperLeft[1]) - int(lowerLeft[1]))/2 > yInterval else yInterval
-		dataDictionaryArray.append(cellItem(value, xMean, yMean, 0, 0, index + 1))
+		dataDictionaryArray.append(cellItem(value, xMean, yMean, lowerLeft[0], lowerLeft[1], (float(lowerRight[0]) - float(lowerLeft[0])), (float(upperLeft[1]) - float(lowerLeft[1])), 0, 0, index + 1))
 
 def buildReducedArray():
 	tempDictionaryArray = []
@@ -140,6 +148,11 @@ def buildTranslationDictionary():
 def printOutput():
 	outputFile = open('output.txt', 'w') 
 	global enableTranslation
+	xArray = []
+	yArray = []
+
+	image = np.array(Image.open(fileName), dtype=np.uint8)
+	fig, ax = plt.subplots(1)
 
 	for i in range(0, len(dataDictionaryArray)):
 		outputString = []
@@ -159,6 +172,8 @@ def printOutput():
 				mergedValue = value.value 
 				previousCol = value.col
 				columnList = str(value.col)
+				rect = patches.Rectangle((int(value.lbx), int(value.lby)), value.h, value.w,linewidth=0.75,edgecolor='r', facecolor='none')
+				ax.add_patch(rect)
 				continue
 
 			if value.col == previousCol:
@@ -170,6 +185,8 @@ def printOutput():
 				previousCol = value.col
 				mergedValue = value.value #+ " ---- " + str(value.col)
 				columnList = columnList + ", " + str(value.col) if len(columnList) != 0 else str(value.col)
+				rect = patches.Rectangle((int(value.lbx), int(value.lby)), value.h, value.w,linewidth=0.75,edgecolor='r', facecolor='none')
+				ax.add_patch(rect)
 
 		if len(output) > 0:
 			if enableTranslation == False:
@@ -196,6 +213,8 @@ def printOutput():
 				except KeyError:
 					print(districtName + " , " )  
 	outputFile.close()
+	ax.imshow(image)
+	plt.show()
 
 def parseConfigFile(fileName):
 	global startingText
@@ -227,9 +246,11 @@ def parseConfigFile(fileName):
 def main():
 	global startingText
 	global enableTranslation
+	global fileName
 # If given, this text will be used to ignore those items above and to the left of this text. This can cause issues if the text is repeated!
 	if len(sys.argv) > 1:
 		parseConfigFile(sys.argv[1])
+		fileName = sys.argv[2]
 				
 	if enableTranslation:
 		buildTranslationDictionary()
