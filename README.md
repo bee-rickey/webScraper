@@ -38,7 +38,8 @@ ocr.sh has three parts to it -
 1. Google vision API call and output:  
 Arguments: "ImageName"  
 Output: bounds.txt  
-The output of this is output of the google vision api call. This output has the following format: <text>|lower left x,y|lower right x,y|upper right x,y|upper left x,y
+The output of this is output of the google vision api call. This output has the following format:  
+`<text>|lower left x,y|lower right x,y|upper right x,y|upper left x,y`  
 This output is present in the bounds.txt file. The file also contains the texts with a json structure which is not used currently.
 
 2. googlevision.py script:  
@@ -46,11 +47,11 @@ Arguments: ocrconfig.meta "Image"
 Output: output.txt  
 
 ocrconfig.meta file has some important configurations:  
-startingText:startingtext  
-enableTranslation:translationvalue  
-translationFile:statename_districts.meta  
-yInterval:0  
-xInterval:0  
+	startingText:startingtext  
+	enableTranslation:translationvalue  
+	translationFile:statename_districts.meta  
+	yInterval:0  
+	xInterval:0  
 xInterval and yInterval are described subsequently.  
 
 This is the most important part of the whole process. This script reads bounds.txt and uses the box coordinates to decide the rows and columns.
@@ -59,8 +60,8 @@ a. First step is to build a cell which has the following attributes:
 	a.1) Text  
 	a.2) Center coordinates of the text: x,y  
 	a.3) Lower left x, lower left y  
-	a.4) Height of the text (calculated using lower left and upper left coordinates).  
-	a.5) Width of the text (calculated using lower left and lower right coordinates).  
+	a.4) Height of the text (calculated using lower left and upper left coordinates). 
+	a.5) Width of the text (calculated using lower left and lower right coordinates). Height and width are used for displaying the recognized text a debug solution. 
 	a.6) Column number.  
 	a.7) Row number.  
 
@@ -77,9 +78,9 @@ To remedy this (or atleast to provide a bit of flexibility), there's a considera
 
 Note: The above method of finding columns is debatable. Still needs refinement.
 
-	c.4) The penultimate step of this script is to provide an output. This is done by first sorting the row values based on x value. This makes sure that their order is maintained. Then, there's a loop over the individual row values to decide if there needs to be some merges that need to happen. This is done to handle scenarios where certain columns have texts separated by spaces. The column numbers are also prited per row seperated from the main values by a pipe. This is done for any debugging that the consumer might wish to do.
+c.4) The penultimate step of this script is to provide an output. This is done by first sorting the row values based on x value. This makes sure that their order is maintained. Then, there's a loop over the individual row values to decide if there needs to be some merges that need to happen. This is done to handle scenarios where certain columns have texts separated by spaces. The column numbers are also prited per row seperated from the main values by a pipe. This is done for any debugging that the consumer might wish to do.
 
-	c.5) Once done, if translations is enabled, then, we consider the first column and do a lookup on statename_translation.meta file to convert the vernacular text into English.
+c.5) Once done, if translations is enabled, then, we consider the first column and do a lookup on statename_translation.meta file to convert the vernacular text into English.
 
 
 
