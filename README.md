@@ -80,6 +80,12 @@ c.4) The penultimate step of this script is to provide an output. This is done b
 
 c.5) Once done, if translations is enabled, then, we consider the first column and do a lookup on statename_translation.meta file to convert the vernacular text into English.
 
+3. Run automation.py to figure out deltas.  
+Arguments: "StateName" "detailed" "ocr"  
+Output: Gives a delta for each category and district for the state name mentioned.  
+Description: This uses the output.txt file to decide on what the delta will be for the given state.  
+
+
 
 **FAQ**
 
