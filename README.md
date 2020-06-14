@@ -47,11 +47,13 @@ Arguments: ocrconfig.meta "Image"
 Output: output.txt  
 
 ocrconfig.meta file has some important configurations:  
+`
 	startingText:startingtext  
 	enableTranslation:translationvalue  
 	translationFile:statename_districts.meta  
 	yInterval:0  
 	xInterval:0  
+`
 xInterval and yInterval are described subsequently.  
 
 This is the most important part of the whole process. This script reads bounds.txt and uses the box coordinates to decide the rows and columns.
