@@ -56,20 +56,20 @@ xInterval and yInterval are described subsequently.
 This is the most important part of the whole process. This script reads bounds.txt and uses the box coordinates to decide the rows and columns.
 
 a. First step is to build a cell which has the following attributes:
-	a.1) Text
-	a.2) Center coordinates of the text: x,y
-	a.3) Lower left x, lower left y
-	a.4) Height of the text (calculated using lower left and upper left coordinates).
-	a.5) Width of the text (calculated using lower left and lower right coordinates).
-	a.6) Column number.
-	a.7) Row number.
+	a.1) Text  
+	a.2) Center coordinates of the text: x,y  
+	a.3) Lower left x, lower left y  
+	a.4) Height of the text (calculated using lower left and upper left coordinates).  
+	a.5) Width of the text (calculated using lower left and lower right coordinates).  
+	a.6) Column number.  
+	a.7) Row number.  
 
 b. Next, if there is a starting text provided, then we discard all those objects whose y is less than that of the y of StartingText and whose x is less than that of the x of StartingText. This allows for a better accuracy when we try to recreate the table structure. If there is no StartingText provided, this step is skipped.
 
-c. Once we have filtered out unwanted texts, then next step is to figure out the structure. The logic goes like this:
-	c.1) Take the array of cells representing individual texts.
-	c.2) Loop through each of these texts. In each step, figure out all the other texts that have same x coordinate. These are the ones that lie in the same column. Hence assign these the same column number as the current cell being considered. Ignore all cells that are already assigned a column value.
-	c.3) Figure out all the cells that have same y coordinate. These are the ones that lie on the same row. Assign these cells the same row value as the current cell being considered. Ignore all cells that have already their row value set.
+c. Once we have filtered out unwanted texts, then next step is to figure out the structure. The logic goes like this:  
+c.1) Take the array of cells representing individual texts.
+c.2) Loop through each of these texts. In each step, figure out all the other texts that have same x coordinate. These are the ones that lie in the same column. Hence assign these the same column number as the current cell being considered. Ignore all cells that are already assigned a column value.
+c.3) Figure out all the cells that have same y coordinate. These are the ones that lie on the same row. Assign these cells the same row value as the current cell being considered. Ignore all cells that have already their row value set.
 
 This step will assign all texts found on the same line with the same row number and all texts found on the same column with the same column number. However, this step is a bit tricky. The reason is, the x,y of the center of the texts need not align perfectly with others in the same column due to their width. This works fine if all are center aligned. If the texts are right or left aligned, there's a possiblity of values in the same column not matching up on their x coordinates.
 
