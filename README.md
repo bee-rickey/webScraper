@@ -35,6 +35,7 @@ ocr.sh has three parts to it -
 2. Call googlevision.py script - this converts the texts recognized into a csv file.
 3. Calling automation.py with the csv file to allow delta calculation.
 
+
 1. Google vision API call and output:  
 Arguments: "ImageName"  
 Output: bounds.txt  
