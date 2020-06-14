@@ -31,33 +31,28 @@ KL (url), MP (pdf + ocr), HR (ocr), HP (ocr)
 **Complete description of OCR methodology and debugging**
 
 ocr.sh has three parts to it -
-1. Call google vision api with the image - this is handled by python3 ocr_vision.py $1 > bounds.txt
-2. Call googlevision.py script - this converts the texts recognized into a csv file.
-3. Calling automation.py with the csv file to allow delta calculation.
 
-
-1. Google vision API call and output:  
+1. Google vision API call:  
 Arguments: "ImageName"  
 Output: bounds.txt  
-The output of this is output of the google vision api call. This output has the following format:  
+Description: This corresponds to the line `python3 ocr_vision.py $1 > bounds.txt` in ocr.sh. This is used to call google vision api and get the output in a file.  
+The output has the following format:  
 `<text>|lower left x,y|lower right x,y|upper right x,y|upper left x,y`  
 This output is present in the bounds.txt file. The file also contains the texts with a json structure which is not used currently.
 
 2. googlevision.py script:  
 Arguments: ocrconfig.meta "Image"  
 Output: output.txt  
+Description: This corresponds to the line `python3 googlevision.py ocrconfig.meta $1`. The task of this script is to get a csv out of the bounds.txt file.  
 
-ocrconfig.meta file has some important configurations:  
-`
+The configuration file ocrconfig.meta file has some configurations that control texts to be considere, translations and error for row and column calculations.
+
 	startingText:startingtext  
 	enableTranslation:translationvalue  
 	translationFile:statename_districts.meta  
 	yInterval:0  
 	xInterval:0  
-`
-xInterval and yInterval are described subsequently.  
 
-This is the most important part of the whole process. This script reads bounds.txt and uses the box coordinates to decide the rows and columns.
 
 a. First step is to build a cell which has the following attributes:  
 	a.1) Text  
