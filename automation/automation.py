@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import camelot
 from bs4 import BeautifulSoup
 from deltaCalculator import DeltaCalculator
 import requests
@@ -163,7 +164,7 @@ def UPGetData():
 				linesArray = splitArray[0].split(',')
 				columnList = splitArray[1].split(',')
 
-				if len(linesArray) != 8 or len(columnList) != 8:
+				if len(linesArray) != 7 or len(columnList) != 7:
 					secondRunArray.append(linesArray)
 					secondRunArray.append(columnList)
 					continue
@@ -177,9 +178,10 @@ def UPGetData():
 						masterColumnArray = columnList
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0]
-				districtDictionary['confirmed'] = int(linesArray[2])
-				districtDictionary['recovered'] = int(linesArray[4])
-				districtDictionary['deceased'] = int(linesArray[6])
+				districtDictionary['confirmed'] = int(linesArray[3]) + int(linesArray[5]) + int(linesArray[6])
+				print("{} --> {}, {}, {}, {}".format(linesArray[0], districtDictionary['confirmed'], int(linesArray[3]), int(linesArray[5]), int(linesArray[6])))
+				districtDictionary['recovered'] = int(linesArray[3])
+				districtDictionary['deceased'] = int(linesArray[5])
 				districtArray.append(districtDictionary)
 		upFile.close()
 
@@ -273,6 +275,37 @@ def RJGetData():
 
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Rajasthan", districtArray, option)
+	except FileNotFoundError:
+		print("rj.txt missing. Generate through pdf or ocr and rerun.")
+
+def MPGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	try:
+		with open(".tmp/mp.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				if len(linesArray) != 8:
+					print("Ignoring due to invalid length: {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				try:
+					if is_number(linesArray[0].strip()):
+						print("Ignoring: {}".format(linesArray))
+						continue
+
+					districtDictionary['districtName'] = linesArray[0].strip().title()
+					districtDictionary['confirmed'] = int(linesArray[2])
+					districtDictionary['recovered'] = int(linesArray[6])
+					districtDictionary['deceased'] = int(linesArray[4])
+					districtArray.append(districtDictionary)
+				except ValueError:
+					print("Ignoring: {}".format(linesArray))
+					continue
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Madhya Pradesh", districtArray, option)
 	except FileNotFoundError:
 		print("rj.txt missing. Generate through pdf or ocr and rerun.")
 
@@ -683,40 +716,50 @@ def convertTnPDFToCSV():
 		print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
 		return
 
-	tnTextFile = open(".tmp/" + "tn.pdf.txt", "w")
-	pid = input("Enter district page:")
-	print(pdf[int(pid)], file = tnTextFile)
-	tnTextFile.close()
+	tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="5", split_text = True)
+	tables[0].to_csv('.tmp/tn.pdf.txt')
 
 	tnFile = open(".tmp/" + 'tn.pdf.txt', 'r') 
 	lines = tnFile.readlines() 
 	tnOutputFile = open(".tmp/" + 'tn.csv', 'w') 
 
 	startedReadingDistricts = False
+	airportRun = 1
+	airportConfirmedCount = 0
+	airportRecoveredCount = 0
+	airportDeceasedCount = 0
 	for line in lines:
 		if 'Ariyalur' in line:
 			startedReadingDistricts = True
-		if 'Airport' in line:
+		if 'Total' in line:
 			startedReadingDistricts = False
 
 		if startedReadingDistricts == False:
 			continue
-		line = re.sub(' +', ',', re.sub("^ +", '', re.sub(',', '', line)))
+		line = line.replace('"', '').replace('*', '').replace('#', '')
 		linesArray = line.split(',')
 
-		print(linesArray)
-
-		if len(linesArray) < 5:
+		if len(linesArray) < 6:
+			print("Ignoring line: {} due to less columns".format(line))
 			continue
 
-		if len(linesArray) != 6:
-			linesArray.insert(5, "0\n")
-		linesArray[5] = re.sub('\#', '', re.sub('\*', '', str(linesArray[5])))
+		if 'Airport' in line:
+			airportConfirmedCount += int(linesArray[2])
+			airportRecoveredCount += int(linesArray[3])
+			airportDeceasedCount += int(linesArray[5])
+			if airportRun == 1:
+				airportRun += 1
+				continue
+			else:
+				print("{}, {}, {}, {}\n".format('Airport Quarantine', airportConfirmedCount, airportRecoveredCount, airportDeceasedCount), file = tnOutputFile, end = " ")
+				continue
+		if 'Railway' in line:
+			print("{}, {}, {}, {}".format('Railway Quarantine', linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile, end = " ")
+			continue
 
 		print("{}, {}, {}, {}".format(linesArray[1], linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile, end = " ")
 
 	tnOutputFile.close()
-	tnTextFile.close()
 
 def is_number(s):
   try:

@@ -88,8 +88,6 @@ class DeltaCalculator:
 		stateRecoveredDelta = stateTotalFromStateDashboard['recovered'] - siteTotalFromStateDashboard['recovered']
 		stateDeceasedDelta = stateTotalFromStateDashboard['deceased'] - siteTotalFromStateDashboard['deceased']
 
-
-
 		if options == "detailed":
 				districts.append('Total')
 				confirmedDeltaArray.append(stateConfirmedDelta)
