@@ -4,11 +4,6 @@ then
 	exit
 fi
 
-echo -e "\n********************* If you want to see the ocr data, cat output.txt *********************\n"
-
-echo -e "\n******** Calling google vision api *******"
-python3 ocr_vision.py $1 > bounds.txt
-
 stateCode=""
 case $2 in
 	"Bihar")
@@ -36,6 +31,10 @@ case $2 in
 		stateCode="invalid"
 esac
 
+echo -e "\n********************* If you want to see the ocr data, cat output.txt *********************\n"
+echo -e "\n******** Calling google vision api *******"
+
+python3 ocr_vision.py $1 > bounds.txt
 sed "s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$4/g" ocrconfig.meta.orig > ocrconfig.meta
 
 echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
