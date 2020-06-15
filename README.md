@@ -15,7 +15,7 @@ OCR:
   ./ocr.sh "Image Name" "State Name" "Starting String" "IsTranslationRequired"
 
 **Automation support through URL fetch/scraping:**  
-AP, OR, AS, TR, CH, PY, LA, GJ, MH, RJ (_RJ has stopped giving tables on their site_).
+AP, AS, CH, LA, GJ, MH, MP, OR, PY, TR, RJ (_RJ has stopped giving tables on their site_).
 
 KA - district numbers and individual support (beta).
 
@@ -26,7 +26,7 @@ UP, RJ, PB, BR (Daily updates and bulletins)
 HR, PB, TN
 
 **Future support:**  
-KL (url), MP (pdf + ocr), HR (ocr), HP (ocr)
+KL (url), MP (pdf), HR (ocr), HP (ocr)
 
 **Complete description of OCR methodology and debugging**
 
