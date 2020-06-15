@@ -267,8 +267,8 @@ def RJGetData():
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip().title()
 				districtDictionary['confirmed'] = int(linesArray[3])
-				districtDictionary['recovered'] = int(linesArray[4])
-				districtDictionary['deceased'] = -999
+				districtDictionary['recovered'] = int(linesArray[7])
+				districtDictionary['deceased'] = int(linesArray[5])
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -465,10 +465,10 @@ def ASGetData():
 		dataPoints = row.find_all("td")
     	
 		districtDictionary = {}
-		districtDictionary['districtName'] = dataPoints[0].get_text().strip()
-		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip())
-		districtDictionary['recovered'] = int(dataPoints[3].get_text().strip())
-		districtDictionary['deceased'] = int(dataPoints[4].get_text().strip())
+		districtDictionary['districtName'] = dataPoints[0].get_text().strip() 
+		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip()) if '-' not in dataPoints[1].get_text().strip() else 0
+		districtDictionary['recovered'] = int(dataPoints[3].get_text().strip()) if '-' not in dataPoints[3].get_text().strip() else 0
+		districtDictionary['deceased'] = int(dataPoints[4].get_text().strip()) if '-' not in dataPoints[4].get_text().strip() else 0
 		districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Assam", districtArray, option)
