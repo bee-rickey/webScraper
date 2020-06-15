@@ -45,7 +45,7 @@ Arguments: ocrconfig.meta "Image"
 Output: output.txt  
 Description: This corresponds to the line `python3 googlevision.py ocrconfig.meta $1`. The task of this script is to get a csv out of the bounds.txt file.  
 
-The configuration file ocrconfig.meta file has some configurations that control texts to be considere, translations and error for row and column calculations.
+The configuration file ocrconfig.meta file has some configurations that control texts to be considered, translations and error for row and column calculations.
 
 	startingText:startingtext  
 	enableTranslation:translationvalue  
@@ -78,7 +78,7 @@ Note: The above method of finding columns is debatable. Still needs refinement.
 
 c.4) The penultimate step of this script is to provide an output. This is done by first sorting the row values based on x value. This makes sure that their order is maintained. Then, there's a loop over the individual row values to decide if there needs to be some merges that need to happen. This is done to handle scenarios where certain columns have texts separated by spaces. The column numbers are also printed per row seperated from the main values by a pipe. This is done for any debugging that the consumer might wish to do.
 
-c.5) Once done, if translations is enabled, then, we consider the first column and do a lookup on statename_translation.meta file to convert the vernacular text into English.
+c.5) Once done, if translations is enabled, then, we consider the first column and do a lookup on statename_districts.meta file to convert the vernacular text into English.
 
 3. Run automation.py to figure out deltas.  
 Arguments: "StateName" "detailed" "ocr"  
