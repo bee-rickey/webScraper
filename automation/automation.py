@@ -103,7 +103,7 @@ def RJGetData():
 		print("RJ Getdata using url is deprecated")
 		return
 	response = requests.request("GET", metaDictionary['Rajasthan'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find('blockquote').find('table').find_all('tr')
 
 
@@ -127,7 +127,7 @@ def RJGetData():
 
 def GJGetData():
 	response = requests.request("GET", metaDictionary['Gujarat'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find("tbody").find_all("tr")
 	
 	districtArray = []
@@ -484,13 +484,13 @@ def TNGetData():
 def NLGetData():
 	print("NL has no proper table yet")
 #os.system("curl -sk https://covid19.nagaland.gov.in > nl.html")
-#	soup = BeautifulSoup(open("nl.html"), 'html5lib')
+#	soup = BeautifulSoup(open("nl.html"), 'html.parser')
 #	table = soup.find_all("script")[21].get_text()
 #	print(table)
 
 def ASGetData():
 	response = requests.request("GET", metaDictionary['Assam'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find("tbody").find_all("tr")
 
 	districtArray = []
@@ -508,7 +508,7 @@ def ASGetData():
 
 def TRGetData():
 	response = requests.request("GET", metaDictionary['Tripura'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find("tbody").find_all("tr")
 
 	districtArray = []
@@ -526,7 +526,7 @@ def TRGetData():
 
 def PYGetData():
 	response = requests.request("GET", metaDictionary['Puducherry'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find_all("tbody")[1].find_all("tr")
 
 	districtArray = []
@@ -544,7 +544,7 @@ def PYGetData():
 
 def CHGetData():
 	response = requests.request("GET", metaDictionary['Chandigarh'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	divs = soup.find("div", {"class": "col-lg-8 col-md-9 form-group pt-10"}).find_all("div", {"class": "col-md-3"})
 
 	districtDictionary = {}
@@ -571,7 +571,7 @@ def CHGetData():
 
 def KLGetData():
 	response = requests.request("GET", metaDictionary['Kerala'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find_all("script")
 
 	klData = open("kl.txt", "w")
@@ -591,7 +591,7 @@ def KLGetData():
 
 def LAGetData():
 	response = requests.request("GET", metaDictionary['Ladakh'].url)
-	soup = BeautifulSoup(response.content, 'html5lib')
+	soup = BeautifulSoup(response.content, 'html.parser')
 	table = soup.find("table", id = "tableCovidData2").find_all("tr")
 
 	districtArray = []
