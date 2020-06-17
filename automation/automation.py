@@ -128,7 +128,7 @@ def RJGetData():
 def GJGetData():
 	response = requests.request("GET", metaDictionary['Gujarat'].url)
 	soup = BeautifulSoup(response.content, 'html.parser')
-	table = soup.find("tbody").find_all("tr")
+	table = soup.find("div", {"class": "table-responsive"}).find_all("tr")
 	
 	districtArray = []
 	for index, row in enumerate(table):
@@ -136,6 +136,9 @@ def GJGetData():
 			continue
     	
 		dataPoints = row.find_all("td")
+		if(len(dataPoints) != 6):
+			continue
+
 		districtDictionary = {}
 		districtDictionary['districtName'] = dataPoints[0].get_text()
 		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip())
