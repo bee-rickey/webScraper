@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import csv
 import camelot
 from bs4 import BeautifulSoup
 from deltaCalculator import DeltaCalculator
@@ -272,8 +273,8 @@ def RJGetData():
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip().title()
 				districtDictionary['confirmed'] = int(linesArray[3])
-				districtDictionary['recovered'] = int(linesArray[7])
-				districtDictionary['deceased'] = int(linesArray[5])
+				districtDictionary['recovered'] = int(linesArray[4])
+				districtDictionary['deceased'] = -999
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -445,14 +446,14 @@ def HRGetData():
 		with open(".tmp/hr.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
-				if len(linesArray) != 4:
-					print("Issue with {}".format(linesArray))
-					continue
+#		if len(linesArray) != 4:
+# 				print("Issue with {}".format(linesArray))
+# 				continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
-				districtDictionary['confirmed'] = int(linesArray[1])
-				districtDictionary['recovered'] = int(linesArray[2])
-				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+				districtDictionary['confirmed'] = int(linesArray[2])
+				districtDictionary['recovered'] = int(linesArray[3])
+				districtDictionary['deceased'] = -999 #int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -472,6 +473,7 @@ def TNGetData():
 				if len(linesArray) != 4:
 					print("Issue with {}".format(linesArray))
 					continue
+				linesArray[3] = linesArray[3].replace('$', '')
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
 				districtDictionary['confirmed'] = int(linesArray[1])
@@ -731,36 +733,42 @@ def convertTnPDFToCSV():
 	airportConfirmedCount = 0
 	airportRecoveredCount = 0
 	airportDeceasedCount = 0
-	for line in lines:
-		if 'Ariyalur' in line:
-			startedReadingDistricts = True
-		if 'Total' in line:
-			startedReadingDistricts = False
+	with open('.tmp/tn.pdf.txt', newline='') as csvfile:
+		rowReader = csv.reader(csvfile, delimiter=',', quotechar='"')
+		line = ""
+		for row in rowReader:
+			line = '|'.join(row)
+	
+			if 'Ariyalur' in line:
+				startedReadingDistricts = True
+			if 'Total' in line:
+				startedReadingDistricts = False
 
-		if startedReadingDistricts == False:
-			continue
-		line = line.replace('"', '').replace('*', '').replace('#', '')
-		linesArray = line.split(',')
-
-		if len(linesArray) < 6:
-			print("Ignoring line: {} due to less columns".format(line))
-			continue
-
-		if 'Airport' in line:
-			airportConfirmedCount += int(linesArray[2])
-			airportRecoveredCount += int(linesArray[3])
-			airportDeceasedCount += int(linesArray[5])
-			if airportRun == 1:
-				airportRun += 1
+			if startedReadingDistricts == False:
 				continue
-			else:
-				print("{}, {}, {}, {}\n".format('Airport Quarantine', airportConfirmedCount, airportRecoveredCount, airportDeceasedCount), file = tnOutputFile, end = " ")
-				continue
-		if 'Railway' in line:
-			print("{}, {}, {}, {}".format('Railway Quarantine', linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile, end = " ")
-			continue
 
-		print("{}, {}, {}, {}".format(linesArray[1], linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile, end = " ")
+			line = line.replace('"', '').replace('*', '').replace('#', '').replace(',', '').replace('$', '')
+			linesArray = line.split('|')
+
+			if len(linesArray) < 6:
+				print("Ignoring line: {} due to less columns".format(line))
+				continue
+
+			if 'Airport' in line:
+				airportConfirmedCount += int(linesArray[2])
+				airportRecoveredCount += int(linesArray[3])
+				airportDeceasedCount += int(linesArray[5])
+				if airportRun == 1:
+					airportRun += 1
+					continue
+				else:
+					print("{}, {}, {}, {}\n".format('Airport Quarantine', airportConfirmedCount, airportRecoveredCount, airportDeceasedCount), file = tnOutputFile)
+					continue
+			if 'Railway' in line:
+				print("{}, {}, {}, {}".format('Railway Quarantine', linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile)
+				continue
+
+			print("{}, {}, {}, {}".format(linesArray[1], linesArray[2], linesArray[3], linesArray[5]), file = tnOutputFile)
 
 	tnOutputFile.close()
 
