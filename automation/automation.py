@@ -575,24 +575,36 @@ def CHGetData():
 
 
 def KLGetData():
-	response = requests.request("GET", metaDictionary['Kerala'].url)
-	soup = BeautifulSoup(response.content, 'html.parser')
-	table = soup.find_all("script")
+	#TODO : Need to check if the sessionid expires and look into possible workarounds if it does
+	cookies = {
+		'_ga': 'GA1.3.594771251.1592531338',
+		'_gid': 'GA1.3.674470591.1592531338',
+		'PHPSESSID': 'a87c5dce18c37488e5aa48742695f52a',
+		'_gat_gtag_UA_162482846_1': '1',
+	}
 
-	klData = open("kl.txt", "w")
-	klData.writelines(table[len(table) - 1].get_text())
-	klData.close()
-	districtList = ""
+	headers = {
+		'Connection': 'keep-alive',
+		'Accept': 'application/json, text/javascript, */*; q=0.01',
+		'X-Requested-With': 'XMLHttpRequest',
+		'Sec-Fetch-Site': 'same-origin',
+		'Sec-Fetch-Mode': 'cors',
+		'Sec-Fetch-Dest': 'empty',
+		'Referer': 'https://dashboard.kerala.gov.in/index.php',
+		'Accept-Language': 'en-US,en;q=0.9',
+	}
 
-	with open("kl.txt", "r") as klFile:
-		for line in klFile:
-			if "labels:" in line:
-				print(line)
-				distrctList = re.sub("labels: ", "", line)
-				print(line)
-			if "data:" in line: 
-				print(line)
-	klFile.close()
+	stateDashboard = requests.get(metaDictionary['Kerala'].url, headers=headers, cookies=cookies).json()
+	districtArray = []
+	for districtDetails in stateDashboard['features']:
+		districtDictionary = {}
+		districtDictionary['districtName'] = districtDetails['properties']['District']
+		districtDictionary['confirmed'] = districtDetails['properties']['covid_stat']
+		districtDictionary['recovered'] = districtDetails['properties']['covid_statcured']
+		districtDictionary['deceased'] = districtDetails['properties']['covid_statdeath']
+		districtArray.append(districtDictionary)
+	deltaCalculator.getStateDataFromSite("Kerala", districtArray, option)
+
 
 def LAGetData():
 	response = requests.request("GET", metaDictionary['Ladakh'].url)
