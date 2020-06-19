@@ -265,16 +265,24 @@ def RJGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
+	skipValues = False
 	try:
 		with open(".tmp/rj.txt", "r") as upFile:
 			for line in upFile:
+				if 'Other' in line:
+					skipValues = True
+					continue
+				if skipValues == True:
+					continue
+
 				linesArray = line.split('|')[0].split(',')
+				
 				print(linesArray)
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip().title()
 				districtDictionary['confirmed'] = int(linesArray[3])
-				districtDictionary['recovered'] = int(linesArray[4])
-				districtDictionary['deceased'] = -999
+				districtDictionary['recovered'] = int(linesArray[7])
+				districtDictionary['deceased'] = int(linesArray[5])
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -446,14 +454,14 @@ def HRGetData():
 		with open(".tmp/hr.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
-#		if len(linesArray) != 4:
-# 				print("Issue with {}".format(linesArray))
-# 				continue
+				if len(linesArray) != 4:
+					print("Issue with {}".format(linesArray))
+					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
-				districtDictionary['confirmed'] = int(linesArray[2])
-				districtDictionary['recovered'] = int(linesArray[3])
-				districtDictionary['deceased'] = -999 #int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -671,7 +679,7 @@ def HRFormatLine(line):
 		linesArray.remove("Dadri")
 		linesArray[1] = "Charkhi Dadri"
 
-	if len(linesArray) != 9:
+	if len(linesArray) != 11:
 		print("Ignoring: {}".format(linesArray))
 		return "\n"
 	
@@ -682,10 +690,10 @@ def HRFormatLine(line):
 		recovery = linesArray[4]
 
 	deaths = 0
-	if '[' in linesArray[5]:
-		deaths = linesArray[5].split('[')[0]
+	if '[' in linesArray[7]:
+		deaths = linesArray[7].split('[')[0]
 	else:
-		deaths = linesArray[5]
+		deaths = linesArray[7]
 
 	outputString = linesArray[1] + "," + linesArray[3] + "," + str(recovery) + "," + str(deaths) + "\n"
 	return outputString
