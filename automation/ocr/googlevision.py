@@ -176,7 +176,8 @@ def printOutput():
 				ax.add_patch(rect)
 				continue
 
-			if value.col == previousCol:
+#if value.col == previousCol or is_number(value.value) == False:
+			if is_number(value.value) == False:
 				mergedValue = mergedValue + " " + value.value if len(mergedValue) != 0 else value.value
 			else:
 				if index == len(outputString) - 1:
@@ -211,7 +212,7 @@ def printOutput():
 							outputString += "," + value.strip()
 					print("{} | {}".format(outputString, columnList), file = outputFile)
 				except KeyError:
-					print(districtName + " , " )  
+					print("Failed to find lookup for {} ".format(districtName))  
 	outputFile.close()
 	ax.imshow(image)
 	plt.show()

@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import requests
-import pdftotext
-import PyPDF2 as pypdf
+import csv
 import camelot
 import re
 import datetime
@@ -23,23 +22,44 @@ for index, table in enumerate(tables):
 	tables[index].to_csv('.tmp/ka' + str(index) + '.csv')
 
 for index, table in enumerate(tables):
-	kaFile = open('.tmp/ka' + str(index) + '.csv', 'r') 
-	lines = kaFile.readlines()
 
-	for line in lines:
-		line = re.sub(',+$', '', re.sub('^,+', '', line.replace('\"', '').replace('&', ' ')))
-		if len(line.split(',')) < 3:
-			continue
-		districtName = line.split(',')[1].split('(')[0]
-		districtName = deltaCalculator.getNameMapping('Karnataka', districtName.strip())
-		linesArray = line.split(',')[2].split(' ')
+	with open('.tmp/ka' + str(index) + '.csv', newline='') as kaFile:
+		rowReader = csv.reader(kaFile, delimiter=',', quotechar='"')
+		for row in rowReader:
+			line = '|'.join(row)
+			line = re.sub('^\|+', '', line)
+			print(line)
+			linesArray = line.split('|')
+			if len(linesArray) < 3:
+				print("Ignoring {} ".format(line))
+				continue
+
+			districtName = linesArray[1].split('(')[0].strip()
+			districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
+
+			patientIds = re.sub('&', ',', re.sub(' +', '', linesArray[2]))
+			patientIdArray = patientIds.split(',')
+
+			print("{} -- {}".format(districtName, patientIdArray))
+
+			for item in patientIdArray:
+				if len(item) == 0 or is_number(item) or '(' in item:	
+					continue
+				if item == "\n":
+					continue
+				print("{},{},{},{},{},{},{},{},{},{}".format(item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'), file = kaOutputFile)
+
+
+		
+		"""
 		patientId = []
 
 		for item in linesArray:
-			if len(item) == 0 or is_number(item):	
+			if len(item) == 0 or is_number(item) or '(' in item:	
 				continue
 			patientId.append(item)
 		for item in patientId:
 			if item == "\n":
 				continue
 			print("{},{},{},{},{},{},{},{},{},{}".format(item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'), file = kaOutputFile)
+			"""
