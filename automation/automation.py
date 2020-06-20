@@ -296,8 +296,12 @@ def MPGetData():
 	districtArray = []
 	try:
 		with open(".tmp/mp.txt", "r") as upFile:
+			isIgnoreFlagSet = False
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
+				if 'Total' in line or isIgnoreFlagSet == True:
+					isIgnoreFlagSet = True
+					print("Ignoring {} ".format(line))
 				if len(linesArray) != 8:
 					print("Ignoring due to invalid length: {}".format(linesArray))
 					continue
@@ -320,6 +324,30 @@ def MPGetData():
 		deltaCalculator.getStateDataFromSite("Madhya Pradesh", districtArray, option)
 	except FileNotFoundError:
 		print("rj.txt missing. Generate through pdf or ocr and rerun.")
+
+def WBGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	readFileFromURLV2(metaDictionary['West Bengal'].url, "West Bengal", "Alipurduar", "TOTAL")
+	try:
+		with open(".tmp/WB.csv", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split(',')
+				if len(linesArray) != 7:
+					print("Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[1].strip()
+				districtDictionary['confirmed'] = int(linesArray[2])
+				districtDictionary['recovered'] = int(linesArray[3])
+				districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+				districtArray.append(districtDictionary)
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("West Bengal", districtArray, option)
+	except FileNotFoundError:
+		print("wb.txt missing. Generate through pdf or ocr and rerun.")
 
 def PBGetDataThroughPdf():
 	linesArray = []
@@ -699,6 +727,47 @@ def HRFormatLine(line):
 
 	outputString = linesArray[1] + "," + linesArray[3] + "," + str(recovery) + "," + str(deaths) + "\n"
 	return outputString
+
+
+def WBFormatLine(row):
+	row[2] = re.sub(',', '', re.sub('\+.*', '', row[2]))
+	row[3] = re.sub(',', '', re.sub('\+.*', '', row[3]))
+	row[4] = re.sub(',', '', re.sub('\+.*', '', row[4]))
+	row[5] = re.sub(',', '', re.sub('\+.*', '', row[5]))
+	line = ",".join(row) + "\n"
+	return line
+
+
+def readFileFromURLV2(url, stateName, startKey, endKey):
+	stateFileName = metaDictionary[stateName].stateCode 
+	pid = input("Enter district page:")
+	tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid)
+	for index, table in enumerate(tables):
+		tables[index].to_csv('.tmp/' + stateFileName + str(index) + '.pdf.txt')
+
+	stateOutputFile = open('.tmp/' + stateFileName + '.csv', 'w')
+	csvWriter = csv.writer(stateOutputFile)
+	arrayToWrite = []
+
+	startedReadingDistricts = False
+	for index, table in enumerate(tables):
+		with open('.tmp/' + stateFileName + str(index) + '.pdf.txt', newline='') as stateCSVFile:
+			rowReader = csv.reader(stateCSVFile, delimiter=',', quotechar='"')
+			for row in rowReader:
+				line = "|".join(row)
+				if startKey in line:
+					startedReadingDistricts = True
+				if endKey in line:
+					startedReadingDistricts = False
+					continue
+				if startedReadingDistricts == False:
+					continue
+
+				line = eval(stateFileName + "FormatLine")(row)
+				print(line, file = stateOutputFile)
+
+	stateOutputFile.close()
+				
 
 def readFileFromURL(url, stateName, startKey, endKey):
 	stateFileName = metaDictionary[stateName].stateCode 
