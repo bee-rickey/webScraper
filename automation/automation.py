@@ -583,11 +583,13 @@ def CHGetData():
 
 
 def KLGetData():
-	#TODO : Need to check if the sessionid expires and look into possible workarounds if it does
+	response = requests.request("GET", 'https://dashboard.kerala.gov.in/index.php')
+	sessionId = (response.headers['Set-Cookie']).split(';')[0].split('=')[1]
+
 	cookies = {
 		'_ga': 'GA1.3.594771251.1592531338',
 		'_gid': 'GA1.3.674470591.1592531338',
-		'PHPSESSID': 'a87c5dce18c37488e5aa48742695f52a',
+		'PHPSESSID': sessionId,
 		'_gat_gtag_UA_162482846_1': '1',
 	}
 
