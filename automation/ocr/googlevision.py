@@ -17,6 +17,7 @@ startingText = ""
 enableTranslation = False
 translationFile = ""
 fileName = ""
+xWidthTotal = 0
 
 
 def is_number(s):
@@ -47,6 +48,7 @@ def buildCells():
 	global xThreshold
 	global configxInterval
 	global configyInterval
+	global xWidthTotal
 
 	testingNumbersFile = open("bounds.txt", "r")
 	for index, line in enumerate(testingNumbersFile):
@@ -80,7 +82,9 @@ def buildCells():
 #Use these intervals as a possible error in mid point calculation
 		xInterval = (int(lowerRight[0]) - int(lowerLeft[0]))/2 if (int(lowerRight[0]) - int(lowerLeft[0]))/2 > xInterval else xInterval
 		yInterval = (int(upperLeft[1]) - int(lowerLeft[1]))/2 if (int(upperLeft[1]) - int(lowerLeft[1]))/2 > yInterval else yInterval
+		xWidthTotal = xWidthTotal + int(lowerRight[0]) - int(lowerLeft[0])
 		dataDictionaryArray.append(cellItem(value, xMean, yMean, lowerLeft[0], lowerLeft[1], (float(lowerRight[0]) - float(lowerLeft[0])), (float(upperLeft[1]) - float(lowerLeft[1])), 0, 0, index + 1))
+	xWidthTotal = xWidthTotal/len(dataDictionaryArray)
 
 def buildReducedArray():
 	tempDictionaryArray = []
@@ -176,8 +180,7 @@ def printOutput():
 				ax.add_patch(rect)
 				continue
 
-#if value.col == previousCol or is_number(value.value) == False:
-			if is_number(value.value) == False:
+			if value.col == previousCol and is_number(value.value) == False:
 				mergedValue = mergedValue + " " + value.value if len(mergedValue) != 0 else value.value
 			else:
 				if index == len(outputString) - 1:
