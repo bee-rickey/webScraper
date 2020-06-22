@@ -12,18 +12,20 @@ Comment lines in automation.meta that do not need to be run.
 
 OCR:  
   cd ocr  
-  ./ocr.sh "Image Name" "State Name" "Starting String" "IsTranslationRequired"
+  ./ocr.sh "Image Name" "State Name" "Starting String" "IsTranslationRequired" "ocr,table,automation"
+
+The last argument tells which of the steps to skip. This is used for images that need manual intervention.
 
 **Automation support through URL fetch/scraping:**  
-AP, AS, CH, LA, GJ, MH, MP, OR, PY, TR, RJ (_RJ has stopped giving tables on their site_).
+AP, AS, CH, KL, LA, GJ, MH, MP, OR, PY, TR, RJ (_RJ has stopped giving tables on their site_).
 
 KA - district numbers and individual support (beta).
 
 **Automation through OCR:**  
-UP, RJ, PB, BR (Daily updates and bulletins)
+BR, MP, PB, RJ, UP 
 
 **Automation support through pdf:**  
-HR, PB, TN
+HR, PB, TN, WB
 
 **Future support:**  
 KL (url), MP (pdf), HR (ocr), HP (ocr)
