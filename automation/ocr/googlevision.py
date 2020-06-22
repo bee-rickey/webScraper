@@ -75,7 +75,7 @@ def buildCells():
 		xMean = (int(lowerLeft[0]) + int(lowerRight[0]))/2
 		yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
 
-		if value == startingText:
+		if value in startingText:
 			yThreshold = yMean  
 			xThreshold = xMean
 
@@ -138,14 +138,15 @@ def assignRowsAndColumns():
 
 def buildTranslationDictionary():
 	global startingText
+	originalStartingText = startingText
 	with open(translationFile, "r") as metaFile:
 		for line in metaFile:
 			if line.startswith('#'):
 				continue
 			lineArray = line.strip().split(',')
 			if len(startingText) != 0:
-				if startingText.strip() == lineArray[1].strip():
-					startingText = lineArray[0].strip()
+				if originalStartingText.strip() == lineArray[1].strip():
+					startingText = startingText + "," + lineArray[0].strip() 
 			translationDictionary[lineArray[0].strip()] = lineArray[1].strip()
 	
 
