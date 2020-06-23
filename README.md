@@ -7,8 +7,8 @@ cd automation
 Comment lines in automation.meta that do not need to be run.    
   ./automation.py -- to run all for all states.  
   ./automation.py "state name" -- to get all details for that state.  
-  ./automation.py "state name" "detailed" -- to get state details based on C, R, D categories.  
-  ./automation.py "state name" "detailed" "pdf/ocr" -- currently supported only for PB.
+  ./automation.py "state name" "detailed/full" -- to get state details based on C, R, D categories.  
+  ./automation.py "state name" "detailed/full" "pdf/ocr" -- currently supported only for PB.
 
 OCR:  
   cd ocr  
@@ -28,7 +28,7 @@ BR, MP, PB, RJ, UP
 HR, PB, TN, WB
 
 **Future support:**  
-KL (url), MP (pdf), HR (ocr), HP (ocr)
+MP (pdf), HR (ocr), HP (ocr)
 
 **Complete description of OCR methodology and debugging**
 
