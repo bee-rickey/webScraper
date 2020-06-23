@@ -42,6 +42,7 @@ class DeltaCalculator:
 	def getStateDataFromSite(self, stateName, stateDataFromStateDashboard, options):
 		logging.info(stateDataFromStateDashboard)
 		stateData = self.covidDashboardData[stateName]['districtData']
+		stateCode = self.covidDashboardData[stateName]['statecode']
 		print("\n" + '*' * 20 + stateName + '*' * 20)
 		try:
 			nameMapping = self.nameMapping[stateName]
@@ -78,7 +79,7 @@ class DeltaCalculator:
 			if not options:
 				outputString = districtName + ", " + str(confirmedDelta) + ", " + str(recoveredDelta) + ", " + str(deceasedDelta) 
 				print(outputString)
-			if options == "detailed":
+			if options == "detailed" or options == "full":
 				districts.append(districtName)
 				confirmedDeltaArray.append(confirmedDelta)
 				recoveredDeltaArray.append(recoveredDelta)
@@ -97,11 +98,20 @@ class DeltaCalculator:
 				self.printDistricts(self.printDeltas(confirmedDeltaArray, "Confirmed"), districts)
 				self.printDistricts(self.printDeltas(recoveredDeltaArray, "Recovered"), districts)
 				self.printDistricts(self.printDeltas(deceasedDeltaArray, "Deceased"), districts)
+		elif options == "full":
+			self.printFullDetails(confirmedDeltaArray, "Hospitalized", stateName, stateCode, districts)
+			self.printFullDetails(recoveredDeltaArray, "Recovered", stateName, stateCode, districts)
+			self.printFullDetails(deceasedDeltaArray, "Deceased", stateName, stateCode, districts)
 		else:
 			print("Total delta, {}, {}, {}".format(stateConfirmedDelta, stateRecoveredDelta, stateDeceasedDelta))
 
 		print("StateTotal, {}, {}, {}".format(stateTotalFromStateDashboard['confirmed'], stateTotalFromStateDashboard['recovered'], stateTotalFromStateDashboard['deceased']))
 		print("SiteTotal, {}, {}, {}".format(siteTotalFromStateDashboard['confirmed'], siteTotalFromStateDashboard['recovered'], siteTotalFromStateDashboard['deceased']))
+
+	def printFullDetails(self, deltaArray, category, stateName, stateCode, districts):
+		for index, data in enumerate(deltaArray):
+			if data != 0 and data != "NA":
+				print("{},{},{},{},{}".format(districts[index], stateName, stateCode, data, category))
 
 	def printDeltas(self, deltaArray, category):
 		print('-' * 20 + category + '-' * 20)
