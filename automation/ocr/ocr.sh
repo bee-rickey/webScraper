@@ -7,6 +7,7 @@ fi
 skipOcr=0
 skipTable=0
 skipAutomation=0
+individualRecords=0
 
 if (( $# == 5 ))
 then
@@ -31,6 +32,8 @@ then
 			skipOcr=1
 			skipTable=1
 			;;
+		"individual")
+			individualRecords=1
 	esac
 fi
 
@@ -79,9 +82,22 @@ then
 fi
 cp output.txt ../.tmp/$stateCode.txt
 
-if (( $skipAutomation != 1 ))
+if (( $skipAutomation != 1 && $individualRecords != 1 ))
 then
 	cd ..
 	echo -e "\n******** Calling automation.py for $2  ******* "
-	./automation.py "$2" "detailed" "ocr"
+	./automation.py "$2" "full" "ocr"
+fi
+
+if (( $individualRecords == 1 ))
+then
+	cd ..
+	case $2 in
+		"Bihar")
+			./biharIndividual.py
+			;;
+		*)
+			echo "No custom script found"
+			;;
+	esac
 fi
