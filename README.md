@@ -11,7 +11,7 @@ Comment lines in automation.meta that do not need to be run.
   ./automation.py "state name" "detailed/full" "pdf/ocr" -- currently supported only for PB.
 
 Getting details of KA bulletin:  
-Run `./kaconfirmed.py`. This gives the output in kaconfirmed.csv file.
+Run `./kaconfirmed.py`. This gives the output in kaconfirmed.csv file.  
 Run `./karecoveries.py`. This assumes the recovery table to be the 4th page (can make this user input, but holding off for now). Gives the output in karecoveries.csv file.
 
 OCR:  
