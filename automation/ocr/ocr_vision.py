@@ -18,6 +18,9 @@ def detect_text(path):
 	response = client.document_text_detection(image=image)
 	texts = response.text_annotations
 	print(texts)
+	with io.open('poly.txt', 'w') as boundsFile:
+		print(texts, file = boundsFile)
+	boundsFile.close()
 
 # Save output
 

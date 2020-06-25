@@ -11,30 +11,35 @@ individualRecords=0
 
 if (( $# == 5 ))
 then
-	option=`echo $5 |awk '{print tolower($0)}'`
-	case $option in
-		"all")
-			;;
-		"ocr")
-			skipOcr=1
-			echo "**** Skipping OCR Generation ****"
-			;;
-		"table")
-			echo "**** Skipping CSV Generation ****"
-			skipTable=1
-			;;
-		"automation")
-			echo "**** Skipping Automation ****"
-			skipAutomation=1
-			;;
-		"ocr,table")
-			echo "**** Skipping OCR, CSV Generation ****"
-			skipOcr=1
-			skipTable=1
-			;;
-		"individual")
-			individualRecords=1
-	esac
+	for i in $(echo $5 | sed "s/,/ /g")
+	do
+		option=`echo $i |awk '{print tolower($0)}'`
+
+		case $option in
+			"all")
+				;;
+			"ocr")
+				skipOcr=1
+				echo "**** Skipping OCR Generation ****"
+				;;
+			"table")
+				echo "**** Skipping CSV Generation ****"
+				skipTable=1
+				;;
+			"automation")
+				echo "**** Skipping Automation ****"
+				skipAutomation=1
+				;;
+			"ocr,table")
+				echo "**** Skipping OCR, CSV Generation ****"
+				skipOcr=1
+				skipTable=1
+				;;
+			"individual")
+				individualRecords=1
+				;;
+		esac
+	done
 fi
 
 stateCode=""

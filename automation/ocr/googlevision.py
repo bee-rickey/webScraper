@@ -1,4 +1,5 @@
 import sys
+import json
 from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
@@ -39,6 +40,18 @@ class cellItem:
 		self.lby = lby
 		self.h = h
 		self.w = w
+
+def buildCellsV2():
+	global xInterval
+	global yInterval
+	global startingText
+	global yThreshold
+	global xThreshold
+	global configxInterval
+	global configyInterval
+	global xWidthTotal
+# testingNumbersFile = open("poly.txt", "r")
+#data = json.load(testingNumbersFile)
 
 def buildCells():
 	global xInterval
@@ -85,6 +98,7 @@ def buildCells():
 		xWidthTotal = xWidthTotal + int(lowerRight[0]) - int(lowerLeft[0])
 		dataDictionaryArray.append(cellItem(value, xMean, yMean, lowerLeft[0], lowerLeft[1], (float(lowerRight[0]) - float(lowerLeft[0])), (float(upperLeft[1]) - float(lowerLeft[1])), 0, 0, index + 1))
 	xWidthTotal = xWidthTotal/len(dataDictionaryArray)
+	testingNumbersFile.close()
 
 def buildReducedArray():
 	tempDictionaryArray = []
@@ -183,6 +197,8 @@ def printOutput():
 
 			if value.col == previousCol and is_number(value.value) == False:
 				mergedValue = mergedValue + " " + value.value if len(mergedValue) != 0 else value.value
+				if index == len(outputString) - 1:
+					output += mergedValue if len(output) == 0 else " , " + mergedValue
 			else:
 				if index == len(outputString) - 1:
 					mergedValue = mergedValue + ", " + value.value if len(mergedValue) != 0 else value.value
@@ -261,6 +277,7 @@ def main():
 		buildTranslationDictionary()
 
 	buildCells()
+	buildCellsV2()
 
 	if len(startingText) != 0:
 		buildReducedArray()
