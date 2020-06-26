@@ -19,3 +19,4 @@ Madhya Pradesh, MP,
 Karnataka, KA,
 West Bengal, WB,
 Haryana, HR,
+Meghalaya, ML, https://services7.arcgis.com/nzBTI19PTHBZaEPT/arcgis/rest/services/Admin_Boundary/FeatureServer/1/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A10018754.171386972%2C%22ymin%22%3A2504688.542852979%2C%22xmax%22%3A10644926.307098966%2C%22ymax%22%3A3130860.678564977%2C%22spatialReference%22%3A%7B%22wkid%22%3A102100%7D%7D&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*&outSR=102100&resultType=tile
