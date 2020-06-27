@@ -644,6 +644,19 @@ def KLGetData():
 	deltaCalculator.getStateDataFromSite("Kerala", districtArray, option)
 
 
+def MLGetData():
+	stateDashboard = requests.get(metaDictionary['Meghalaya'].url).json()
+	districtArray = []
+	for districtDetails in stateDashboard['features']:
+		districtDictionary = {}
+		districtDictionary['districtName'] = districtDetails['attributes']['Name']
+		districtDictionary['confirmed'] = districtDetails['attributes']['Positive']
+		districtDictionary['recovered'] = districtDetails['attributes']['Recovered']
+		districtDictionary['deceased'] = districtDetails['attributes']['Deceasesd']
+		districtArray.append(districtDictionary)
+	deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
+
+
 def LAGetData():
 	response = requests.request("GET", metaDictionary['Ladakh'].url)
 	soup = BeautifulSoup(response.content, 'html.parser')
