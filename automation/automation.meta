@@ -19,3 +19,4 @@ Madhya Pradesh, MP,
 Karnataka, KA,
 West Bengal, WB,
 Haryana, HR,
+Meghalaya, ML, https://services7.arcgis.com/nzBTI19PTHBZaEPT/arcgis/rest/services/Admin_Boundary/FeatureServer/1/query?f=json&returnGeometry=false&outFields=*&where=1=1
