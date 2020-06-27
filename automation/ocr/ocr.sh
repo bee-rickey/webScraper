@@ -91,7 +91,7 @@ if (( $skipAutomation != 1 && $individualRecords != 1 ))
 then
 	cd ..
 	echo -e "\n******** Calling automation.py for $2  ******* "
-	./automation.py "$2" "full" "ocr"
+	python3 ./automation.py "$2" "full" "ocr"
 fi
 
 if (( $individualRecords == 1 ))
@@ -99,7 +99,7 @@ then
 	cd ..
 	case $2 in
 		"Bihar")
-			./biharIndividual.py
+			python3 ./biharIndividual.py
 			;;
 		*)
 			echo "No custom script found"
