@@ -22,7 +22,7 @@ OCR:
 The last argument tells which of the steps to skip. This is used for images that need manual intervention.
 
 **Automation support through URL fetch/scraping:**  
-AP, AS, CH, KL, LA, GJ, MH, MP, OR, PY, TR, RJ (_RJ has stopped giving tables on their site_).
+AP, AS, CH, KL, LA, GJ, MH, ML, OR, PY, TR, RJ (_RJ has stopped giving tables on their site_).
 
 KA - district numbers and individual support (beta).
 
@@ -33,7 +33,7 @@ BR, MP, PB, RJ, UP
 HR, PB, TN, WB
 
 **Future support:**  
-MP (pdf), HR (ocr), HP (ocr)
+HP (ocr)
 
 **Complete description of OCR methodology and debugging**
 
