@@ -29,7 +29,7 @@ def is_number(s):
 		return False
 
 class cellItem:
-	def __init__(self, value, x, y, lbx, lby, h, w, col, row, index):
+	def __init__(self, value, x, y, lbx, lby, w, h, col, row, index):
 		self.value = value
 		self.x = x
 		self.y = y
@@ -102,13 +102,22 @@ def buildCells():
 
 def buildReducedArray():
 	tempDictionaryArray = []
+	global xInterval
+	global yInterval
 	global dataDictionaryArray
+	maxWidth = 0
+	maxHeight = 0
 
 #Ignore the texts that lie to the left and top of the threshold text. This improves accuracy of output
 	for cell in dataDictionaryArray:
 		if cell.y < yThreshold - 10 or cell.x < xThreshold - 30:
 			continue
 		tempDictionaryArray.append(cell)
+		maxWidth = cell.w if cell.w > maxWidth else maxWidth
+		maxHeight = cell.h if cell.h > maxHeight else maxHeight
+
+	xInterval = maxWidth/2
+	yInterval = maxHeight/2
 	
 	dataDictionaryArray = tempDictionaryArray
 
@@ -118,11 +127,13 @@ def assignRowsAndColumns():
 	global configyInterval
 	global configxInterval
 
+
 	if configxInterval != 0:
 		xInterval = configxInterval
 	if configyInterval != 0:
 		yInterval = configyInterval
 
+	print("Using computed yInterval: {}, xInterval: {}".format(yInterval, xInterval))
 	for rowIndex, currentCell in enumerate(dataDictionaryArray):           
 
 		if currentCell.row == 0:
@@ -191,7 +202,7 @@ def printOutput():
 				mergedValue = value.value 
 				previousCol = value.col
 				columnList = str(value.col)
-				rect = patches.Rectangle((int(value.lbx), int(value.lby)), value.h, value.w,linewidth=0.75,edgecolor='r', facecolor='none')
+				rect = patches.Rectangle((int(value.lbx), int(value.lby)), value.w, value.h,linewidth=0.75,edgecolor='r', facecolor='none')
 				ax.add_patch(rect)
 				continue
 
@@ -206,7 +217,7 @@ def printOutput():
 				previousCol = value.col
 				mergedValue = value.value #+ " ---- " + str(value.col)
 				columnList = columnList + ", " + str(value.col) if len(columnList) != 0 else str(value.col)
-				rect = patches.Rectangle((int(value.lbx), int(value.lby)), value.h, value.w,linewidth=0.75,edgecolor='r', facecolor='none')
+				rect = patches.Rectangle((int(value.lbx), int(value.lby)), value.w, value.h,linewidth=0.75,edgecolor='r', facecolor='none')
 				ax.add_patch(rect)
 
 		if len(output) > 0:
@@ -228,7 +239,7 @@ def printOutput():
 					translatedValue = translationDictionary[districtName]
 					outputString = translatedValue 
 					for index, value in enumerate(outputArray):
-						if index > districtIndex:
+						if index > districtIndex and is_number(value):
 							outputString += "," + value.strip()
 					print("{} | {}".format(outputString, columnList), file = outputFile)
 				except KeyError:
