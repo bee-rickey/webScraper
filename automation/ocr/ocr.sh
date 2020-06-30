@@ -75,11 +75,11 @@ if (( $skipOcr != 1 ))
 then
 	echo -e "\n******** Calling google vision api *******"
 	python3 ocr_vision.py $1 > bounds.txt
-	sed "s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$4/g" ocrconfig.meta.orig > ocrconfig.meta
 fi
 
 if (( $skipTable != 1 ))
 then
+	sed "s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$4/g" ocrconfig.meta.orig > ocrconfig.meta
 	echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
 	cat ocrconfig.meta
 	echo -e "******** ++++++++ *******"

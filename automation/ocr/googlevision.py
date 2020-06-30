@@ -9,12 +9,15 @@ dataDictionary = {}
 dataDictionaryArray = []
 translationDictionary = {}
 xInterval = 0
-yThreshold = 0
+xStartThreshold = 0
+yStartThreshold = 0
+xEndThreshold = 0
+yEndThreshold = 0
 configxInterval = 0
 configyInterval = 0
-xThreshold = 0
 yInterval = 0
 startingText = ""
+endingText = ""
 enableTranslation = False
 translationFile = ""
 fileName = ""
@@ -45,8 +48,9 @@ def buildCellsV2():
 	global xInterval
 	global yInterval
 	global startingText
-	global yThreshold
-	global xThreshold
+	global endingText
+	global yStartThreshold
+	global xStartThreshold
 	global configxInterval
 	global configyInterval
 	global xWidthTotal
@@ -57,11 +61,17 @@ def buildCells():
 	global xInterval
 	global yInterval
 	global startingText
-	global yThreshold
-	global xThreshold
+	global endingText
+	global xStartThreshold
+	global yStartThreshold
+	global xEndThreshold
+	global yEndThreshold
 	global configxInterval
 	global configyInterval
 	global xWidthTotal
+
+	startingMatchFound = False
+	endingMatchFound = False
 
 	testingNumbersFile = open("bounds.txt", "r")
 	for index, line in enumerate(testingNumbersFile):
@@ -88,9 +98,15 @@ def buildCells():
 		xMean = (int(lowerLeft[0]) + int(lowerRight[0]))/2
 		yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
 
-		if value in startingText:
-			yThreshold = yMean  
-			xThreshold = xMean
+		if value in startingText and startingMatchFound == False:
+			startingMatchFound = True
+			xStartThreshold = xMean
+			yStartThreshold = yMean  
+
+		if value in endingText and endingMatchFound == False:
+			endingMatchFound = True
+			xEndThreshold = xMean
+			yEndThreshold = yMean
 
 #Use these intervals as a possible error in mid point calculation
 		xInterval = (int(lowerRight[0]) - int(lowerLeft[0]))/2 if (int(lowerRight[0]) - int(lowerLeft[0]))/2 > xInterval else xInterval
@@ -101,6 +117,7 @@ def buildCells():
 	testingNumbersFile.close()
 
 def buildReducedArray():
+	global endingText
 	tempDictionaryArray = []
 	global xInterval
 	global yInterval
@@ -110,8 +127,12 @@ def buildReducedArray():
 
 #Ignore the texts that lie to the left and top of the threshold text. This improves accuracy of output
 	for cell in dataDictionaryArray:
-		if cell.y < yThreshold - 10 or cell.x < xThreshold - 30:
+		if cell.y < yStartThreshold - 10 or cell.x < xStartThreshold - 30:
 			continue
+
+		if len(endingText) != 0 and (cell.y > yEndThreshold + 10 or cell.x < xEndThreshold - 30):
+			continue
+
 		tempDictionaryArray.append(cell)
 		maxWidth = cell.w if cell.w > maxWidth else maxWidth
 		maxHeight = cell.h if cell.h > maxHeight else maxHeight
@@ -163,7 +184,11 @@ def assignRowsAndColumns():
 
 def buildTranslationDictionary():
 	global startingText
+	global endingText
+
 	originalStartingText = startingText
+	originalEndingText = endingText
+
 	with open(translationFile, "r") as metaFile:
 		for line in metaFile:
 			if line.startswith('#'):
@@ -172,6 +197,11 @@ def buildTranslationDictionary():
 			if len(startingText) != 0:
 				if originalStartingText.strip() == lineArray[1].strip():
 					startingText = startingText + "," + lineArray[0].strip() 
+
+			if len(endingText) != 0:
+				if originalEndingText.strip() == lineArray[1].strip():
+					endingText = endingText + "," + lineArray[0].strip() 
+
 			translationDictionary[lineArray[0].strip()] = lineArray[1].strip()
 	
 
@@ -250,6 +280,7 @@ def printOutput():
 
 def parseConfigFile(fileName):
 	global startingText
+	global endingText
 	global enableTranslation
 	global translationFile
 	global configyInterval
@@ -265,7 +296,11 @@ def parseConfigFile(fileName):
 		value = lineArray[1].strip()
 	
 		if key == "startingText":
-			startingText = value
+			if ',' in value:
+				startingText = value.split(',')[0]
+				endingText = value.split(',')[1]
+			else:
+				startingText = value
 		if key == "enableTranslation":
 			enableTranslation = eval(value)
 		if key == "translationFile":
@@ -277,6 +312,7 @@ def parseConfigFile(fileName):
 
 def main():
 	global startingText
+	global endingText
 	global enableTranslation
 	global fileName
 # If given, this text will be used to ignore those items above and to the left of this text. This can cause issues if the text is repeated!
@@ -290,7 +326,7 @@ def main():
 	buildCells()
 	buildCellsV2()
 
-	if len(startingText) != 0:
+	if len(startingText) != 0 or len(endingText) != 0:
 		buildReducedArray()
 
 	assignRowsAndColumns()

@@ -29,9 +29,10 @@ class AutomationMeta:
 def fetchData(stateName):
 	if stateName == "All States":
 		for key, metaObject in metaDictionary.items():
-			logging.info("Calling delta calculator for: " + metaObject.stateCode)
-			eval(metaObject.stateCode + "GetData()")
-			print("Dashboard url: " + metaObject.url)
+			if len(metaObject.url.strip()) > 0:
+				logging.info("Calling delta calculator for: " + metaObject.stateCode)
+				eval(metaObject.stateCode + "GetData()")
+				print("Dashboard url: " + metaObject.url)
 	else:
 		try:
 			logging.info("Calling delta calculator for: " + metaDictionary[stateName].stateCode)
