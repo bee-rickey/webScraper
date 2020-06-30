@@ -11,6 +11,7 @@ google-auth==1.18.0
 google-cloud-vision==1.0.0
 googleapis-common-protos==1.52.0
 grpcio==1.30.0
+html5lib==1.1
 idna==2.9
 jdcal==1.4.1
 kiwisolver==1.2.0
@@ -36,3 +37,4 @@ six==1.15.0
 sortedcontainers==2.2.2
 soupsieve==2.0.1
 urllib3==1.25.9
+webencodings==0.5.1
