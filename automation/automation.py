@@ -2,6 +2,7 @@
 import csv
 import camelot
 from bs4 import BeautifulSoup
+import html5lib
 from deltaCalculator import DeltaCalculator
 import requests
 import pdftotext
@@ -152,7 +153,21 @@ def GJGetData():
 
 
 def TSGetData():
-  print("TS")
+	response = requests.request("GET", metaDictionary['Telangana'].url)
+	#response returns an invalid html and html.parser is not able to parse it properly. so, using html5lib to parse.
+	soup = BeautifulSoup(response.content, 'html5lib')
+	districtArray = []
+	for tr in soup.tbody.find_all("tr", class_=None):
+		data = tr.find_all('td')
+		districtDictionary = {}
+		districtDictionary['districtName'] = tr.find('th').get_text(strip=True)
+		districtDictionary['confirmed'] = int(data[0].get_text(strip=True))
+		districtDictionary['recovered'] = int(data[1].get_text(strip=True))
+		districtDictionary['deceased'] = int(data[2].get_text(strip=True))
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Telangana", districtArray, option)
+
 
 def UPGetData():
 	linesArray = []
