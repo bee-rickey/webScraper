@@ -106,7 +106,10 @@ A: Open automation.meta file, add a # in the beginning of the line corresponding
 A: This happens when the TranslationValue is set to True and the code tries to find an entry corresponding to it in the stateCode_translation.meta file and fails to find one.
 
 4. I get an ArrayIndexOutOfBounds error.  
-A: This happens when the columns mismatch due to either column assignment being wrong or google vision api not being able to detect the text. The best bet here is to open output.txt and figure out what is wrong. Next, run the command with ocr,table options so that these steps get skipped and the code directly executes the automation step.
+A: This happens when the columns mismatch due to either column assignment being wrong or google vision api not being able to detect the text. The best bet here is to open output.txt and figure out what is wrong and correct it in output.txt. Next, run the command with ocr,table options so that these steps get skipped and the code directly executes the automation step.
+
+5. I want to skip certain steps. How do I do it?  
+A: Run `./ocr.sh "Image Name" "State Name" "StartingString,EndingString" "IsTranslationRequired" "StepToSkip"` with StepToSkip replaced with ocr,table or automation or a combination of these in comma separated values. ocr - skips google vision call, table - skips table creation logic, automation - skips automation call.
 
 5. I see some messages that say that some corrections were tried. What does this mean?  
 A: For certain states like UP, PB the automation code tries to add a default -999 entry if it finds some columns missing. This message pertains to that. Caution needs to be exercised when it comes to these entries.
