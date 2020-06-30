@@ -17,7 +17,7 @@ Run `./karecoveries.py`. This assumes the recovery table to be the 4th page (can
 
 OCR:  
   cd ocr  
-  ./ocr.sh "Image Name" "State Name" "Starting String" "IsTranslationRequired" "ocr,table,automation"
+  ./ocr.sh "Image Name" "State Name" "StartingString,EndingString" "IsTranslationRequired" "ocr,table,automation"
 
 The last argument tells which of the steps to skip. This is used for images that need manual intervention.
 
@@ -106,7 +106,7 @@ A: Open automation.meta file, add a # in the beginning of the line corresponding
 A: This happens when the TranslationValue is set to True and the code tries to find an entry corresponding to it in the stateCode_translation.meta file and fails to find one.
 
 4. I get an ArrayIndexOutOfBounds error.  
-A: This happens when the columns mismatch due to either column assignment being wrong or google vision api not being able to detect the text. The best bet here is to open output.txt and figure out what is wrong. Next, comment the line `python3 ocr_vision.py $1 > bounds.txt`. If you want to remove that district data completely, comment `cp output.txt ../.tmp/$stateCode.txt` and rerun the ocr command.
+A: This happens when the columns mismatch due to either column assignment being wrong or google vision api not being able to detect the text. The best bet here is to open output.txt and figure out what is wrong. Next, run the command with ocr,table options so that these steps get skipped and the code directly executes the automation step.
 
 5. I see some messages that say that some corrections were tried. What does this mean?  
 A: For certain states like UP, PB the automation code tries to add a default -999 entry if it finds some columns missing. This message pertains to that. Caution needs to be exercised when it comes to these entries.
