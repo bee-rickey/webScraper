@@ -62,7 +62,7 @@ case $2 in
 	"Punjab")
 		stateCode="pb"
 		;;
-	"Jammu")
+	"Jammu and Kashmir")
 		stateCode="jk"
 		;;
 	*)
@@ -85,6 +85,7 @@ then
 	echo -e "******** ++++++++ *******"
 	python3 googlevision.py ocrconfig.meta $1
 fi
+
 cp output.txt ../.tmp/$stateCode.txt
 
 if (( $skipAutomation != 1 && $individualRecords != 1 ))

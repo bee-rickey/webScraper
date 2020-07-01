@@ -98,12 +98,12 @@ def buildCells():
 		xMean = (int(lowerLeft[0]) + int(lowerRight[0]))/2
 		yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
 
-		if value in startingText and startingMatchFound == False:
+		if value in startingText: #and startingMatchFound == False:
 			startingMatchFound = True
 			xStartThreshold = xMean
 			yStartThreshold = yMean  
 
-		if value in endingText and endingMatchFound == False:
+		if value in endingText: # and endingMatchFound == False:
 			endingMatchFound = True
 			xEndThreshold = xMean
 			yEndThreshold = yMean

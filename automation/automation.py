@@ -42,7 +42,6 @@ def fetchData(stateName):
 		except KeyError:
 			print("No entry found for state {} in automation.meta file".format(stateName))
 
-
 def loadMetaData():
 	with open("automation.meta", "r") as metaFile:
 		for line in metaFile:
@@ -338,6 +337,38 @@ def MPGetData():
 
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Madhya Pradesh", districtArray, option)
+	except FileNotFoundError:
+		print("rj.txt missing. Generate through pdf or ocr and rerun.")
+
+def JKGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	try:
+		with open(".tmp/jk.txt", "r") as upFile:
+			isIgnoreFlagSet = False
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				if len(linesArray) != 11:
+					print("Ignoring due to invalid length: {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				try:
+					if is_number(linesArray[0].strip()):
+						print("Ignoring: {}".format(linesArray))
+						continue
+
+					districtDictionary['districtName'] = linesArray[0].strip().title()
+					districtDictionary['confirmed'] = int(linesArray[6])
+					districtDictionary['recovered'] = int(linesArray[9])
+					districtDictionary['deceased'] = int(linesArray[10])
+					districtArray.append(districtDictionary)
+				except ValueError:
+					print("Ignoring: {}".format(linesArray))
+					continue
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Jammu and Kashmir", districtArray, option)
 	except FileNotFoundError:
 		print("rj.txt missing. Generate through pdf or ocr and rerun.")
 
