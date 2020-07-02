@@ -73,6 +73,10 @@ def buildCells():
 	startingMatchFound = False
 	endingMatchFound = False
 
+	autoEndingText = endingText
+	autoStartingText = startingText
+
+
 	testingNumbersFile = open("bounds.txt", "r")
 	for index, line in enumerate(testingNumbersFile):
 		lineArray = line.split('|')
@@ -98,15 +102,54 @@ def buildCells():
 		xMean = (int(lowerLeft[0]) + int(lowerRight[0]))/2
 		yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
 
-		if value in startingText: #and startingMatchFound == False:
-			startingMatchFound = True
-			xStartThreshold = xMean
-			yStartThreshold = yMean  
+		if startingText == "auto":
+			if value in translationDictionary:
+				if xStartThreshold == 0:
+					xStartThreshold = xMean
+					autoStartingText = value
+				if yStartThreshold == 0:
+					yStartThreshold = yMean
 
-		if value in endingText: # and endingMatchFound == False:
-			endingMatchFound = True
-			xEndThreshold = xMean
-			yEndThreshold = yMean
+				if yMean < yStartThreshold:
+					xStartTreshold = xMean 
+					yStartThreshold = yMean
+					autoStartingText = value
+					
+
+		if endingText == "auto":
+			if value in translationDictionary:
+				if xEndThreshold == 0:
+					xEndThreshold = xMean
+				if yEndThreshold == 0:
+					yEndThreshold = yMean
+					autoEndingText = value
+
+				if yMean > yEndThreshold:
+					xEndThreshold = xMean
+					yEndThreshold = yMean
+					autoEndingText = value
+
+		if ',' in startingText:
+			if value in startingText.split(','):# and startingMatchFound == False:
+				startingMatchFound = True
+				xStartThreshold = xMean
+				yStartThreshold = yMean  
+		else:
+			if value == startingText and startingMatchFound == False:
+				startingMatchFound = True
+				xStartThreshold = xMean
+				yStartThreshold = yMean  
+
+		if ',' in endingText:
+			if value in endingText.split(','):# and endingMatchFound == False:
+				endingMatchFound = True
+				xEndThreshold = xMean
+				yEndThreshold = yMean
+		else:
+			if value == endingText and endingMatchFound == False:
+				endingMatchFound = True
+				xEndThreshold = xMean
+				yEndThreshold = yMean
 
 #Use these intervals as a possible error in mid point calculation
 		xInterval = (int(lowerRight[0]) - int(lowerLeft[0]))/2 if (int(lowerRight[0]) - int(lowerLeft[0]))/2 > xInterval else xInterval
@@ -114,6 +157,8 @@ def buildCells():
 		xWidthTotal = xWidthTotal + int(lowerRight[0]) - int(lowerLeft[0])
 		dataDictionaryArray.append(cellItem(value, xMean, yMean, lowerLeft[0], lowerLeft[1], (float(lowerRight[0]) - float(lowerLeft[0])), (float(upperLeft[1]) - float(lowerLeft[1])), 0, 0, index + 1))
 	xWidthTotal = xWidthTotal/len(dataDictionaryArray)
+	startingText = autoStartingText
+	endingText = autoEndingText
 	testingNumbersFile.close()
 
 def buildReducedArray():
@@ -126,6 +171,7 @@ def buildReducedArray():
 	maxHeight = 0
 
 #Ignore the texts that lie to the left and top of the threshold text. This improves accuracy of output
+	print("Starting text: {} ... Ending text: {}".format(startingText, endingText)) 
 	for cell in dataDictionaryArray:
 		if cell.y < yStartThreshold - 10 or cell.x < xStartThreshold - 30:
 			continue
@@ -269,7 +315,7 @@ def printOutput():
 					translatedValue = translationDictionary[districtName]
 					outputString = translatedValue 
 					for index, value in enumerate(outputArray):
-						if index > districtIndex and is_number(value):
+						if index > districtIndex: #and is_number(value):
 							outputString += "," + value.strip()
 					print("{} | {}".format(outputString, columnList), file = outputFile)
 				except KeyError:
@@ -320,8 +366,7 @@ def main():
 		parseConfigFile(sys.argv[1])
 		fileName = sys.argv[2]
 				
-	if enableTranslation:
-		buildTranslationDictionary()
+	buildTranslationDictionary()
 
 	buildCells()
 	buildCellsV2()

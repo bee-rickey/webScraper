@@ -84,11 +84,13 @@ def recoveredFileWriter(linesArray, csvWriter):
 	districtName = linesArray[1].split('(')[0].strip()
 	districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
 
-	patientIds = re.sub('&', ',', re.sub(' +', '', linesArray[3]))
+	patientIds = re.sub('\.', '', re.sub('&', ',', re.sub(' +', ',', linesArray[3])))
 	patientIdArray = patientIds.split(',')
+	print(patientIdArray)
+	print("{} ---> {}".format(districtName, patientIdArray))
 
 	for item in patientIdArray:
-		if len(item) == 0 or is_number(item) or '(' in item:	
+		if len(item) == 0: #or is_number(item) or '(' in item:	
 			continue
 		if item == "\n":
 			continue
