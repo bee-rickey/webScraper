@@ -53,6 +53,35 @@ def loadMetaData():
 	metaFile.close()
 
 def APGetData():
+	if typeOfAutomation == "ocr":
+		APGetDataByOCR()
+	else:
+		APGetDataByUrl()
+
+def APGetDataByOCR():
+	districtArray = []
+	with open(".tmp/ap.txt", "r") as upFile:
+		for line in upFile:
+			if 'Total' in line:
+				continue
+
+			linesArray = line.split('|')[0].split(',')
+			if len(linesArray) != 6:
+				print("Issue with {}".format(linesArray))
+				continue
+
+			districtDictionary = {}
+			districtName = linesArray[0].strip()
+			districtDictionary['districtName'] = linesArray[0].strip()
+			districtDictionary['confirmed'] = int(linesArray[2])
+			districtDictionary['recovered'] = int(linesArray[4])
+			districtDictionary['deceased'] = int(linesArray[5]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+			districtArray.append(districtDictionary)
+	upFile.close()
+
+	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
+
+def APGetDataByUrl():
 	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
 
 	districtArray = []
@@ -172,8 +201,6 @@ def UPGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	secondRunArray = []
-	masterColumnList = ""
 	masterColumnArray = []
 	splitArray = []
 	try:
@@ -181,54 +208,19 @@ def UPGetData():
 			for line in upFile:
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
-				columnList = splitArray[1].split(',')
 
-				if len(linesArray) != 7 or len(columnList) != 7:
-					secondRunArray.append(linesArray)
-					secondRunArray.append(columnList)
+				if len(linesArray) != 7:
+					print("Issue with {}".format(linesArray))
 					continue
-				else:
-					if len(masterColumnList) == 0:
-						masterColumnList = splitArray[1].strip()
-					elif masterColumnList != splitArray[1].strip():
-						print("Issue with " + line + "columns don't match. Ignoring and continuing")
-						continue
-					else:
-						masterColumnArray = columnList
+
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0]
 				districtDictionary['confirmed'] = int(linesArray[3]) + int(linesArray[5]) + int(linesArray[6])
-				print("{} --> {}, {}, {}, {}".format(linesArray[0], districtDictionary['confirmed'], int(linesArray[3]), int(linesArray[5]), int(linesArray[6])))
 				districtDictionary['recovered'] = int(linesArray[3])
 				districtDictionary['deceased'] = int(linesArray[5])
 				districtArray.append(districtDictionary)
 		upFile.close()
 
-#Second run to correct possible misses with -999
-		correctionIndex = ""
-		for index, data in enumerate(secondRunArray):
-			correctionIndex = ""
-			if index % 2 == 1:
-				rowValues = secondRunArray[index - 1]
-				print("Trying to correct: {}".format(rowValues))
-				for colIndex, colValue in enumerate(data):
-					if colValue.strip() != masterColumnArray[colIndex].strip():
-						correctionIndex += "," + str(colIndex) if len(correctionIndex) != 0 else str(colIndex) 
-						rowValues.insert(colIndex, -999)
-						data.insert(colIndex, masterColumnArray[colIndex].strip())
-
-				if len(rowValues) != 8 or len(data) != 8:
-					print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
-					continue
-
-				districtDictionary = {}
-				districtDictionary['districtName'] = rowValues[0]
-				districtDictionary['confirmed'] = int(rowValues[2])
-				districtDictionary['recovered'] = int(rowValues[4])
-				districtDictionary['deceased'] = int(rowValues[6])
-				districtArray.append(districtDictionary)
-				print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
-						
 		deltaCalculator.getStateDataFromSite("Uttar Pradesh", districtArray, option)
 	except FileNotFoundError:
 		print("up.txt missing. Generate through pdf or ocr and rerun.")
@@ -439,20 +431,10 @@ def PBGetDataThroughOcr():
 			for line in upFile:
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
-				columnList = splitArray[1].split(',')
 
 				if len(linesArray) != 5:
-					secondRunArray.append(linesArray)
-					secondRunArray.append(columnList)
+					print("Issue with {}".format(linesArray))
 					continue
-				else:
-					if len(masterColumnList) == 0:
-						masterColumnList = splitArray[1].strip()
-					elif masterColumnList != splitArray[1].strip():
-						print("Issue with " + line + "columns don't match. Ignoring and continuing")
-						continue
-					else:
-						masterColumnArray = columnList
 				if linesArray[0].strip() == "Total":
 					continue
 				districtDictionary = {}
@@ -463,33 +445,6 @@ def PBGetDataThroughOcr():
 				districtArray.append(districtDictionary)
 
 		upFile.close()
-		correctionIndex = ""
-		for index, data in enumerate(secondRunArray):
-			correctionIndex = ""
-			if index % 2 == 1:
-				rowValues = secondRunArray[index - 1]
-				for masterIndex, masterValue in enumerate(masterColumnArray):
-					try:
-						if data[masterIndex].strip() != masterValue.strip():
-							correctionIndex += "," + str(masterIndex) if len(correctionIndex) != 0 else str(masterIndex) 
-							rowValues.insert(masterIndex, -999)
-							data.insert(masterIndex, masterValue.strip())
-					except IndexError:
-						data.insert(masterIndex, masterValue.strip())
-						rowValues.insert(masterIndex, -999)
-
-
-				if len(rowValues) != 5 or len(data) != 5:
-					print("Issue with data: {} ...masterColumns: {} ... rowColumns: {} ".format(rowValues, masterColumnArray, data))
-					continue
-
-				districtDictionary = {}
-				districtDictionary['districtName'] = rowValues[0].strip()
-				districtDictionary['confirmed'] = int(rowValues[1])
-				districtDictionary['recovered'] = int(rowValues[3])
-				districtDictionary['deceased'] = int(rowValues[4])
-				districtArray.append(districtDictionary)
-				print("Tried a correction for: {} on columns: {}".format(rowValues, correctionIndex))
 
 		deltaCalculator.getStateDataFromSite("Punjab", districtArray, option)
 	except FileNotFoundError:
@@ -835,6 +790,8 @@ def readFileFromURL(url, stateName, startKey, endKey):
 		r = requests.get(url, allow_redirects=True)
 		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
 
+	if(
+
 	with open(".tmp/" + stateFileName + ".pdf", "rb") as f:
 		pdf = pdftotext.PDF(f)
 
@@ -872,7 +829,7 @@ def convertTnPDFToCSV():
 		print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
 		return
 
-	tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="5", split_text = True)
+	tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="6", split_text = True)
 	tables[0].to_csv('.tmp/tn.pdf.txt')
 
 	tnFile = open(".tmp/" + 'tn.pdf.txt', 'r') 
@@ -938,7 +895,7 @@ def main():
 	global typeOfAutomation
 
 	if len(sys.argv) not in [1, 2, 3, 4]:
-		print('Usage: ./automation "[StateName]" "[detailed]" "[ocr/pdf]"')
+		print('Usage: ./automation "[StateName]" "[detailed/full]" "[ocr/pdf]"')
 		return
 
 	if len(sys.argv) == 2:

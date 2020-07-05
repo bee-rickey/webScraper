@@ -65,6 +65,12 @@ case $2 in
 	"Jammu and Kashmir")
 		stateCode="jk"
 		;;
+	"Haryana")
+		stateCode="hr"
+		;;
+	"Andhra Pradesh")
+		stateCode="ap"
+		;;
 	*)
 		stateCode="invalid"
 esac

@@ -1,9 +1,12 @@
+import cv2
+import os
 import sys
 import json
 from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.patches as patches
+from matplotlib.patches import Circle
 
 dataDictionary = {}
 dataDictionaryArray = []
@@ -22,7 +25,6 @@ enableTranslation = False
 translationFile = ""
 fileName = ""
 xWidthTotal = 0
-
 
 def is_number(s):
 	try:            
@@ -44,6 +46,77 @@ class cellItem:
 		self.h = h
 		self.w = w
 
+class ColumnHandler:
+	def __init__(self):
+		self.columnList = []
+		self.rowList = []
+		self.pointList = []
+
+	def addPoint(self, x, y):
+		self.pointList.append(LinePoints(x, y))
+
+	def prepareRow(self):
+		rowNumber = 1
+		self.pointList.sort(key=lambda y: y.y)
+		for index, col in enumerate(self.pointList):
+			if index % 2 == 1:
+				continue
+			if index == 0:
+				previousX = col.x
+				previousY = col.y
+				continue
+
+			if col.y - previousY < 10:
+				continue
+			self.rowList.append(ColumnAndRow(previousX, previousY, col.x, col.y, rowNumber))
+			previousX = col.x
+			previousY = col.y
+			rowNumber += 1
+		
+	def prepareColumn(self):
+		columnNumber = 1
+		self.pointList.sort(key=lambda x: x.x)
+		for index, col in enumerate(self.pointList):
+			if index % 2 == 1:
+				continue
+			if index == 0:
+				previousX = col.x
+				previousY = col.y
+				continue
+
+			if col.x - previousX < 5:
+				continue
+			self.columnList.append(ColumnAndRow(previousX, previousY, col.x, col.y, columnNumber))
+			previousX = col.x
+			previousY = col.y
+			columnNumber += 1
+	
+	def printColumnsAndCoordinates(self):
+		print("Column No ... x1,y1 --> x2,y2")
+		for column in self.columnList:
+			print("{} ... {},{} --> {},{}".format(column.number, column.x1, column.y1, column.x2, column.y2))
+		for row in self.rowList:
+			print("{} ... {},{} --> {},{}".format(row.number, row.x1, row.y1, row.x2, row.y2))
+			
+
+	def getColumnNumber(self, cell):      
+		for col in self.columnList:
+			if cell.x > col.x1 and cell.x < col.x2:
+				return col.number
+
+class ColumnAndRow:
+	def __init__(self, x1, y1, x2, y2, number):
+		self.x1 = x1
+		self.y1 = y1
+		self.x2 = x2
+		self.y2 = y2
+		self.number = number
+
+class LinePoints:
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+
 def buildCellsV2():
 	global xInterval
 	global yInterval
@@ -56,6 +129,22 @@ def buildCellsV2():
 	global xWidthTotal
 # testingNumbersFile = open("poly.txt", "r")
 #data = json.load(testingNumbersFile)
+
+def detectLines():
+	global columnHandler
+	img = cv2.imread(fileName)
+	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	edges = cv2.Canny(img, 50, 150)
+	lines = cv2.HoughLinesP(edges, 1, np.pi/180, 600, maxLineGap=250)
+	columnHandler = ColumnHandler()
+	for line in lines:
+		x1, y1, x2, y2 = line[0]
+		columnHandler.addPoint(x1, y1)
+		columnHandler.addPoint(x2, y2)
+
+	columnHandler.prepareColumn()
+	columnHandler.prepareRow()
+	columnHandler.printColumnsAndCoordinates()
 
 def buildCells():
 	global xInterval
@@ -208,7 +297,11 @@ def assignRowsAndColumns():
 		for colIndex, restOfTheCells in enumerate(dataDictionaryArray):
 
 			if currentCell.col == 0:
-				currentCell.col = rowIndex + 1
+				if houghTransform == True:
+					currentCell.col = columnHandler.getColumnNumber(currentCell)
+				else:
+					currentCell.col = rowIndex + 1
+				
 			if restOfTheCells.index == currentCell.index:
 				continue
 
@@ -224,7 +317,9 @@ def assignRowsAndColumns():
 
 #If the x coordinate matches, the texts lie on the same column
 			if restOfTheCells.col == 0:
-				if xLowerBound <= restOfTheCells.x <= xUpperBound:
+				if houghTransform == True:
+					restOfTheCells.col = columnHandler.getColumnNumber(restOfTheCells)
+				elif xLowerBound <= restOfTheCells.x <= xUpperBound:
 					restOfTheCells.col = currentCell.col
 			
 
@@ -259,6 +354,10 @@ def printOutput():
 
 	image = np.array(Image.open(fileName), dtype=np.uint8)
 	fig, ax = plt.subplots(1)
+	if houghTransform == True:
+		for point in columnHandler.pointList:
+			circ = Circle((point.x,point.y),5)
+			ax.add_patch(circ)
 
 	for i in range(0, len(dataDictionaryArray)):
 		outputString = []
@@ -331,6 +430,7 @@ def parseConfigFile(fileName):
 	global translationFile
 	global configyInterval
 	global configxInterval
+	global houghTransform
 
 	configFile = open(fileName, "r")
 	for index, line in enumerate(configFile):
@@ -355,13 +455,17 @@ def parseConfigFile(fileName):
 			configxInterval = int(value)
 		if key == "yInterval":
 			configyInterval = int(value)
+		if key == "houghTransform":
+			houghTransform = eval(value)
 
 def main():
 	global startingText
 	global endingText
 	global enableTranslation
+	global houghTransform
 	global fileName
 # If given, this text will be used to ignore those items above and to the left of this text. This can cause issues if the text is repeated!
+	houghTransform = False
 	if len(sys.argv) > 1:
 		parseConfigFile(sys.argv[1])
 		fileName = sys.argv[2]
@@ -370,6 +474,9 @@ def main():
 
 	buildCells()
 	buildCellsV2()
+	if houghTransform == True:
+		print("Using houghTransform to figure out columns. Set houghTransform:False in ocrconfig.meta.orig to disable this")
+		detectLines()
 
 	if len(startingText) != 0 or len(endingText) != 0:
 		buildReducedArray()
