@@ -790,8 +790,6 @@ def readFileFromURL(url, stateName, startKey, endKey):
 		r = requests.get(url, allow_redirects=True)
 		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
 
-	if(
-
 	with open(".tmp/" + stateFileName + ".pdf", "rb") as f:
 		pdf = pdftotext.PDF(f)
 
