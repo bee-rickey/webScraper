@@ -192,7 +192,7 @@ def buildCells():
 		yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
 
 		if startingText == "auto":
-			if value in translationDictionary:
+			if value.title() in translationDictionary:
 				if xStartThreshold == 0:
 					xStartThreshold = xMean
 					autoStartingText = value
@@ -206,7 +206,7 @@ def buildCells():
 					
 
 		if endingText == "auto":
-			if value in translationDictionary:
+			if value.title() in translationDictionary:
 				if xEndThreshold == 0:
 					xEndThreshold = xMean
 				if yEndThreshold == 0:
@@ -219,23 +219,23 @@ def buildCells():
 					autoEndingText = value
 
 		if ',' in startingText:
-			if value in startingText.split(','):# and startingMatchFound == False:
+			if value.title() in startingText.split(','):# and startingMatchFound == False:
 				startingMatchFound = True
 				xStartThreshold = xMean
 				yStartThreshold = yMean  
 		else:
-			if value == startingText and startingMatchFound == False:
+			if value.title() == startingText and startingMatchFound == False:
 				startingMatchFound = True
 				xStartThreshold = xMean
 				yStartThreshold = yMean  
 
 		if ',' in endingText:
-			if value in endingText.split(','):# and endingMatchFound == False:
+			if value.title() in endingText.split(','):# and endingMatchFound == False:
 				endingMatchFound = True
 				xEndThreshold = xMean
 				yEndThreshold = yMean
 		else:
-			if value == endingText and endingMatchFound == False:
+			if value.title() == endingText and endingMatchFound == False:
 				endingMatchFound = True
 				xEndThreshold = xMean
 				yEndThreshold = yMean

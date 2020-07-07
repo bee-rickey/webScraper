@@ -19,6 +19,7 @@ deltaCalculator = DeltaCalculator()
 metaDictionary = {}
 option = ""
 typeOfAutomation = "pdf"
+pdfUrl = ""
 
 
 class AutomationMeta:
@@ -283,8 +284,10 @@ def RJGetData():
 					continue
 
 				linesArray = line.split('|')[0].split(',')
+
+				if len(linesArray) != 12:
+					print("Issue with {}".format(linesArray))
 				
-				print(linesArray)
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip().title()
 				districtDictionary['confirmed'] = int(linesArray[3])
@@ -754,7 +757,14 @@ def WBFormatLine(row):
 
 
 def readFileFromURLV2(url, stateName, startKey, endKey):
+	global pdfUrl
 	stateFileName = metaDictionary[stateName].stateCode 
+
+	if len(pdfUrl) > 0:
+		url = pdfUrl
+	if len(url) > 0:
+		r = requests.get(url, allow_redirects=True)
+		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
 	pid = input("Enter district page:")
 	tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid)
 	for index, table in enumerate(tables):
@@ -785,7 +795,11 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 				
 
 def readFileFromURL(url, stateName, startKey, endKey):
+	global pdfUrl
 	stateFileName = metaDictionary[stateName].stateCode 
+	if len(pdfUrl) > 0:
+		url = pdfUrl
+
 	if len(url) > 0:
 		r = requests.get(url, allow_redirects=True)
 		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
@@ -820,9 +834,16 @@ def readFileFromURL(url, stateName, startKey, endKey):
 
 
 def convertTnPDFToCSV():
+	global pdfUrl
+	global typeOfAutomation
+
+	if len(pdfUrl) > 0:
+		r = requests.get(pdfUrl, allow_redirects=True)	
+		open(".tmp/tn.pdf", 'wb').write(r.content)
+
 	try:
 		with open(".tmp/" + "tn.pdf", "rb") as f:
-				pdf = pdftotext.PDF(f)
+			pdf = pdftotext.PDF(f)
 	except FileNotFoundError:
 		print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
 		return
@@ -891,9 +912,10 @@ def main():
 	stateName = ""
 	global option 
 	global typeOfAutomation
+	global pdfUrl
 
 	if len(sys.argv) not in [1, 2, 3, 4]:
-		print('Usage: ./automation "[StateName]" "[detailed/full]" "[ocr/pdf]"')
+		print('Usage: ./automation "[StateName]" "[detailed/full]" "[ocr/pdf=url]"')
 		return
 
 	if len(sys.argv) == 2:
@@ -906,7 +928,11 @@ def main():
 	if len(sys.argv) == 4:
 		stateName = sys.argv[1]
 		option = sys.argv[2]
-		typeOfAutomation = sys.argv[3]
+		if "=" in sys.argv[3]:
+			typeOfAutomation = sys.argv[3].split("=")[0]
+			pdfUrl = sys.argv[3].split("=")[1]
+		else:
+			typeOfAutomation = sys.argv[3]
 	
 	if not stateName:
 		stateName = "All States"
