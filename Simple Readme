@@ -1,0 +1,13 @@
+# Simple Readme
+
+
+The below will give output.txt
+
+./ocr.sh ../../../photo_2020-07-09_23-14-43.jpg Bihar Araria True    (with translation)
+./ocr.sh ../../../photo_2020-07-09_23-14-43.jpg Bihar Araria False   (without translation)
+
+
+the below will give output2.txt
+
+./ocr.sh ../../../b2.jpg Rajasthan AJMER False ocr,table
+
