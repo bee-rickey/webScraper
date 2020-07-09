@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 import csv
 import requests
 import camelot
@@ -10,6 +11,12 @@ deltaCalculator = DeltaCalculator(True)
 category = input("Enter c/r/d : ")
 
 def readPDF():
+	"""
+	r = requests.get(sys.argv[1], allow_redirects=True)	
+	print("URL: " + sys.argv[1])
+	open(".tmp/ka.pdf", 'wb').write(r.content)
+	"""
+
 	startPid = input("Enter start page number: ")
 	endPid = input("Enter end page number: ")
 	pages = ""
@@ -28,25 +35,34 @@ def readPDF():
 def processTmpFiles(tables):
 	kaOutputFile = open('kaconfirmed.csv', 'w') 
 	csvWriter = csv.writer(kaOutputFile, delimiter=',', quotechar='"')
+	linesToWrite = []
+	lineNumber = 0
 	for index, table in enumerate(tables):
 		kaFile = open('.tmp/ka' + str(index) + '.csv', 'r') 
 		with open('.tmp/ka' + str(index) + '.csv', newline='') as kaFile:
 			rowReader = csv.reader(kaFile, delimiter=',', quotechar='"')
 			for row in rowReader:
 				line = '|'.join(row)
-				line = re.sub('\|$', '', re.sub('^\|+', '', line.replace('\"', '').replace(',,', ',')))
+				if len(re.sub('^\|+', '', line)) == 0:
+					continue
+				if 'Page' in line:
+					continue
+#line = re.sub('\|$', '', re.sub('^\|+', '', line.replace('\"', '').replace(',,', ',')))
+				
 				linesArray = line.split('|')
 
 				if category == "c":
-					confirmedFileWriter(linesArray, csvWriter)
+					confirmedFileWriter(linesArray, linesToWrite)
 
 				if category == "r":
-					recoveredFileWriter(linesArray, csvWriter)
+					recoveredFileWriter(linesArray, linesToWrite)
 
 				if category == "d":
-					deceasedFileWriter(linesArray, csvWriter)
+					deceasedFileWriter(linesArray, linesToWrite)
 
 		kaFile.close()
+	for row in linesToWrite:
+		csvWriter.writerow(row)
 	kaOutputFile.close()
 
 
@@ -58,54 +74,87 @@ def is_number(s):
     return False
 
 
-def confirmedFileWriter(linesArray, csvWriter):
+def confirmedFileWriter(linesArray, linesToWrite):
+	'''
 	if len(linesArray) != 8 or len(linesArray[5]) == 0:
 		print("Ignoring {}".format(linesArray))
 		return ""
+	'''
 
 	gender = ""
-	if linesArray[4].strip() == 'Female':
+	if linesArray[5].strip() == 'Female':
 		gender = 'F'
-	elif linesArray[4].strip() == 'Male':
+	elif linesArray[5].strip() == 'Male':
 		gender = 'M'
 	else:
 		gender = 'Non-Binary'
 
 	districtName = ""
 	districtName = deltaCalculator.getNameMapping('Karnataka', linesArray[5])
-	csvWriter.writerow([linesArray[2].replace('P-', 'KA-P'), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[6]])
+#csvWriter.writerow([linesArray[2].replace('P-', 'KA-P'), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[6]])
 
+	if len(linesArray[3]) == 0 and len(linesToWrite) != 0:
+		print("Processing: {}".format(linesArray))
+		for index, cellValue in enumerate(linesArray):
+			if len(cellValue) > 0 and index == 4:
+				linesToWrite[len(linesToWrite) - 1][2] = str(linesToWrite[len(linesToWrite) - 1][2]) + " " + str(cellValue)
+			if len(cellValue) > 0 and index == 7:
+				linesToWrite[len(linesToWrite) - 1][11] = str(linesToWrite[len(linesToWrite) - 1][11]) + " " + str(cellValue)
+		return
+		
+	linesToWrite.append([linesArray[3].replace('P-', 'KA-P'), datetime.date.today().strftime("%d/%m/%Y"), linesArray[4], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[7]])
 
-def recoveredFileWriter(linesArray, csvWriter):
+def recoveredFileWriter(linesArray, linesToWrite):
+	"""
 	if len(linesArray) < 3:
 		print("Ignoring {} ".format(linesArray))
 		return ""
+	"""
 
-	districtName = linesArray[1].split('(')[0].strip()
+	districtName = linesArray[2].split('(')[0].strip()
 	districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
 
-	patientIds = re.sub('\.', '', re.sub('&', ',', re.sub(' +', ',', linesArray[3])))
+	patientIds = re.sub('\.', '', re.sub('&', ',', re.sub(' +', ',', linesArray[4])))
 	patientIdArray = patientIds.split(',')
-	print(patientIdArray)
-	print("{} ---> {}".format(districtName, patientIdArray))
+
+	if len(linesArray[2]) == 0 and len(linesToWrite) != 0 and len(patientIdArray) > 0:
+		districtName = linesToWrite[len(linesToWrite) - 1][5]
 
 	for item in patientIdArray:
 		if len(item) == 0: #or is_number(item) or '(' in item:	
 			continue
 		if item == "\n":
 			continue
-		csvWriter.writerow([item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
+		linesToWrite.append([item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
+#csvWriter.writerow([item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
 	
 
-def deceasedFileWriter(linesArray, csvWriter):
-	if len(linesArray) < 10 or len(linesArray[1]) == 0:
+def deceasedFileWriter(linesArray, linesToWrite):
+	"""
+	if len(linesArray) < 8 or len(linesArray[1]) == 0:
 		print("Ignoring {} ".format(linesArray))
 		return ""
+	"""
 
-	districtName = linesArray[1].strip()
+
+	districtName = linesArray[3].strip()
 	districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
-	description = linesArray[5] + "; " + linesArray[6] + "; " + linesArray[7] + "; DOA: " + linesArray[8] + "; DOD " + linesArray[9]
-	csvWriter.writerow(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
+	description = ""
+	for index, data in enumerate(linesArray):
+		if index < 7:
+			continue
+		else:
+			description = description + ";" + data if len(description) > 0 else data
+#csvWriter.writerow(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
+	if len(linesArray[2]) == 0 and len(linesToWrite) != 0:
+		print("Processing: {}".format(linesArray))
+		for index, cellValue in enumerate(linesArray):
+			if len(cellValue) > 0 and index == 5:
+				linesToWrite[len(linesToWrite) - 1][2] = str(linesToWrite[len(linesToWrite) - 1][2]) + " " + str(cellValue)
+			if len(cellValue) > 0 and index == 6:
+				linesToWrite[len(linesToWrite) - 1][3] = str(linesToWrite[len(linesToWrite) - 1][3]) + " " + str(cellValue)
+		return
+	linesToWrite.append(["KA-P" + str(linesArray[4]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[5], linesArray[6], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
 
 
 readPDF()
