@@ -90,7 +90,7 @@ def confirmedFileWriter(linesArray, linesToWrite):
 		gender = 'Non-Binary'
 
 	districtName = ""
-	districtName = deltaCalculator.getNameMapping('Karnataka', linesArray[5])
+	districtName = deltaCalculator.getNameMapping('Karnataka', linesArray[6])
 #csvWriter.writerow([linesArray[2].replace('P-', 'KA-P'), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[6]])
 
 	if len(linesArray[3]) == 0 and len(linesToWrite) != 0:

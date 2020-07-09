@@ -71,6 +71,9 @@ case $2 in
 	"Andhra Pradesh")
 		stateCode="ap"
 		;;
+	"Maharashtra")
+		stateCode="mh"
+		;;
 	*)
 		stateCode="invalid"
 esac

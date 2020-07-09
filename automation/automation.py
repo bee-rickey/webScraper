@@ -114,8 +114,48 @@ def ORGetData():
 
 	deltaCalculator.getStateDataFromSite("Odisha", districtArray, option)
 
-
 def MHGetData():
+	if typeOfAutomation == "ocr":
+		MHGetDataByOcr()
+	else:
+		MHGetDataByUrl()
+
+def MHGetDataByOcr():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	try:
+		with open(".tmp/mh.txt", "r") as upFile:
+			isIgnoreFlagSet = False
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				if 'Total' in line or isIgnoreFlagSet == True:
+					isIgnoreFlagSet = True
+					print("Ignoring {} ".format(line))
+				if len(linesArray) < 5:
+					print("Ignoring due to invalid length: {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				try:
+					if is_number(linesArray[0].strip()):
+						print("Ignoring: {}".format(linesArray))
+						continue
+
+					districtDictionary['districtName'] = linesArray[0].strip().title()
+					districtDictionary['confirmed'] = int(linesArray[1])
+					districtDictionary['recovered'] = int(linesArray[2])
+					districtDictionary['deceased'] = int(linesArray[3])
+					districtArray.append(districtDictionary)
+				except ValueError:
+					print("Ignoring: {}".format(linesArray))
+					continue
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Maharashtra", districtArray, option)
+	except FileNotFoundError:
+		print("rj.txt missing. Generate through pdf or ocr and rerun.")
+
+def MHGetDataByUrl():
 	stateDashboard = requests.request("get", metaDictionary['Maharashtra'].url).json()
 
 	districtArray = []
@@ -300,6 +340,7 @@ def RJGetData():
 	except FileNotFoundError:
 		print("rj.txt missing. Generate through pdf or ocr and rerun.")
 
+
 def MPGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -395,7 +436,7 @@ def PBGetDataThroughPdf():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Amritsar", "Total")
+	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Ludhiana", "Total")
 	try:
 		with open(".tmp/PB.txt", "r") as upFile:
 			for line in upFile:
