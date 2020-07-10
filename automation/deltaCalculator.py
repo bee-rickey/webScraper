@@ -113,6 +113,7 @@ class DeltaCalculator:
 			for index, data in enumerate(deltaArray):
 				if data != 0 and data != "NA":
 					print("{},{},{},{},{}".format(districts[index], stateName, stateCode, data, category), file=f)
+					print("{},{},{},{},{}".format(districts[index], stateName, stateCode, data, category))
 
 	def printDeltas(self, deltaArray, category):
 		print('-' * 20 + category + '-' * 20)
