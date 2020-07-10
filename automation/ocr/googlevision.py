@@ -421,6 +421,7 @@ def printOutput():
 					print("Failed to find lookup for {} ".format(districtName))  
 	outputFile.close()
 	ax.imshow(image)
+	plt.savefig("image.png", dpi=300)
 	plt.show()
 
 def parseConfigFile(fileName):

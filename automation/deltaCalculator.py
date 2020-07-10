@@ -109,9 +109,11 @@ class DeltaCalculator:
 		print("SiteTotal, {}, {}, {}".format(siteTotalFromStateDashboard['confirmed'], siteTotalFromStateDashboard['recovered'], siteTotalFromStateDashboard['deceased']))
 
 	def printFullDetails(self, deltaArray, category, stateName, stateCode, districts):
-		for index, data in enumerate(deltaArray):
-			if data != 0 and data != "NA":
-				print("{},{},{},{},{}".format(districts[index], stateName, stateCode, data, category))
+		with open("output2.txt", "w+") as f:
+			for index, data in enumerate(deltaArray):
+				if data != 0 and data != "NA":
+					print("{},{},{},{},{}".format(districts[index], stateName, stateCode, data, category), file=f)
+					print("{},{},{},{},{}".format(districts[index], stateName, stateCode, data, category))
 
 	def printDeltas(self, deltaArray, category):
 		print('-' * 20 + category + '-' * 20)
