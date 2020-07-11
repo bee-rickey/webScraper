@@ -26,3 +26,5 @@ automation/ocr/ocrconfig.meta
 venv/
 __pycache__
 !requirements.txt
+
+credentials/
