@@ -24,16 +24,17 @@ The last argument tells which of the steps to skip. This is used for images that
 **Automation support through URL fetch/scraping:**  
 AP, AS, CH, KL, LA, GJ, MH, ML, OR, PY, TG, TR, RJ (_RJ has stopped giving tables on their site_).
 
-KA - district numbers and individual support (beta).
+KA - district numbers and individual support.
 
 **Automation through OCR:**  
-BR, MP, PB, RJ, UP 
+BR, MP, PB, RJ, UP, AP 
+JK (beta)
 
 **Automation support through pdf:**  
 HR, PB, TN, WB
 
 **Future support:**  
-HP (ocr)
+HP (ocr) UT (ocr)
 
 **Complete description of OCR methodology and debugging**
 

@@ -3,3 +3,4 @@ enableTranslation:@@translationvalue@@
 translationFile:@@statename@@_districts.meta
 yInterval:0
 xInterval:03
+houghTransform:True
