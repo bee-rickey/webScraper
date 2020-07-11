@@ -22,3 +22,5 @@ Haryana, HR,
 Meghalaya, ML, https://services7.arcgis.com/nzBTI19PTHBZaEPT/arcgis/rest/services/Admin_Boundary/FeatureServer/1/query?f=json&returnGeometry=false&outFields=*&where=1=1
 Mizoram, MZ, https://mcovid19.mizoram.gov.in/api/home-stats
 Jammu and Kashmir, JK,
+Chhattisgarh, CT,
+Himachal Pradesh, HP,

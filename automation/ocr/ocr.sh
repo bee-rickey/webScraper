@@ -74,6 +74,12 @@ case $2 in
 	"Maharashtra")
 		stateCode="mh"
 		;;
+	"Chhattisgarh")
+		stateCode="ct"
+		;;
+	"Himachal Pradesh")
+		stateCode="hp"
+		;;
 	*)
 		stateCode="invalid"
 esac

@@ -98,7 +98,7 @@ def APGetDataByUrl():
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
-	os.system("curl -sk https://health.odisha.gov.in/js/distDtls.js | grep -i 'District_id' | sed 's/\"//g' | sed 's/,/:/g'| cut -d':' -f4,8,12,14,18,22 |sed 's/:/,/g' > orsite.csv")
+	os.system("curl -sk https://health.odisha.gov.in/js/distDtls.js | grep -i 'District_id' | sed 's/\"//g' | sed 's/,/:/g'| cut -d':' -f4,8,12,14,16,18,22 |sed 's/:/,/g' > orsite.csv")
 
 	districtArray = []
 	with open("orsite.csv", "r") as metaFile:
@@ -108,7 +108,7 @@ def ORGetData():
 			districtDictionary['districtName'] = lineArray[0].strip()
 			districtDictionary['confirmed'] = int(lineArray[1].strip())
 			districtDictionary['recovered'] = int(lineArray[2].strip())
-			districtDictionary['deceased'] = int(lineArray[3].strip())
+			districtDictionary['deceased'] = int(lineArray[3].strip()) + int(lineArray[4].strip())
 		
 			districtArray.append(districtDictionary)
 
@@ -286,6 +286,26 @@ def BRGetData():
 	except FileNotFoundError:
 		print("br.txt missing. Generate through pdf or ocr and rerun.")
 
+def CTGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	try:
+		with open(".tmp/ct.txt", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[1]
+				districtDictionary['confirmed'] = int(linesArray[3])
+				districtDictionary['recovered'] = int(linesArray[5])
+				districtDictionary['deceased'] = int(linesArray[7])
+				districtArray.append(districtDictionary)
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Chhattisgarh", districtArray, option)
+	except FileNotFoundError:
+		print("ct.txt missing. Generate through pdf or ocr and rerun.")
+
 def JHGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -375,6 +395,43 @@ def MPGetData():
 		deltaCalculator.getStateDataFromSite("Madhya Pradesh", districtArray, option)
 	except FileNotFoundError:
 		print("rj.txt missing. Generate through pdf or ocr and rerun.")
+
+
+def HPGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	try:
+		with open(".tmp/hp.txt", "r") as upFile:
+			isIgnoreFlagSet = False
+			for line in upFile:
+				linesArray = line.split('|')[0].split(',')
+				if 'Total' in line or isIgnoreFlagSet == True:
+					isIgnoreFlagSet = True
+					print("Ignoring {} ".format(line))
+				if len(linesArray) != 8:
+					print("Ignoring due to invalid length: {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				try:
+					if is_number(linesArray[0].strip()):
+						print("Ignoring: {}".format(linesArray))
+						continue
+
+					districtDictionary['districtName'] = linesArray[0].strip().title()
+					districtDictionary['confirmed'] = int(linesArray[2])
+					districtDictionary['recovered'] = int(linesArray[6])
+					districtDictionary['deceased'] = int(linesArray[4])
+					districtArray.append(districtDictionary)
+				except ValueError:
+					print("Ignoring: {}".format(linesArray))
+					continue
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Himachal Pradesh", districtArray, option)
+	except FileNotFoundError:
+		print("rj.txt missing. Generate through pdf or ocr and rerun.")
+
 
 def JKGetData():
 	linesArray = []
