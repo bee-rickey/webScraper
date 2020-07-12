@@ -98,7 +98,7 @@ def APGetDataByUrl():
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
-	os.system("curl -sk https://health.odisha.gov.in/js/distDtls.js | grep -i 'District_id' | sed 's/\"//g' | sed 's/,/:/g'| cut -d':' -f4,8,12,14,18,22 |sed 's/:/,/g' > orsite.csv")
+	os.system("curl -sk https://health.odisha.gov.in/js/distDtls.js | grep -i 'District_id' | sed 's/\"//g' | sed 's/,/:/g'| cut -d':' -f4,8,12,14,16,18,22 |sed 's/:/,/g' > orsite.csv")
 
 	districtArray = []
 	with open("orsite.csv", "r") as metaFile:
@@ -108,7 +108,8 @@ def ORGetData():
 			districtDictionary['districtName'] = lineArray[0].strip()
 			districtDictionary['confirmed'] = int(lineArray[1].strip())
 			districtDictionary['recovered'] = int(lineArray[2].strip())
-			districtDictionary['deceased'] = int(lineArray[3].strip())
+			# Deceased due to other reasons also to deceased count
+			districtDictionary['deceased'] = int(lineArray[3].strip()) + int(lineArray[4].strip())
 		
 			districtArray.append(districtDictionary)
 
