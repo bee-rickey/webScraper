@@ -1,8 +1,9 @@
 Andhra Pradesh, AP, http://covid19.ap.gov.in/Covid19_Admin/api/CV/DashboardCountAPI
+Arunachal Pradesh, AR, https://www.apfightcovid19.org/status/reportDistrict
 Odisha, OR, https://health.odisha.gov.in/js/distDtls.js
 Rajasthan, RJ, http://www.rajswasthya.nic.in/
 Maharashtra, MH, https://services5.arcgis.com/h1qecetkQkV9PbPV/arcgis/rest/services/COVID19_Location_Summary/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*
-Telangana, TS, http://124.124.103.93/COVID/selfCovidRegAction.do?actionFlag=getDistStatistics
+#Telangana, TS, http://124.124.103.93/COVID/selfCovidRegAction.do?actionFlag=getDistStatistics
 Gujarat, GJ,https://gujcovid19.gujarat.gov.in/DrillDownCharts.aspx/GetDistDataForLineCovidDisrtict
 Uttar Pradesh, UP,
 Bihar, BR,
@@ -20,5 +21,5 @@ Karnataka, KA,
 West Bengal, WB,
 Haryana, HR,
 Meghalaya, ML, https://services7.arcgis.com/nzBTI19PTHBZaEPT/arcgis/rest/services/Admin_Boundary/FeatureServer/1/query?f=json&returnGeometry=false&outFields=*&where=1=1
-Mizoram, MZ, https://mcovid19.mizoram.gov.in/api/home-stats
+#Mizoram, MZ, https://mcovid19.mizoram.gov.in/api/home-stats
 Jammu and Kashmir, JK,

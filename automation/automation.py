@@ -82,6 +82,21 @@ def APGetDataByOCR():
 
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
+def ARGetData():
+	stateDashboard = requests.request("get", metaDictionary['Arunachal Pradesh'].url).json()
+	districtArray = []
+	for districtDetails in stateDashboard:
+		if districtDetails['district'] == 'Total':
+			continue
+		districtDictionary = {}
+		districtDictionary['districtName'] =  districtDetails['district']
+		districtDictionary['confirmed'] =  int(districtDetails['confirmed'])
+		districtDictionary['recovered'] =  int(districtDetails['recovered'])
+		districtDictionary['deceased'] =  int(districtDetails['deceased'])
+
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Arunachal Pradesh", districtArray, option)
 def APGetDataByUrl():
 	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
 
@@ -275,6 +290,9 @@ def BRGetData():
 		with open(".tmp/br.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
+				if len(linesArray) != 5:
+					print("Issue with {}".format(linesArray))
+					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0]
 				districtDictionary['confirmed'] = int(linesArray[1])
@@ -504,14 +522,14 @@ def KAGetData():
 		with open(".tmp/ka.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
-				if len(linesArray) != 8:
+				if len(linesArray) != 9:
 					print("Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
 				districtDictionary['confirmed'] = int(linesArray[2])
 				districtDictionary['recovered'] = int(linesArray[4])
-				districtDictionary['deceased'] = int(linesArray[6]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
+				districtDictionary['deceased'] = int(linesArray[7]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -524,9 +542,9 @@ def HRGetData():
 	districtDictionary = {}
 	districtArray = []
 	if typeOfAutomation == "pdf":
-		readFileFromURL(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
+		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
 	try:
-		with open(".tmp/hr.txt", "r") as upFile:
+		with open(".tmp/hr.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 4:
@@ -760,6 +778,7 @@ def KAFormatLine(line):
 			outputString += "," + str(data)
 	return outputString
 
+"""
 def HRFormatLine(line):
 	line = re.sub(' +', ',', re.sub('^ +', '', line))
 
@@ -787,6 +806,18 @@ def HRFormatLine(line):
 
 	outputString = linesArray[1] + "," + linesArray[3] + "," + str(recovery) + "," + str(deaths) + "\n"
 	return outputString
+"""
+
+def HRFormatLine(row):
+	if '[' in row[3]:
+		row[3] = row[3].split('[')[0]
+	if '[' in row[4]:
+		row[4] = row[4].split('[')[0]
+	if '[' in row[7]:
+		row[7] = row[7].split('[')[0]
+
+	line = row[1] + "," + row[3] + "," + row[4] + "," + row[7] + "\n"
+	return line
 
 
 def WBFormatLine(row):
