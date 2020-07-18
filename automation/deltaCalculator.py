@@ -55,6 +55,7 @@ class DeltaCalculator:
 		districts = []
 		stateTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
 		siteTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
+		errorArray = []
 
 		for districtDetails in stateDataFromStateDashboard:
 			try:
@@ -73,7 +74,7 @@ class DeltaCalculator:
 				recoveredDelta = districtDetails['recovered'] - stateData[districtName]['recovered'] if districtDetails['recovered'] != -999 else "NA"
 				deceasedDelta = districtDetails['deceased'] - stateData[districtName]['deceased'] if districtDetails['deceased'] != -999 else "NA"
 			except KeyError:
-				print("ERROR: Failed to find key mapping for district: {}, state: {}".format(districtName, stateName))
+				errorArray.append("--> ERROR: Failed to find key mapping for district: {}, state: {}".format(districtName, stateName))
 				continue
 
 			if not options:
@@ -107,6 +108,10 @@ class DeltaCalculator:
 
 		print("StateTotal, {}, {}, {}".format(stateTotalFromStateDashboard['confirmed'], stateTotalFromStateDashboard['recovered'], stateTotalFromStateDashboard['deceased']))
 		print("SiteTotal, {}, {}, {}".format(siteTotalFromStateDashboard['confirmed'], siteTotalFromStateDashboard['recovered'], siteTotalFromStateDashboard['deceased']))
+
+		if len(errorArray) > 0:
+			for error in errorArray:
+				print(error)
 
 	def printFullDetails(self, deltaArray, category, stateName, stateCode, districts):
 		with open("output2.txt", "w+") as f:

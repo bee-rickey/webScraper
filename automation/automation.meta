@@ -7,6 +7,7 @@ Maharashtra, MH, https://services5.arcgis.com/h1qecetkQkV9PbPV/arcgis/rest/servi
 Gujarat, GJ,https://gujcovid19.gujarat.gov.in/DrillDownCharts.aspx/GetDistDataForLineCovidDisrtict
 Uttar Pradesh, UP,
 Bihar, BR,
+Chhattisgarh, CT,
 #Nagaland, NL, https://covid19.nagaland.gov.in/
 Assam, AS, https://covid19.assam.gov.in/all-districts/
 Tripura, TR, https://covid19.tripura.gov.in/Visitor/ViewStatus.aspx
@@ -20,6 +21,8 @@ Madhya Pradesh, MP,
 Karnataka, KA,
 West Bengal, WB,
 Haryana, HR,
+Himachal Pradesh, HP,
+Jammu and Kashmir, JK,
+Jharkhand, JH,
 Meghalaya, ML, https://services7.arcgis.com/nzBTI19PTHBZaEPT/arcgis/rest/services/Admin_Boundary/FeatureServer/1/query?f=json&returnGeometry=false&outFields=*&where=1=1
 #Mizoram, MZ, https://mcovid19.mizoram.gov.in/api/home-stats
-Jammu and Kashmir, JK,

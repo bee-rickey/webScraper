@@ -25,6 +25,7 @@ enableTranslation = False
 translationFile = ""
 fileName = ""
 xWidthTotal = 0
+configMinLineLength = 600
 
 def is_number(s):
 	try:            
@@ -94,9 +95,9 @@ class ColumnHandler:
 	def printColumnsAndCoordinates(self):
 		print("Column No ... x1,y1 --> x2,y2")
 		for column in self.columnList:
-			print("{} ... {},{} --> {},{}".format(column.number, column.x1, column.y1, column.x2, column.y2))
+			print("c{} ... {},{} --> {},{}".format(column.number, column.x1, column.y1, column.x2, column.y2))
 		for row in self.rowList:
-			print("{} ... {},{} --> {},{}".format(row.number, row.x1, row.y1, row.x2, row.y2))
+			print("r{} ... {},{} --> {},{}".format(row.number, row.x1, row.y1, row.x2, row.y2))
 			
 
 	def getColumnNumber(self, cell):      
@@ -132,10 +133,11 @@ def buildCellsV2():
 
 def detectLines():
 	global columnHandler
+	global configMinLineLength
 	img = cv2.imread(fileName)
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	edges = cv2.Canny(img, 50, 150)
-	lines = cv2.HoughLinesP(edges, 1, np.pi/180, 600, maxLineGap=250)
+	lines = cv2.HoughLinesP(edges, 1, np.pi/135, configMinLineLength, maxLineGap=250)
 	columnHandler = ColumnHandler()
 	for line in lines:
 		x1, y1, x2, y2 = line[0]
@@ -262,7 +264,7 @@ def buildReducedArray():
 #Ignore the texts that lie to the left and top of the threshold text. This improves accuracy of output
 	print("Starting text: {} ... Ending text: {}".format(startingText, endingText)) 
 	for cell in dataDictionaryArray:
-		if cell.y < yStartThreshold - 10 or cell.x < xStartThreshold - 30:
+		if cell.y < yStartThreshold - 10 or cell.x < xStartThreshold - 20:
 			continue
 
 		if len(endingText) != 0 and (cell.y > yEndThreshold + 10 or cell.x < xEndThreshold - 30):
@@ -432,6 +434,7 @@ def parseConfigFile(fileName):
 	global configyInterval
 	global configxInterval
 	global houghTransform
+	global configMinLineLength
 
 	configFile = open(fileName, "r")
 	for index, line in enumerate(configFile):
@@ -458,6 +461,8 @@ def parseConfigFile(fileName):
 			configyInterval = int(value)
 		if key == "houghTransform":
 			houghTransform = eval(value)
+		if key == "configMinLineLength":
+			configMinLineLength = eval(value)
 
 def main():
 	global startingText
