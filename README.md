@@ -27,7 +27,7 @@ AP, AR, AS, CH, KL, LA, GJ, MH, ML, OR, PY, TG, TR, RJ (_RJ has stopped giving t
 KA - district numbers and individual support.
 
 **Automation through OCR:**  
-BR, MP, PB, RJ, UP, AP
+BR, MP, PB, RJ, UP, AP.  
 JK (beta)  
 HP (beta)  
 JH (beta)  
@@ -37,7 +37,7 @@ CT (beta)
 HR, PB, TN, WB, KA
 
 **Future support:**  
-HP (ocr) UT (ocr)
+UT (ocr)
 
 **Complete description of OCR methodology and debugging**
 
