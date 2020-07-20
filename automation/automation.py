@@ -20,6 +20,7 @@ metaDictionary = {}
 option = ""
 typeOfAutomation = "pdf"
 pdfUrl = ""
+pageId = ""
 
 
 class AutomationMeta:
@@ -239,6 +240,7 @@ def HPGetData():
 			for line in upFile:
 				line = re.sub('\*', '', line)
 				linesArray = line.split('|')[0].split(',')
+				availableColumns = line.split('|')[1].split(',')
 
 				if 'Report of Positive Cases till date' in (re.sub(" +", " ", " ".join(linesArray))):
 					districtTableBeingRead = True
@@ -247,19 +249,31 @@ def HPGetData():
 					districtTableBeingRead = False
 					continue
 
-				if len(linesArray) < 8:
-					print("--> Ignoring due to invalid length: {}".format(linesArray))
-					continue
 				districtDictionary = {}
-				try:
-					districtDictionary['districtName'] = linesArray[0].strip().title()
-					districtDictionary['confirmed'] = int(linesArray[1])
-					districtDictionary['recovered'] = int(linesArray[5])
-					districtDictionary['deceased'] = int(linesArray[6])
-					districtArray.append(districtDictionary)
-				except ValueError:
-					print("--> Ignoring: {}".format(linesArray))
+				confirmedFound = False
+				recoveredFound = False
+				deceasedFound = False
+				for index, data in enumerate(linesArray):
+					try:
+						if availableColumns[index].strip() == "2":
+							districtDictionary['districtName'] = data.strip()
+						if availableColumns[index].strip() == "3":
+							districtDictionary['confirmed'] = int(data.strip())
+							confirmedFound = True
+						if availableColumns[index].strip() == "7":
+							districtDictionary['recovered'] = int(data.strip())
+							recoveredFound = True
+						if availableColumns[index].strip() == "8":
+							districtDictionary['deceased'] = int(data.strip())
+							deceasedFound = True
+					except ValueError:
+						print("--> Ignoring {}".format(linesArray))
+
+				if recoveredFound == False or confirmedFound == False:
+					print("--> Issue with {}".format(linesArray))
 					continue
+
+				districtArray.append(districtDictionary)
 
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Himachal Pradesh", districtArray, option)
@@ -347,13 +361,12 @@ def UPGetData():
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
 
-				if len(linesArray) != 8:
+				if len(linesArray) != 7:
 					print("--> Issue with {}".format(linesArray))
 					continue
 
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0]
-				"""
 				districtDictionary['confirmed'] = int(linesArray[3]) + int(linesArray[5]) + int(linesArray[6])
 				districtDictionary['recovered'] = int(linesArray[3])
 				districtDictionary['deceased'] = int(linesArray[5])
@@ -362,6 +375,7 @@ def UPGetData():
 				districtDictionary['confirmed'] = int(linesArray[2]) 
 				districtDictionary['recovered'] = int(linesArray[4])
 				districtDictionary['deceased'] = int(linesArray[6])
+				"""
 
 				districtArray.append(districtDictionary)
 		upFile.close()
@@ -919,6 +933,7 @@ def WBFormatLine(row):
 
 def readFileFromURLV2(url, stateName, startKey, endKey):
 	global pdfUrl
+	global pageId
 	stateFileName = metaDictionary[stateName].stateCode 
 
 	if len(pdfUrl) > 0:
@@ -926,7 +941,10 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 	if len(url) > 0:
 		r = requests.get(url, allow_redirects=True)
 		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
-	pid = input("Enter district page:")
+	if len(pageId) > 0:
+		pid = pageId
+	else:
+		pid = input("Enter district page:")
 	tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid)
 	for index, table in enumerate(tables):
 		tables[index].to_csv('.tmp/' + stateFileName + str(index) + '.pdf.txt')
@@ -957,6 +975,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 
 def readFileFromURL(url, stateName, startKey, endKey):
 	global pdfUrl
+	global pageId
 	stateFileName = metaDictionary[stateName].stateCode 
 	if len(pdfUrl) > 0:
 		url = pdfUrl
@@ -969,7 +988,10 @@ def readFileFromURL(url, stateName, startKey, endKey):
 		pdf = pdftotext.PDF(f)
 
 	fileToWrite = open(".tmp/" + stateFileName + ".pdf.txt", "w")
-	pid = input("Enter district page:")
+	if len(pageId) > 0:
+		pid = pageId
+	else:
+		pid = input("Enter district page:")
 	print(pdf[int(pid)], file = fileToWrite)
 	fileToWrite.close()
 
@@ -1074,6 +1096,7 @@ def main():
 	global option 
 	global typeOfAutomation
 	global pdfUrl
+	global pageId
 
 	if len(sys.argv) not in [1, 2, 3, 4]:
 		print('Usage: ./automation "[StateName]" "[detailed/full]" "[ocr/pdf=url]"')
@@ -1092,8 +1115,12 @@ def main():
 		if "=" in sys.argv[3]:
 			typeOfAutomation = sys.argv[3].split("=")[0]
 			pdfUrl = sys.argv[3].split("=")[1]
+			if len(sys.argv[3].split("=")) > 2:
+				pageId = sys.argv[3].split("=")[2]
 		else:
 			typeOfAutomation = sys.argv[3]
+	
+	print("Using pageId: {}".format(pageId))
 	
 	if not stateName:
 		stateName = "All States"

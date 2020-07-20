@@ -189,6 +189,9 @@ def buildCells():
 		upperRight = lineArray[4].split(',')
 		upperLeft = lineArray[5].split(',')
 
+		if len(lowerLeft) != 2 or len(lowerRight) !=2 or len(upperRight) != 2 or len(upperLeft) != 2:
+			continue
+
 #Get the mid point of the bound where the text matches
 		xMean = (int(lowerLeft[0]) + int(lowerRight[0]))/2
 		yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
