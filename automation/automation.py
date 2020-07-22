@@ -14,6 +14,35 @@ import datetime
 import logging
 import argparse
 
+
+'''
+To add a new state:
+
+Make an entry into automation.meta file.
+Write a function <StateCode>GetData()
+Inside this function fetch/read files and prepare an array of hashes. 
+Each hash should be of the format:
+{
+	"districtName": nameOfTheDistrict,
+	"confirmed": TotalConfirmedCount,
+	"recovered": TotalRecoveredCount,
+	"deceased": TotalDeceasedCount
+}
+In case any of the values is unknown, pass -999 as the value. All keys are mandatory.
+
+Pass these values to the deltaCalculator.getStateDataFromSite function with the state name. 
+Eg: deltaCalculator.getStateDataFromSite("Arunachal Pradesh", districtArray, option). The value for options are: full/detailed/<empty>. These values are passed via command line.
+
+The deltaCalculator object will return the valules to be added for today for the three categories across all districts mentioned.
+
+In case there are name mappings required, i.e, if the district name in the bulletin and the district name in the site are different, make entries in nameMapping.meta file.
+This file has <StateName>, <BulletinDistrictName>, <SiteDistrictName> as the format for each line.
+
+For any pdf reading, refer to readFileFromURLV2 function. This needs to be called from within the <StateCode>GetData() function. 
+'''
+
+
+
 logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 deltaCalculator = DeltaCalculator()
 metaDictionary = {}
@@ -22,7 +51,7 @@ typeOfAutomation = "pdf"
 pdfUrl = ""
 pageId = ""
 
-
+''' This class holds the data from automation.meta file. This allows for better management of meta data '''
 class AutomationMeta:
 	def __init__(self, stateName, stateCode, url):
 		self.stateName = stateName
@@ -557,9 +586,9 @@ def PBGetDataThroughPdf():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Ludhiana", "Total")
+	readFileFromURLV2(metaDictionary['Punjab'].url, "Punjab", "Ludhiana", "Total")
 	try:
-		with open(".tmp/PB.txt", "r") as upFile:
+		with open(".tmp/PB.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 5:
@@ -619,19 +648,19 @@ def KAGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL('', "Karnataka", "Bengaluru Urban", "Total")
+	readFileFromURLV2('', "Karnataka", "Bengaluru Urban", "Total")
 	try:
-		with open(".tmp/ka.txt", "r") as upFile:
+		with open(".tmp/ka.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
-				if len(linesArray) != 9:
+				if len(linesArray) != 4:
 					print("--> Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
-				districtDictionary['confirmed'] = int(linesArray[2])
-				districtDictionary['recovered'] = int(linesArray[4])
-				districtDictionary['deceased'] = int(linesArray[7]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -852,33 +881,17 @@ def LAGetData():
 
 	deltaCalculator.getStateDataFromSite("Ladakh", districtArray, option)
     	
-def PBFormatLine(line):
-	line = re.sub(' +', ',', re.sub("^ +", '', line))
-	linesArray = line.split(',')
+def PBFormatLine(row):
+	return row[1] + "," + row[2] + "," + row[3] + "," + row[4] + "," + row[5] + "\n"
 
-	outputString = ""
-	for index, data in enumerate(linesArray):
-		if index == 0:
-			continue
-		if is_number(data) == False:
-			outputString = outputString + " " + data if len(outputString) != 0 else data
-		else:
-			outputString += "," + str(data)
-	return outputString
+def KAFormatLine(row):
+	district = ""
+	if is_number(row[1]) == False:
+		district = re.sub(' +', ' ', row[1]).split(' ')[1]
+	else:
+		district = re.sub('\*', '', row[2])
 
-def KAFormatLine(line):
-	line = re.sub(' +', ',', re.sub('^ +', '', line))
-	linesArray = line.split(',')
-
-	outputString = ""
-	for index, data in enumerate(linesArray):
-		if index == 0:
-			continue
-		if is_number(data) == False:
-			outputString = outputString + " " + data if len(outputString) != 0 else data
-		else:
-			outputString += "," + str(data)
-	return outputString
+	return district + "," + row[4] + "," + row[6] + "," + row[9] + "\n"
 
 """
 def HRFormatLine(line):
@@ -930,7 +943,14 @@ def WBFormatLine(row):
 	line = ",".join(row) + "\n"
 	return line
 
-
+''' 
+	This method uses camelot package to read a pdf and then parse it into a csv file.
+	In this method, we read the pdf either from the meta file or from the pdfUrl global variable. This variable can be set from the cmd line.
+	The method also takes user input for page number or allows for page number to be used from the pageId global variable.
+	The method, reads a specific page, then for that page, decides if a line has to be ignored using starting and ending keys. 
+	Then the method calls a "<stateCode>FormatLine(row)" function that calls the corresponding function to allow for any row/line to be manipulated.
+	The outputs are written to a <stateCode>.csv file. This is read inside the corresponding <stateCode>GetData() functions which call deltaCalculator to calculate deltas.
+'''
 def readFileFromURLV2(url, stateName, startKey, endKey):
 	global pdfUrl
 	global pageId
@@ -968,11 +988,13 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 					continue
 
 				line = eval(stateFileName + "FormatLine")(row)
-				print(line, file = stateOutputFile)
+				if line == "\n":
+					continue
+				print(line, file = stateOutputFile, end = "")
 
 	stateOutputFile.close()
 				
-
+''' This will be deprecated. '''
 def readFileFromURL(url, stateName, startKey, endKey):
 	global pdfUrl
 	global pageId
@@ -1015,7 +1037,7 @@ def readFileFromURL(url, stateName, startKey, endKey):
 	stateOutputFileName.close()
 	fileToWrite.close()
 
-
+'''This will eventually be moved to TNFormatLine(row) function'''
 def convertTnPDFToCSV():
 	global pdfUrl
 	global typeOfAutomation
