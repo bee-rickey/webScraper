@@ -1,18 +1,15 @@
 #!/usr/bin/python3
 import csv
+import requests
+import pdftotext
+import sys
+import os
+import re
+import logging
 import camelot
 from bs4 import BeautifulSoup
 import html5lib
 from deltaCalculator import DeltaCalculator
-import requests
-import pdftotext
-import sys
-import json
-import os
-import re
-import datetime
-import logging
-import argparse
 
 
 '''
@@ -310,8 +307,8 @@ def HPGetData():
 		print("hp.txt missing. Generate through pdf or ocr and rerun.")
 		
 
-def RJGetData():
-	if typeOfAutomation == "ocr" or typeOfAutomation == "pdf":
+def RJGetDataUsingUrl():
+	if typeOfAutomation != "ocr" or typeOfAutomation != "pdf":
 		print("RJ Getdata using url is deprecated")
 		return
 	response = requests.request("GET", metaDictionary['Rajasthan'].url)
@@ -719,11 +716,26 @@ def TNGetData():
 		print("tn.txt missing. Generate through pdf or ocr and rerun.")
 
 def NLGetData():
-	print("NL has no proper table yet")
-#os.system("curl -sk https://covid19.nagaland.gov.in > nl.html")
-#	soup = BeautifulSoup(open("nl.html"), 'html.parser')
-#	table = soup.find_all("script")[21].get_text()
-#	print(table)
+	response = requests.request("GET", metaDictionary['Nagaland'].url)
+	soup = BeautifulSoup(response.content, 'html.parser')
+	districtArray = []
+	for row in soup.find_all("tr"):
+		districtDictionary = {}
+		for index, data in enumerate(row.find_all("td")):
+			if index == 0:
+				if len(data.get_text().strip().title()) == 0:
+					continue
+				districtDictionary['districtName'] = data.get_text().strip().title()
+			if index == 5:
+				if 'districtName' not in districtDictionary:
+					continue
+				districtDictionary['active'] = int(data.get_text().strip())
+				districtDictionary['confirmed'] = -999
+				districtDictionary['recovered'] = -999
+				districtDictionary['deceased'] = -999
+				districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Nagaland", districtArray, option)
 
 def ASGetData():
 	response = requests.request("GET", metaDictionary['Assam'].url)
@@ -1105,11 +1117,11 @@ def convertTnPDFToCSV():
 	tnOutputFile.close()
 
 def is_number(s):
-  try:
-    int(s)
-    return True
-  except ValueError:
-    return False
+	try:
+		int(s)
+		return True
+	except ValueError:
+		return False
 
 def main():
 

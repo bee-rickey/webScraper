@@ -52,10 +52,12 @@ class DeltaCalculator:
 		confirmedDeltaArray = []
 		recoveredDeltaArray = []
 		deceasedDeltaArray = []
+		activeDeltaArray = []
 		districts = []
 		stateTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
 		siteTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
 		errorArray = []
+		districtMap = {}
 
 		for districtDetails in stateDataFromStateDashboard:
 			try:
@@ -73,6 +75,10 @@ class DeltaCalculator:
 				confirmedDelta = districtDetails['confirmed'] - stateData[districtName]['confirmed'] if districtDetails['confirmed'] != -999 else "NA"
 				recoveredDelta = districtDetails['recovered'] - stateData[districtName]['recovered'] if districtDetails['recovered'] != -999 else "NA"
 				deceasedDelta = districtDetails['deceased'] - stateData[districtName]['deceased'] if districtDetails['deceased'] != -999 else "NA"
+				activeDelta = 0
+
+				if 'active' in districtDetails.keys():
+					activeDelta = districtDetails['active'] - (stateData[districtName]['confirmed'] - stateData[districtName]['deceased'] - stateData[districtName]['recovered'])
 			except KeyError:
 				errorArray.append("--> ERROR: Failed to find key mapping for district: {}, state: {}".format(districtName, stateName))
 				continue
@@ -80,11 +86,12 @@ class DeltaCalculator:
 			if not options:
 				outputString = districtName + ", " + str(confirmedDelta) + ", " + str(recoveredDelta) + ", " + str(deceasedDelta) 
 				print(outputString)
-			if options == "detailed" or options == "full":
+			if options == "detailed" or options == "full" or options == "fullActive":
 				districts.append(districtName)
 				confirmedDeltaArray.append(confirmedDelta)
 				recoveredDeltaArray.append(recoveredDelta)
 				deceasedDeltaArray.append(deceasedDelta)
+				activeDeltaArray.append(activeDelta)
 
 		stateConfirmedDelta = stateTotalFromStateDashboard['confirmed'] - siteTotalFromStateDashboard['confirmed'] 
 		stateRecoveredDelta = stateTotalFromStateDashboard['recovered'] - siteTotalFromStateDashboard['recovered']
@@ -103,6 +110,9 @@ class DeltaCalculator:
 			self.printFullDetails(confirmedDeltaArray, "Hospitalized", stateName, stateCode, districts)
 			self.printFullDetails(recoveredDeltaArray, "Recovered", stateName, stateCode, districts)
 			self.printFullDetails(deceasedDeltaArray, "Deceased", stateName, stateCode, districts)
+		elif options == "fullActive":
+			self.printFullDetails(activeDeltaArray, "Active", stateName, stateCode, districts)
+			return
 		else:
 			print("Total delta, {}, {}, {}".format(stateConfirmedDelta, stateRecoveredDelta, stateDeceasedDelta))
 
