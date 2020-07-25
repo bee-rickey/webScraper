@@ -28,3 +28,5 @@ __pycache__
 !requirements.txt
 
 credentials/
+
+.vscode
