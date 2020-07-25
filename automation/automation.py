@@ -168,10 +168,28 @@ def ARGetData():
 		districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Arunachal Pradesh", districtArray, option)
+
 def APGetDataByUrl():
-	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
+	response = requests.request("GET", metaDictionary['Andhra Pradesh'].url)
+	soup = BeautifulSoup(response.content, 'html.parser')
+	table = soup.find_all("table")[1].find_all("tr")
 
 	districtArray = []
+	for index, row in enumerate(table):
+		data = row.find_all("td")
+		if 'Total' in data[0].get_text() or 'District' in data[0].get_text():
+			continue
+
+		districtDictionary = {}
+		districtDictionary['districtName'] =  data[0].get_text()
+		districtDictionary['confirmed'] =  int(data[1].get_text())
+		districtDictionary['recovered'] =  int(data[2].get_text())
+		districtDictionary['deceased'] =  int(data[3].get_text())
+		districtArray.append(districtDictionary)
+
+	"""
+	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
+
 	for districtDetails in (stateDashboard['cases_district']):
 		districtDictionary = {}
 		districtDictionary['districtName'] =  districtDetails['district_name']
@@ -180,7 +198,7 @@ def APGetDataByUrl():
 		districtDictionary['deceased'] =  int(districtDetails['death'])
 
 		districtArray.append(districtDictionary)
-
+	"""
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
@@ -246,12 +264,12 @@ def MHGetDataByUrl():
 	stateDashboard = requests.request("get", metaDictionary['Maharashtra'].url).json()
 
 	districtArray = []
-	for districtDetails in stateDashboard['features']:
+	for districtDetails in stateDashboard:
 		districtDictionary = {}
-		districtDictionary['districtName'] = districtDetails['attributes']['District']
-		districtDictionary['confirmed'] = districtDetails['attributes']['Positive']
-		districtDictionary['recovered'] = districtDetails['attributes']['Recovered']
-		districtDictionary['deceased'] = districtDetails['attributes']['Death']
+		districtDictionary['districtName'] = districtDetails['District']
+		districtDictionary['confirmed'] = districtDetails['Positive Cases']
+		districtDictionary['recovered'] = districtDetails['Recovered']
+		districtDictionary['deceased'] = districtDetails['Deceased']
 		districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Maharashtra", districtArray, option)
@@ -875,8 +893,8 @@ def LAGetData():
 	confirmed = table[9].find_all("td")[1]
 	discharged = table[11].find_all("td")[1]
 	confirmedArray = dischargedArray = []
-	confirmedArray = re.sub(':', '', re.sub(' +', ' ', re.sub("\n", " ", confirmed.get_text().strip()))).split(' ')
-	dischargedArray = re.sub(':', '', re.sub(' +', ' ', re.sub("\n", " ", discharged.get_text().strip()))).split(' ')
+	confirmedArray = re.sub('\\r', '', re.sub(':', '', re.sub(' +', ' ', re.sub("\n", " ", confirmed.get_text().strip())))).split(' ')
+	dischargedArray = re.sub('\\r', '', re.sub(':', '', re.sub(' +', ' ', re.sub("\n", " ", discharged.get_text().strip())))).split(' ')
 
 	districtDictionary['districtName'] = confirmedArray[0]
 	districtDictionary['confirmed'] = int(confirmedArray[1])
