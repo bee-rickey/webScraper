@@ -1,18 +1,44 @@
 #!/usr/bin/python3
 import csv
+import requests
+import pdftotext
+import sys
+import os
+import re
+import logging
 import camelot
 from bs4 import BeautifulSoup
 import html5lib
 from deltaCalculator import DeltaCalculator
-import requests
-import pdftotext
-import sys
-import json
-import os
-import re
-import datetime
-import logging
-import argparse
+
+
+'''
+To add a new state:
+
+Make an entry into automation.meta file.
+Write a function <StateCode>GetData()
+Inside this function fetch/read files and prepare an array of hashes. 
+Each hash should be of the format:
+{
+	"districtName": nameOfTheDistrict,
+	"confirmed": TotalConfirmedCount,
+	"recovered": TotalRecoveredCount,
+	"deceased": TotalDeceasedCount
+}
+In case any of the values is unknown, pass -999 as the value. All keys are mandatory.
+
+Pass these values to the deltaCalculator.getStateDataFromSite function with the state name. 
+Eg: deltaCalculator.getStateDataFromSite("Arunachal Pradesh", districtArray, option). The value for options are: full/detailed/<empty>. These values are passed via command line.
+
+The deltaCalculator object will return the valules to be added for today for the three categories across all districts mentioned.
+
+In case there are name mappings required, i.e, if the district name in the bulletin and the district name in the site are different, make entries in nameMapping.meta file.
+This file has <StateName>, <BulletinDistrictName>, <SiteDistrictName> as the format for each line.
+
+For any pdf reading, refer to readFileFromURLV2 function. This needs to be called from within the <StateCode>GetData() function. 
+'''
+
+
 
 logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 deltaCalculator = DeltaCalculator()
@@ -20,8 +46,9 @@ metaDictionary = {}
 option = ""
 typeOfAutomation = "pdf"
 pdfUrl = ""
+pageId = ""
 
-
+''' This class holds the data from automation.meta file. This allows for better management of meta data '''
 class AutomationMeta:
 	def __init__(self, stateName, stateCode, url):
 		self.stateName = stateName
@@ -52,6 +79,50 @@ def loadMetaData():
 			metaObject = AutomationMeta(lineArray[0].strip(), lineArray[1].strip(), lineArray[2].strip())
 			metaDictionary[lineArray[0].strip()] = metaObject
 	metaFile.close()
+	
+'''
+def getAllColumnValues():
+	columnSet = set()
+	with open(".tmp/ct.txt", "r") as upFile:
+		for line in upFile:
+			for col in line.split('|')[1].split(','):
+				columnSet.add(re.sub('\n', '', col.strip())
+	return sorted(columnSet)
+'''
+
+def CTGetData():
+	districtArray = []
+	'''columnNumbers = getAllColumnValues()'''
+	with open(".tmp/ct.txt", "r") as upFile:
+		for line in upFile:
+			linesArray = line.split('|')[0].split(',')
+			availableColumns = line.split('|')[1].split(',')
+
+			districtDictionary = {}
+			districtDictionary['deceased'] = 0
+			confirmedFound = False
+			recoveredFound = False
+			deceasedFound = False
+			for index, data in enumerate(linesArray):
+				if availableColumns[index].strip() == "2":
+					districtDictionary['districtName'] = data.strip()
+				if availableColumns[index].strip() == "4":
+					districtDictionary['confirmed'] = int(data.strip())
+					confirmedFound = True
+				if availableColumns[index].strip() == "6":
+					districtDictionary['recovered'] = int(data.strip())
+					recoveredFound = True
+				if availableColumns[index].strip() == "8" or availableColumns[index].strip() == "9":
+					districtDictionary['deceased'] += int(data.strip())
+					deceasedFound = True
+
+			if recoveredFound == False or confirmedFound == False:
+				print("--> Issue with {}".format(linesArray))
+				continue
+			districtArray.append(districtDictionary)
+	upFile.close()
+
+	deltaCalculator.getStateDataFromSite("Chhattisgarh", districtArray, option)
 
 def APGetData():
 	if typeOfAutomation == "ocr":
@@ -68,7 +139,7 @@ def APGetDataByOCR():
 
 			linesArray = line.split('|')[0].split(',')
 			if len(linesArray) != 6:
-				print("Issue with {}".format(linesArray))
+				print("--> Issue with {}".format(linesArray))
 				continue
 
 			districtDictionary = {}
@@ -82,6 +153,21 @@ def APGetDataByOCR():
 
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
+def ARGetData():
+	stateDashboard = requests.request("get", metaDictionary['Arunachal Pradesh'].url).json()
+	districtArray = []
+	for districtDetails in stateDashboard:
+		if districtDetails['district'] == 'Total':
+			continue
+		districtDictionary = {}
+		districtDictionary['districtName'] =  districtDetails['district']
+		districtDictionary['confirmed'] =  int(districtDetails['confirmed'])
+		districtDictionary['recovered'] =  int(districtDetails['recovered'])
+		districtDictionary['deceased'] =  int(districtDetails['deceased'])
+
+		districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Arunachal Pradesh", districtArray, option)
 def APGetDataByUrl():
 	stateDashboard = requests.request("post", metaDictionary['Andhra Pradesh'].url).json()
 
@@ -108,6 +194,7 @@ def ORGetData():
 			districtDictionary['districtName'] = lineArray[0].strip()
 			districtDictionary['confirmed'] = int(lineArray[1].strip())
 			districtDictionary['recovered'] = int(lineArray[2].strip())
+			# Deceased due to other reasons also to deceased count
 			districtDictionary['deceased'] = int(lineArray[3].strip()) + int(lineArray[4].strip())
 		
 			districtArray.append(districtDictionary)
@@ -131,14 +218,14 @@ def MHGetDataByOcr():
 				linesArray = line.split('|')[0].split(',')
 				if 'Total' in line or isIgnoreFlagSet == True:
 					isIgnoreFlagSet = True
-					print("Ignoring {} ".format(line))
+					print("--> Ignoring {} ".format(line))
 				if len(linesArray) < 5:
-					print("Ignoring due to invalid length: {}".format(linesArray))
+					print("--> Ignoring due to invalid length: {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				try:
 					if is_number(linesArray[0].strip()):
-						print("Ignoring: {}".format(linesArray))
+						print("--> Ignoring: {}".format(linesArray))
 						continue
 
 					districtDictionary['districtName'] = linesArray[0].strip().title()
@@ -147,7 +234,7 @@ def MHGetDataByOcr():
 					districtDictionary['deceased'] = int(linesArray[3])
 					districtArray.append(districtDictionary)
 				except ValueError:
-					print("Ignoring: {}".format(linesArray))
+					print("--> Ignoring: {}".format(linesArray))
 					continue
 
 		upFile.close()
@@ -168,10 +255,60 @@ def MHGetDataByUrl():
 		districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Maharashtra", districtArray, option)
+
+def HPGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	districtTableBeingRead = False
+	try:
+		with open(".tmp/hp.txt", "r") as upFile:
+			for line in upFile:
+				line = re.sub('\*', '', line)
+				linesArray = line.split('|')[0].split(',')
+				availableColumns = line.split('|')[1].split(',')
+
+				if 'Report of Positive Cases till date' in (re.sub(" +", " ", " ".join(linesArray))):
+					districtTableBeingRead = True
+
+				if districtTableBeingRead == False or 'Total' in linesArray[0]:
+					districtTableBeingRead = False
+					continue
+
+				districtDictionary = {}
+				confirmedFound = False
+				recoveredFound = False
+				deceasedFound = False
+				for index, data in enumerate(linesArray):
+					try:
+						if availableColumns[index].strip() == "2":
+							districtDictionary['districtName'] = data.strip()
+						if availableColumns[index].strip() == "3":
+							districtDictionary['confirmed'] = int(data.strip())
+							confirmedFound = True
+						if availableColumns[index].strip() == "7":
+							districtDictionary['recovered'] = int(data.strip())
+							recoveredFound = True
+						if availableColumns[index].strip() == "8":
+							districtDictionary['deceased'] = int(data.strip())
+							deceasedFound = True
+					except ValueError:
+						print("--> Ignoring {}".format(linesArray))
+
+				if recoveredFound == False or confirmedFound == False:
+					print("--> Issue with {}".format(linesArray))
+					continue
+
+				districtArray.append(districtDictionary)
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Himachal Pradesh", districtArray, option)
+	except FileNotFoundError:
+		print("hp.txt missing. Generate through pdf or ocr and rerun.")
 		
 
-def RJGetData():
-	if typeOfAutomation == "ocr" or typeOfAutomation == "pdf":
+def RJGetDataUsingUrl():
+	if typeOfAutomation != "ocr" or typeOfAutomation != "pdf":
 		print("RJ Getdata using url is deprecated")
 		return
 	response = requests.request("GET", metaDictionary['Rajasthan'].url)
@@ -251,7 +388,7 @@ def UPGetData():
 				linesArray = splitArray[0].split(',')
 
 				if len(linesArray) != 7:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 					continue
 
 				districtDictionary = {}
@@ -259,6 +396,13 @@ def UPGetData():
 				districtDictionary['confirmed'] = int(linesArray[3]) + int(linesArray[5]) + int(linesArray[6])
 				districtDictionary['recovered'] = int(linesArray[3])
 				districtDictionary['deceased'] = int(linesArray[5])
+				"""
+
+				districtDictionary['confirmed'] = int(linesArray[2]) 
+				districtDictionary['recovered'] = int(linesArray[4])
+				districtDictionary['deceased'] = int(linesArray[6])
+				"""
+
 				districtArray.append(districtDictionary)
 		upFile.close()
 
@@ -274,6 +418,9 @@ def BRGetData():
 		with open(".tmp/br.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
+				if len(linesArray) != 5:
+					print("--> Issue with {}".format(linesArray))
+					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0]
 				districtDictionary['confirmed'] = int(linesArray[1])
@@ -315,7 +462,7 @@ def JHGetData():
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
 				if len(linesArray) != 9:
-					print(linesArray)
+					print("--> Issue with {}".format(linesArray))
 					continue;
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
@@ -346,7 +493,7 @@ def RJGetData():
 				linesArray = line.split('|')[0].split(',')
 
 				if len(linesArray) != 12:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 				
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip().title()
@@ -372,14 +519,14 @@ def MPGetData():
 				linesArray = line.split('|')[0].split(',')
 				if 'Total' in line or isIgnoreFlagSet == True:
 					isIgnoreFlagSet = True
-					print("Ignoring {} ".format(line))
+					print("--> Ignoring {} ".format(line))
 				if len(linesArray) != 8:
-					print("Ignoring due to invalid length: {}".format(linesArray))
+					print("--> Ignoring due to invalid length: {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				try:
 					if is_number(linesArray[0].strip()):
-						print("Ignoring: {}".format(linesArray))
+						print("--> Ignoring: {}".format(linesArray))
 						continue
 
 					districtDictionary['districtName'] = linesArray[0].strip().title()
@@ -388,7 +535,7 @@ def MPGetData():
 					districtDictionary['deceased'] = int(linesArray[4])
 					districtArray.append(districtDictionary)
 				except ValueError:
-					print("Ignoring: {}".format(linesArray))
+					print("--> Ignoring: {}".format(linesArray))
 					continue
 
 		upFile.close()
@@ -443,12 +590,12 @@ def JKGetData():
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
 				if len(linesArray) != 11:
-					print("Ignoring due to invalid length: {}".format(linesArray))
+					print("--> Ignoring due to invalid length: {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				try:
 					if is_number(linesArray[0].strip()):
-						print("Ignoring: {}".format(linesArray))
+						print("--> Ignoring: {}".format(linesArray))
 						continue
 
 					districtDictionary['districtName'] = linesArray[0].strip().title()
@@ -457,7 +604,7 @@ def JKGetData():
 					districtDictionary['deceased'] = int(linesArray[10])
 					districtArray.append(districtDictionary)
 				except ValueError:
-					print("Ignoring: {}".format(linesArray))
+					print("--> Ignoring: {}".format(linesArray))
 					continue
 
 		upFile.close()
@@ -475,7 +622,7 @@ def WBGetData():
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 7:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[1].strip()
@@ -493,13 +640,13 @@ def PBGetDataThroughPdf():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL(metaDictionary['Punjab'].url, "Punjab", "Ludhiana", "Total")
+	readFileFromURLV2(metaDictionary['Punjab'].url, "Punjab", "Ludhiana", "Total")
 	try:
-		with open(".tmp/PB.txt", "r") as upFile:
+		with open(".tmp/PB.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 5:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
@@ -534,7 +681,7 @@ def PBGetDataThroughOcr():
 				linesArray = splitArray[0].split(',')
 
 				if len(linesArray) != 5:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 					continue
 				if linesArray[0].strip() == "Total":
 					continue
@@ -555,19 +702,19 @@ def KAGetData():
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
-	readFileFromURL('', "Karnataka", "Bengaluru Urban", "Total")
+	readFileFromURLV2('', "Karnataka", "Bengaluru Urban", "Total")
 	try:
-		with open(".tmp/ka.txt", "r") as upFile:
+		with open(".tmp/ka.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
-				if len(linesArray) != 8:
-					print("Issue with {}".format(linesArray))
+				if len(linesArray) != 4:
+					print("--> Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
-				districtDictionary['confirmed'] = int(linesArray[2])
-				districtDictionary['recovered'] = int(linesArray[4])
-				districtDictionary['deceased'] = int(linesArray[6]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -580,13 +727,13 @@ def HRGetData():
 	districtDictionary = {}
 	districtArray = []
 	if typeOfAutomation == "pdf":
-		readFileFromURL(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
+		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
 	try:
-		with open(".tmp/hr.txt", "r") as upFile:
+		with open(".tmp/hr.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 4:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
@@ -610,7 +757,7 @@ def TNGetData():
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 4:
-					print("Issue with {}".format(linesArray))
+					print("--> Issue with {}".format(linesArray))
 					continue
 				linesArray[3] = linesArray[3].replace('$', '')
 				districtDictionary = {}
@@ -626,11 +773,26 @@ def TNGetData():
 		print("tn.txt missing. Generate through pdf or ocr and rerun.")
 
 def NLGetData():
-	print("NL has no proper table yet")
-#os.system("curl -sk https://covid19.nagaland.gov.in > nl.html")
-#	soup = BeautifulSoup(open("nl.html"), 'html.parser')
-#	table = soup.find_all("script")[21].get_text()
-#	print(table)
+	response = requests.request("GET", metaDictionary['Nagaland'].url)
+	soup = BeautifulSoup(response.content, 'html.parser')
+	districtArray = []
+	for row in soup.find_all("tr"):
+		districtDictionary = {}
+		for index, data in enumerate(row.find_all("td")):
+			if index == 0:
+				if len(data.get_text().strip().title()) == 0:
+					continue
+				districtDictionary['districtName'] = data.get_text().strip().title()
+			if index == 5:
+				if 'districtName' not in districtDictionary:
+					continue
+				districtDictionary['active'] = int(data.get_text().strip())
+				districtDictionary['confirmed'] = -999
+				districtDictionary['recovered'] = -999
+				districtDictionary['deceased'] = -999
+				districtArray.append(districtDictionary)
+
+	deltaCalculator.getStateDataFromSite("Nagaland", districtArray, option)
 
 def ASGetData():
 	response = requests.request("GET", metaDictionary['Assam'].url)
@@ -788,34 +950,19 @@ def LAGetData():
 
 	deltaCalculator.getStateDataFromSite("Ladakh", districtArray, option)
     	
-def PBFormatLine(line):
-	line = re.sub(' +', ',', re.sub("^ +", '', line))
-	linesArray = line.split(',')
+def PBFormatLine(row):
+	return row[1] + "," + row[2] + "," + row[3] + "," + row[4] + "," + row[5] + "\n"
 
-	outputString = ""
-	for index, data in enumerate(linesArray):
-		if index == 0:
-			continue
-		if is_number(data) == False:
-			outputString = outputString + " " + data if len(outputString) != 0 else data
-		else:
-			outputString += "," + str(data)
-	return outputString
+def KAFormatLine(row):
+	district = ""
+	if is_number(row[1]) == False:
+		district = re.sub(' +', ' ', row[1]).split(' ')[1]
+	else:
+		district = re.sub('\*', '', row[2])
 
-def KAFormatLine(line):
-	line = re.sub(' +', ',', re.sub('^ +', '', line))
-	linesArray = line.split(',')
+	return district + "," + row[4] + "," + row[6] + "," + row[9] + "\n"
 
-	outputString = ""
-	for index, data in enumerate(linesArray):
-		if index == 0:
-			continue
-		if is_number(data) == False:
-			outputString = outputString + " " + data if len(outputString) != 0 else data
-		else:
-			outputString += "," + str(data)
-	return outputString
-
+"""
 def HRFormatLine(line):
 	line = re.sub(' +', ',', re.sub('^ +', '', line))
 
@@ -826,7 +973,7 @@ def HRFormatLine(line):
 		linesArray[1] = "Charkhi Dadri"
 
 	if len(linesArray) != 11:
-		print("Ignoring: {}".format(linesArray))
+		print("--> Ignoring: {}".format(linesArray))
 		return "\n"
 	
 	recovery = 0
@@ -843,6 +990,18 @@ def HRFormatLine(line):
 
 	outputString = linesArray[1] + "," + linesArray[3] + "," + str(recovery) + "," + str(deaths) + "\n"
 	return outputString
+"""
+
+def HRFormatLine(row):
+	if '[' in row[3]:
+		row[3] = row[3].split('[')[0]
+	if '[' in row[4]:
+		row[4] = row[4].split('[')[0]
+	if '[' in row[7]:
+		row[7] = row[7].split('[')[0]
+
+	line = row[1] + "," + row[3] + "," + row[4] + "," + row[7] + "\n"
+	return line
 
 
 def WBFormatLine(row):
@@ -853,9 +1012,17 @@ def WBFormatLine(row):
 	line = ",".join(row) + "\n"
 	return line
 
-
+''' 
+	This method uses camelot package to read a pdf and then parse it into a csv file.
+	In this method, we read the pdf either from the meta file or from the pdfUrl global variable. This variable can be set from the cmd line.
+	The method also takes user input for page number or allows for page number to be used from the pageId global variable.
+	The method, reads a specific page, then for that page, decides if a line has to be ignored using starting and ending keys. 
+	Then the method calls a "<stateCode>FormatLine(row)" function that calls the corresponding function to allow for any row/line to be manipulated.
+	The outputs are written to a <stateCode>.csv file. This is read inside the corresponding <stateCode>GetData() functions which call deltaCalculator to calculate deltas.
+'''
 def readFileFromURLV2(url, stateName, startKey, endKey):
 	global pdfUrl
+	global pageId
 	stateFileName = metaDictionary[stateName].stateCode 
 
 	if len(pdfUrl) > 0:
@@ -863,7 +1030,10 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 	if len(url) > 0:
 		r = requests.get(url, allow_redirects=True)
 		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
-	pid = input("Enter district page:")
+	if len(pageId) > 0:
+		pid = pageId
+	else:
+		pid = input("Enter district page:")
 	tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid)
 	for index, table in enumerate(tables):
 		tables[index].to_csv('.tmp/' + stateFileName + str(index) + '.pdf.txt')
@@ -887,13 +1057,16 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 					continue
 
 				line = eval(stateFileName + "FormatLine")(row)
-				print(line, file = stateOutputFile)
+				if line == "\n":
+					continue
+				print(line, file = stateOutputFile, end = "")
 
 	stateOutputFile.close()
 				
-
+''' This will be deprecated. '''
 def readFileFromURL(url, stateName, startKey, endKey):
 	global pdfUrl
+	global pageId
 	stateFileName = metaDictionary[stateName].stateCode 
 	if len(pdfUrl) > 0:
 		url = pdfUrl
@@ -906,7 +1079,10 @@ def readFileFromURL(url, stateName, startKey, endKey):
 		pdf = pdftotext.PDF(f)
 
 	fileToWrite = open(".tmp/" + stateFileName + ".pdf.txt", "w")
-	pid = input("Enter district page:")
+	if len(pageId) > 0:
+		pid = pageId
+	else:
+		pid = input("Enter district page:")
 	print(pdf[int(pid)], file = fileToWrite)
 	fileToWrite.close()
 
@@ -930,7 +1106,7 @@ def readFileFromURL(url, stateName, startKey, endKey):
 	stateOutputFileName.close()
 	fileToWrite.close()
 
-
+'''This will eventually be moved to TNFormatLine(row) function'''
 def convertTnPDFToCSV():
 	global pdfUrl
 	global typeOfAutomation
@@ -976,7 +1152,7 @@ def convertTnPDFToCSV():
 			linesArray = line.split('|')
 
 			if len(linesArray) < 6:
-				print("Ignoring line: {} due to less columns".format(line))
+				print("--> Ignoring line: {} due to less columns".format(line))
 				continue
 
 			if 'Airport' in line:
@@ -998,11 +1174,11 @@ def convertTnPDFToCSV():
 	tnOutputFile.close()
 
 def is_number(s):
-  try:
-    int(s)
-    return True
-  except ValueError:
-    return False
+	try:
+		int(s)
+		return True
+	except ValueError:
+		return False
 
 def main():
 
@@ -1011,6 +1187,7 @@ def main():
 	global option 
 	global typeOfAutomation
 	global pdfUrl
+	global pageId
 
 	if len(sys.argv) not in [1, 2, 3, 4]:
 		print('Usage: ./automation "[StateName]" "[detailed/full]" "[ocr/pdf=url]"')
@@ -1029,8 +1206,12 @@ def main():
 		if "=" in sys.argv[3]:
 			typeOfAutomation = sys.argv[3].split("=")[0]
 			pdfUrl = sys.argv[3].split("=")[1]
+			if len(sys.argv[3].split("=")) > 2:
+				pageId = sys.argv[3].split("=")[2]
 		else:
 			typeOfAutomation = sys.argv[3]
+	
+	print("Using pageId: {}".format(pageId))
 	
 	if not stateName:
 		stateName = "All States"

@@ -74,11 +74,11 @@ case $2 in
 	"Maharashtra")
 		stateCode="mh"
 		;;
-	"Chhattisgarh")
-		stateCode="ct"
-		;;
 	"Himachal Pradesh")
 		stateCode="hp"
+		;;
+	"Chhattisgarh")
+		stateCode="ct"
 		;;
 	*)
 		stateCode="invalid"

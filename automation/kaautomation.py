@@ -91,7 +91,6 @@ def confirmedFileWriter(linesArray, linesToWrite):
 
 	districtName = ""
 	districtName = deltaCalculator.getNameMapping('Karnataka', linesArray[6])
-#csvWriter.writerow([linesArray[2].replace('P-', 'KA-P'), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[6]])
 
 	if len(linesArray[3]) == 0 and len(linesToWrite) != 0:
 		print("Processing: {}".format(linesArray))
@@ -100,9 +99,12 @@ def confirmedFileWriter(linesArray, linesToWrite):
 				linesToWrite[len(linesToWrite) - 1][2] = str(linesToWrite[len(linesToWrite) - 1][2]) + " " + str(cellValue)
 			if len(cellValue) > 0 and index == 7:
 				linesToWrite[len(linesToWrite) - 1][11] = str(linesToWrite[len(linesToWrite) - 1][11]) + " " + str(cellValue)
+			if len(cellValue) > 0 and index == 6:
+				linesToWrite[len(linesToWrite) - 1][5] = linesToWrite[len(linesToWrite) - 1][5] + " " + str(cellValue)
 		return
+	patientNumber = linesArray[3].replace('P-', 'KA-P') if 'P' in linesArray[3] else "KA-P" + str(linesArray[3])
 		
-	linesToWrite.append([linesArray[3].replace('P-', 'KA-P'), datetime.date.today().strftime("%d/%m/%Y"), linesArray[4], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[7]])
+	linesToWrite.append([patientNumber, datetime.date.today().strftime("%d/%m/%Y"), linesArray[4], gender, '', districtName, 'Karnataka', 'KA', 1, 'Hospitalized','', linesArray[7]])
 
 def recoveredFileWriter(linesArray, linesToWrite):
 	"""
@@ -125,7 +127,8 @@ def recoveredFileWriter(linesArray, linesToWrite):
 			continue
 		if item == "\n":
 			continue
-		linesToWrite.append([item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
+		patientNumber = item.replace('P-', 'KA-P').replace('\n', '') if 'P' in item else "KA-P" + str(item)
+		linesToWrite.append([patientNumber, datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
 #csvWriter.writerow([item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
 	
 
