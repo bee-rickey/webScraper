@@ -80,6 +80,9 @@ case $2 in
 	"Chhattisgarh")
 		stateCode="ct"
 		;;
+	"Uttarakhand")
+		stateCode="ut"
+		;;
 	*)
 		stateCode="invalid"
 esac

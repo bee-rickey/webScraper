@@ -24,5 +24,6 @@ Haryana, HR,
 Himachal Pradesh, HP,
 Jammu and Kashmir, JK,
 Jharkhand, JH,
+Uttarakhand, UT,
 Meghalaya, ML, https://services7.arcgis.com/nzBTI19PTHBZaEPT/arcgis/rest/services/Admin_Boundary/FeatureServer/1/query?f=json&returnGeometry=false&outFields=*&where=1=1
 #Mizoram, MZ, https://mcovid19.mizoram.gov.in/api/home-stats

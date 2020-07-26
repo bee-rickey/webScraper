@@ -32,12 +32,11 @@ JK (beta)
 HP (beta)  
 JH (beta)  
 CT (beta)
+UT (beta)  
 
 **Automation support through pdf:**  
 HR, PB, TN, WB, KA
 
-**Future support:**  
-UT (ocr)
 
 **Complete description of OCR methodology and debugging**
 

@@ -428,6 +428,37 @@ def UPGetData():
 	except FileNotFoundError:
 		print("up.txt missing. Generate through pdf or ocr and rerun.")
 
+def UTGetData():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	ignoreLines = False
+	try:
+		with open(".tmp/ut.txt", "r") as upFile:
+			for line in upFile:
+				if ignoreLines == True:
+					continue
+
+				if 'Total' in line:
+					ignoreLines = True
+					continue
+
+				linesArray = line.split('|')[0].split(',')
+				if len(linesArray) != 7:
+					print("--> Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[4])
+				districtArray.append(districtDictionary)
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Uttarakhand", districtArray, option)
+	except FileNotFoundError:
+		print("br.txt missing. Generate through pdf or ocr and rerun.")
+
 def BRGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -451,6 +482,7 @@ def BRGetData():
 	except FileNotFoundError:
 		print("br.txt missing. Generate through pdf or ocr and rerun.")
 
+"""
 def JHGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -459,20 +491,38 @@ def JHGetData():
 		with open(".tmp/jh.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
-				if len(linesArray) != 9:
-					print("--> Issue with {}".format(linesArray))
-					continue;
-				districtDictionary = {}
-				districtDictionary['districtName'] = linesArray[0].strip()
-				districtDictionary['confirmed'] = int(linesArray[4]) + int(linesArray[5])
-				districtDictionary['recovered'] = -999
-				districtDictionary['deceased'] = -999
-				districtArray.append(districtDictionary)
+				availableColumns = line.split('|')[1].split(',')
 
+				districtDictionary = {}
+				confirmedFound = False
+				recoveredFound = False
+				deceasedFound = False
+				try:
+					for index, data in enumerate(linesArray):
+						if availableColumns[index].strip() == "2":
+							districtDictionary['districtName'] = data.strip()
+						if availableColumns[index].strip() == "6":
+							districtDictionary['confirmed'] = int(data.strip())
+							confirmedFound = True
+						if availableColumns[index].strip() == "8":
+							districtDictionary['recovered'] = -999
+							recoveredFound = True
+						if availableColumns[index].strip() == "9":
+							districtDictionary['deceased'] = -999
+							deceasedFound = True
+				except ValueError: 
+					print("--> Issue with {}".format(linesArray))
+					continue
+
+				if recoveredFound == False or confirmedFound == False or deceasedFound == False:
+					print("--> Issue with {}".format(linesArray))
+					continue
+				districtArray.append(districtDictionary)
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
 	except FileNotFoundError:
 		print("jh.txt missing. Generate through pdf or ocr and rerun.")
+"""
 
 def RJGetData():
 	linesArray = []
