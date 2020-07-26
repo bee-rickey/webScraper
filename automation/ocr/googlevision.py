@@ -98,8 +98,12 @@ class ColumnHandler:
 			print("c{} ... {},{} --> {},{}".format(column.number, column.x1, column.y1, column.x2, column.y2))
 		for row in self.rowList:
 			print("r{} ... {},{} --> {},{}".format(row.number, row.x1, row.y1, row.x2, row.y2))
-			
 
+	def getNearestLineToTheLeft(self, xCoordinate):      
+		for col in self.columnList:
+			if xCoordinate > int(col.x1) and xCoordinate < int(col.x2):
+				return col.x1
+			
 	def getColumnNumber(self, cell):      
 		for col in self.columnList:
 			if cell.x > col.x1 and cell.x < col.x2:
@@ -261,13 +265,16 @@ def buildReducedArray():
 	global xInterval
 	global yInterval
 	global dataDictionaryArray
+	global columnHandler
 	maxWidth = 0
 	maxHeight = 0
 
 #Ignore the texts that lie to the left and top of the threshold text. This improves accuracy of output
 	print("Starting text: {} ... Ending text: {}".format(startingText, endingText)) 
+	xLimit = columnHandler.getNearestLineToTheLeft(xStartThreshold) if houghTransform == True else xStartThreshold - 20
 	for cell in dataDictionaryArray:
-		if cell.y < yStartThreshold - 10 or cell.x < xStartThreshold - 20:
+		if cell.y < yStartThreshold - 10 or cell.x < xLimit:
+#print("Skipping {} {} {}, {}".format(cell.value, cell.x, xStartThreshold, columnHandler.getNearestLineToTheLeft(cell)))
 			continue
 
 		if len(endingText) != 0 and (cell.y > yEndThreshold + 10 or cell.x < xEndThreshold - 30):
@@ -361,7 +368,10 @@ def printOutput():
 	fig, ax = plt.subplots(1)
 	if houghTransform == True:
 		for point in columnHandler.pointList:
-			circ = Circle((point.x,point.y),5)
+			if columnHandler.getNearestLineToTheLeft(xStartThreshold) - 5 <= point.x <= columnHandler.getNearestLineToTheLeft(xStartThreshold) + 5:
+				circ = Circle((point.x,point.y),5, color='r')
+			else: 
+				circ = Circle((point.x,point.y),4)
 			ax.add_patch(circ)
 
 	for i in range(0, len(dataDictionaryArray)):
@@ -491,7 +501,7 @@ def main():
 		buildReducedArray()
 
 	assignRowsAndColumns()
-	printOutput()
 
+	printOutput()
 if __name__ == '__main__':
   main()
