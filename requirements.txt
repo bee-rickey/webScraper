@@ -38,3 +38,5 @@ sortedcontainers==2.2.2
 soupsieve==2.0.1
 urllib3==1.25.9
 webencodings==0.5.1
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.12.0
