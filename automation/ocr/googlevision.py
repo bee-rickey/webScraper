@@ -431,7 +431,6 @@ def printOutput():
 					for index, value in enumerate(outputArray):
 						if index > districtIndex: #and is_number(value):
 							outputString += "," + value.strip()
-					print("{} | {}".format(outputString, columnList), file = outputFile)
 				except KeyError:
 					try:
 						fuzzyDistrict = fuzzyLookup(translationDictionary,districtName)
