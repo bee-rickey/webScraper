@@ -286,12 +286,14 @@ def HPGetData():
 				linesArray = line.split('|')[0].split(',')
 				availableColumns = line.split('|')[1].split(',')
 
+				'''
 				if 'Report of Positive Cases till date' in (re.sub(" +", " ", " ".join(linesArray))):
 					districtTableBeingRead = True
 
 				if districtTableBeingRead == False or 'Total' in linesArray[0]:
 					districtTableBeingRead = False
 					continue
+				'''
 
 				districtDictionary = {}
 				confirmedFound = False
@@ -299,21 +301,22 @@ def HPGetData():
 				deceasedFound = False
 				for index, data in enumerate(linesArray):
 					try:
-						if availableColumns[index].strip() == "2":
+						if availableColumns[index].strip() == "1":
 							districtDictionary['districtName'] = data.strip()
-						if availableColumns[index].strip() == "3":
+						if availableColumns[index].strip() == "2":
 							districtDictionary['confirmed'] = int(data.strip())
 							confirmedFound = True
-						if availableColumns[index].strip() == "7":
+						if availableColumns[index].strip() == "6":
 							districtDictionary['recovered'] = int(data.strip())
 							recoveredFound = True
-						if availableColumns[index].strip() == "8":
+						if availableColumns[index].strip() == "7":
 							districtDictionary['deceased'] = int(data.strip())
 							deceasedFound = True
 					except ValueError:
 						print("--> Ignoring {}".format(linesArray))
+						continue
 
-				if recoveredFound == False or confirmedFound == False:
+				if recoveredFound == False or confirmedFound == False or deceasedFound == False:
 					print("--> Issue with {}".format(linesArray))
 					continue
 

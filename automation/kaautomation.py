@@ -140,11 +140,12 @@ def deceasedFileWriter(linesArray, linesToWrite):
 	"""
 
 
-	districtName = linesArray[3].strip()
+	print(linesArray)
+	districtName = linesArray[1].strip()
 	districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
 	description = ""
 	for index, data in enumerate(linesArray):
-		if index < 7:
+		if index < 5:
 			continue
 		else:
 			description = description + ";" + data if len(description) > 0 else data
@@ -152,12 +153,12 @@ def deceasedFileWriter(linesArray, linesToWrite):
 	if len(linesArray[2]) == 0 and len(linesToWrite) != 0:
 		print("Processing: {}".format(linesArray))
 		for index, cellValue in enumerate(linesArray):
-			if len(cellValue) > 0 and index == 5:
+			if len(cellValue) > 0 and index == 3:
 				linesToWrite[len(linesToWrite) - 1][2] = str(linesToWrite[len(linesToWrite) - 1][2]) + " " + str(cellValue)
-			if len(cellValue) > 0 and index == 6:
+			if len(cellValue) > 0 and index == 4:
 				linesToWrite[len(linesToWrite) - 1][3] = str(linesToWrite[len(linesToWrite) - 1][3]) + " " + str(cellValue)
 		return
-	linesToWrite.append(["KA-P" + str(linesArray[4]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[5], linesArray[6], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
+	linesToWrite.append(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
 
 
 readPDF()
