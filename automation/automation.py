@@ -482,7 +482,6 @@ def BRGetData():
 	except FileNotFoundError:
 		print("br.txt missing. Generate through pdf or ocr and rerun.")
 
-"""
 def JHGetData():
 	linesArray = []
 	districtDictionary = {}
@@ -491,38 +490,21 @@ def JHGetData():
 		with open(".tmp/jh.txt", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split('|')[0].split(',')
-				availableColumns = line.split('|')[1].split(',')
+				if len(linesArray) < 7:
+					print("--> Issue with {}".format(linesArray))
+					continue
 
 				districtDictionary = {}
-				confirmedFound = False
-				recoveredFound = False
-				deceasedFound = False
-				try:
-					for index, data in enumerate(linesArray):
-						if availableColumns[index].strip() == "2":
-							districtDictionary['districtName'] = data.strip()
-						if availableColumns[index].strip() == "6":
-							districtDictionary['confirmed'] = int(data.strip())
-							confirmedFound = True
-						if availableColumns[index].strip() == "8":
-							districtDictionary['recovered'] = -999
-							recoveredFound = True
-						if availableColumns[index].strip() == "9":
-							districtDictionary['deceased'] = -999
-							deceasedFound = True
-				except ValueError: 
-					print("--> Issue with {}".format(linesArray))
-					continue
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[4]) + int(linesArray[5])
+				districtDictionary['recovered'] = int(linesArray[2]) + int(linesArray[6])
+				districtDictionary['deceased'] = int(linesArray[3]) + int(linesArray[7])
 
-				if recoveredFound == False or confirmedFound == False or deceasedFound == False:
-					print("--> Issue with {}".format(linesArray))
-					continue
 				districtArray.append(districtDictionary)
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
 	except FileNotFoundError:
 		print("jh.txt missing. Generate through pdf or ocr and rerun.")
-"""
 
 def RJGetData():
 	linesArray = []
