@@ -1004,21 +1004,24 @@ def HRFormatLine(line):
 """
 
 def HRFormatLine(row):
+	row[1] = re.sub('\*', '', row[1])
 	if '[' in row[3]:
 		row[3] = row[3].split('[')[0]
 	if '[' in row[4]:
 		row[4] = row[4].split('[')[0]
 	if '[' in row[7]:
 		row[7] = row[7].split('[')[0]
+	if '[' in row[6]:
+		row[6] = row[6].split('[')[0]
 
-	line = row[1] + "," + row[3] + "," + row[4] + "," + row[7] + "\n"
+	line = row[1] + "," + row[3] + "," + row[4] + "," + str(int(row[6]) + int (row[7])) + "\n"
 	return line
 
 
 def WBFormatLine(row):
 	row[2] = re.sub(',', '', re.sub('\+.*', '', row[2]))
 	row[3] = re.sub(',', '', re.sub('\+.*', '', row[3]))
-	row[4] = re.sub(',', '', re.sub('\+.*', '', row[4]))
+	row[4] = re.sub('\#', '', re.sub(',', '', re.sub('\+.*', '', row[4])))
 	row[5] = re.sub(',', '', re.sub('\+.*', '', row[5]))
 	line = ",".join(row) + "\n"
 	return line
