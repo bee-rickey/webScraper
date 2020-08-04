@@ -431,14 +431,40 @@ def printOutput():
 					for index, value in enumerate(outputArray):
 						if index > districtIndex: #and is_number(value):
 							outputString += "," + value.strip()
-					print("{} | {}".format(outputString, columnList), file = outputFile)
 				except KeyError:
-					print("Failed to find lookup for {} ".format(districtName))  
+					try:
+						fuzzyDistrict = fuzzyLookup(translationDictionary,districtName)
+						translatedValue = translationDictionary[fuzzyDistrict]
+					except:
+						print(f"Failed to find lookup for {districtName}")
+						continue
+					
+				outputString = translatedValue 
+				for index, value in enumerate(outputArray):
+					if index > districtIndex:
+						outputString += "," + value.strip()
+				print("{} | {}".format(outputString, columnList), file = outputFile)
+
 	outputFile.close()
 	ax.imshow(image)
 	plt.savefig("image.png", dpi=300)
 	plt.show()
 
+def fuzzyLookup(translationDictionary,districtName):
+	'''
+	Use fuzzy string match to map incorrect districtnames
+	to the ones in the dictionary
+	'''
+	from fuzzywuzzy import process
+	# Score cut-off of 90 seem to be working well for UP
+	district = process.extractOne(
+		districtName,
+		translationDictionary.keys(),
+		score_cutoff = 90)[0]
+	print(f"WARN : {districtName} mapped to {district} using Fuzzy Lookup")
+	return district
+
+	
 def parseConfigFile(fileName):
 	global startingText
 	global endingText
