@@ -38,11 +38,13 @@ def processTmpFiles(tables):
 	linesToWrite = []
 	lineNumber = 0
 	for index, table in enumerate(tables):
+		print(index)
 		kaFile = open('.tmp/ka' + str(index) + '.csv', 'r') 
 		with open('.tmp/ka' + str(index) + '.csv', newline='') as kaFile:
 			rowReader = csv.reader(kaFile, delimiter=',', quotechar='"')
 			for row in rowReader:
 				line = '|'.join(row)
+				line = re.sub('^\|', '', line)
 				if len(re.sub('^\|+', '', line)) == 0:
 					continue
 				if 'Page' in line:
@@ -138,9 +140,10 @@ def deceasedFileWriter(linesArray, linesToWrite):
 		print("Ignoring {} ".format(linesArray))
 		return ""
 	"""
+	if len(linesArray[0]) == 0:
+		linesArray.pop(0)
 
-
-	print(linesArray)
+#print(linesArray)
 	districtName = linesArray[1].strip()
 	districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
 	description = ""

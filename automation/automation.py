@@ -402,21 +402,37 @@ def UPGetData():
 	districtArray = []
 	masterColumnArray = []
 	splitArray = []
+	lengthOfArray = 7		
+	activeIndex = 6
+	recoveredIndex = 3
+	deceasedIndex = 5
+
+	if typeOfAutomation == "ocr1":
+		lengthOfArray = 7		
+		activeIndex = 6
+		recoveredIndex = 3
+		deceasedIndex = 5
+	else:
+		lengthOfArray = 8		
+		activeIndex = 7
+		recoveredIndex = 4
+		deceasedIndex = 6
+		
 	try:
 		with open(".tmp/up.txt", "r") as upFile:
 			for line in upFile:
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
 
-				if len(linesArray) != 7:
+				if len(linesArray) != lengthOfArray:
 					print("--> Issue with {}".format(linesArray))
 					continue
 
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0]
-				districtDictionary['confirmed'] = int(linesArray[3]) + int(linesArray[5]) + int(linesArray[6])
-				districtDictionary['recovered'] = int(linesArray[3])
-				districtDictionary['deceased'] = int(linesArray[5])
+				districtDictionary['confirmed'] = int(linesArray[recoveredIndex]) + int(linesArray[deceasedIndex]) + int(linesArray[activeIndex])
+				districtDictionary['recovered'] = int(linesArray[recoveredIndex])
+				districtDictionary['deceased'] = int(linesArray[deceasedIndex])
 				"""
 
 				districtDictionary['confirmed'] = int(linesArray[2]) 
@@ -617,14 +633,14 @@ def WBGetData():
 		with open(".tmp/WB.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
-				if len(linesArray) != 7:
+				if len(linesArray) != 4:
 					print("--> Issue with {}".format(linesArray))
 					continue
 				districtDictionary = {}
-				districtDictionary['districtName'] = linesArray[1].strip()
-				districtDictionary['confirmed'] = int(linesArray[2])
-				districtDictionary['recovered'] = int(linesArray[3])
-				districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
 				districtArray.append(districtDictionary)
 
 		upFile.close()
@@ -723,7 +739,7 @@ def HRGetData():
 	districtDictionary = {}
 	districtArray = []
 	if typeOfAutomation == "pdf":
-		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Italian")
+		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Charkhi Dadri")
 	try:
 		with open(".tmp/hr.csv", "r") as upFile:
 			for line in upFile:
@@ -951,12 +967,19 @@ def PBFormatLine(row):
 
 def KAFormatLine(row):
 	district = ""
-	if is_number(row[1]) == False:
-		district = re.sub(' +', ' ', row[1]).split(' ')[1]
-	else:
-		district = re.sub('\*', '', row[2])
+	modifiedRow = []
+	for value in row:
+		if len(value) > 0:
+			modifiedRow.append(value)
 
-	return district + "," + row[4] + "," + row[6] + "," + row[9] + "\n"
+	if is_number(modifiedRow[0]) == False:
+		district = " ".join(re.sub(' +', ' ', modifiedRow[0]).split(' ')[1:])
+		modifiedRow.insert(0, 'a')
+	else:
+		district = re.sub('\*', '', modifiedRow[1])
+	print(modifiedRow)
+
+	return district + "," + modifiedRow[3] + "," + modifiedRow[5] + "," + modifiedRow[8] + "\n"
 
 """
 def HRFormatLine(line):
@@ -1000,6 +1023,7 @@ def HRFormatLine(row):
 		row[6] = row[6].split('[')[0]
 
 	line = row[1] + "," + row[3] + "," + row[4] + "," + str(int(row[6]) + int (row[7])) + "\n"
+	print(line)
 	return line
 
 
@@ -1008,7 +1032,7 @@ def WBFormatLine(row):
 	row[3] = re.sub(',', '', re.sub('\+.*', '', row[3]))
 	row[4] = re.sub('\#', '', re.sub(',', '', re.sub('\+.*', '', row[4])))
 	row[5] = re.sub(',', '', re.sub('\+.*', '', row[5]))
-	line = ",".join(row) + "\n"
+	line = row[1] + "," + row[2] + "," + row[3] + "," + row[4] + "\n"
 	return line
 
 ''' 
@@ -1047,6 +1071,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 			rowReader = csv.reader(stateCSVFile, delimiter=',', quotechar='"')
 			for row in rowReader:
 				line = "|".join(row)
+				line = re.sub("\|+", '|', line)
 				if startKey in line:
 					startedReadingDistricts = True
 				if endKey in line:
@@ -1055,7 +1080,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 				if startedReadingDistricts == False:
 					continue
 
-				line = eval(stateFileName + "FormatLine")(row)
+				line = eval(stateFileName + "FormatLine")(line.split('|'))
 				if line == "\n":
 					continue
 				print(line, file = stateOutputFile, end = "")

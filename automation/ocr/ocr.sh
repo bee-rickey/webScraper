@@ -4,6 +4,8 @@ then
 	exit
 fi
 
+format="ocr"
+
 skipOcr=0
 skipTable=0
 skipAutomation=0
@@ -37,6 +39,14 @@ then
 				;;
 			"individual")
 				individualRecords=1
+				;;
+			"f1")
+				echo "**** Using format type 1 for UP ****"
+				format="ocr1"
+				;;
+			"f2")
+				echo "**** Using format type 2 for UP ****"
+				format="ocr2"
 				;;
 		esac
 	done
@@ -110,7 +120,7 @@ if (( $skipAutomation != 1 && $individualRecords != 1 ))
 then
 	cd ..
 	echo -e "\n******** Calling automation.py for $2  ******* "
-	python3 ./automation.py "$2" "full" "ocr"
+	python3 ./automation.py "$2" "full" $format
 fi
 
 if (( $individualRecords == 1 ))

@@ -2,6 +2,6 @@ startingText:@@startingtext@@
 enableTranslation:@@translationvalue@@
 translationFile:@@statename@@_districts.meta
 yInterval:0
-xInterval:03
+xInterval:0
 houghTransform:True
 configMinLineLength:400
