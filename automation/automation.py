@@ -739,7 +739,7 @@ def HRGetData():
 	districtDictionary = {}
 	districtArray = []
 	if typeOfAutomation == "pdf":
-		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Charkhi Dadri")
+		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Total")
 	try:
 		with open(".tmp/hr.csv", "r") as upFile:
 			for line in upFile:
@@ -806,6 +806,21 @@ def NLGetData():
 
 	deltaCalculator.getStateDataFromSite("Nagaland", districtArray, option)
 
+def GAGetData():
+	response = requests.request("GET", metaDictionary['Goa'].url)
+	soup = BeautifulSoup(response.content, 'html.parser')
+	table = soup.find_all("div", {"class": "vc_col-md-2"})
+
+	districtArray = []
+	for index, row in enumerate(table):
+		print(row.get_text())
+    	
+		districtDictionary = {}
+		districtArray.append(districtDictionary)
+
+	return
+	deltaCalculator.getStateDataFromSite("Goa", districtArray, option)
+
 def ASGetData():
 	response = requests.request("GET", metaDictionary['Assam'].url)
 	soup = BeautifulSoup(response.content, 'html.parser')
@@ -855,7 +870,7 @@ def PYGetData():
 		districtDictionary['districtName'] = dataPoints[0].get_text().strip()
 		districtDictionary['confirmed'] = int(dataPoints[1].get_text().strip())
 		districtDictionary['recovered'] = int(dataPoints[2].get_text().strip())
-		districtDictionary['deceased'] = -999
+		districtDictionary['deceased'] = int(dataPoints[4].get_text().strip())
 		districtArray.append(districtDictionary)
 
 	deltaCalculator.getStateDataFromSite("Puducherry", districtArray, option)
