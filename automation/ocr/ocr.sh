@@ -93,6 +93,9 @@ case $2 in
 	"Uttarakhand")
 		stateCode="ut"
 		;;
+	"Arunachal Pradesh")
+		stateCode="ar"
+		;;
 	*)
 		stateCode="invalid"
 esac

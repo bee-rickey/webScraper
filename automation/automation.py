@@ -153,7 +153,47 @@ def APGetDataByOCR():
 
 	deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
+def ARGetDataByOcr():
+	districtArray = []
+	additionalDistrictInfo = {}
+	additionalDistrictInfo['districtName'] = 'Papum Pare'
+	additionalDistrictInfo['confirmed'] = 0
+	additionalDistrictInfo['recovered'] = 0
+	additionalDistrictInfo['deceased'] = 0
+
+	with open(".tmp/ar.txt", "r") as upFile:
+		for line in upFile:
+			if 'Total' in line:
+				continue
+
+			linesArray = line.split('|')[0].split(',')
+			if len(linesArray) != 11:
+				print("--> Issue with {}".format(linesArray))
+				continue
+
+
+			if linesArray[0].strip() == "Capital Complex" or linesArray[0].strip() == "Papum Pare":
+				additionalDistrictInfo['confirmed'] += int(linesArray[5])
+				additionalDistrictInfo['recovered'] += int(linesArray[9])
+				additionalDistrictInfo['deceased'] += int(linesArray[10]) if len(re.sub('\n', '', linesArray[10])) != 0 else 0
+				continue
+
+			districtDictionary = {}
+			districtName = linesArray[0].strip()
+			districtDictionary['districtName'] = linesArray[0].strip()
+			districtDictionary['confirmed'] = int(linesArray[5])
+			districtDictionary['recovered'] = int(linesArray[9])
+			districtDictionary['deceased'] = int(linesArray[10]) if len(re.sub('\n', '', linesArray[10])) != 0 else 0
+			districtArray.append(districtDictionary)
+	upFile.close()
+	districtArray.append(additionalDistrictInfo)
+
+	deltaCalculator.getStateDataFromSite("Arunachal Pradesh", districtArray, option)
+
 def ARGetData():
+	if typeOfAutomation == "ocr":
+		ARGetDataByOcr()
+		return
 	stateDashboard = requests.request("get", metaDictionary['Arunachal Pradesh'].url).json()
 	districtArray = []
 	for districtDetails in stateDashboard:
@@ -397,6 +437,7 @@ def TSGetData():
 
 
 def UPGetData():
+	errorCount = 0
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
@@ -406,6 +447,7 @@ def UPGetData():
 	activeIndex = 6
 	recoveredIndex = 3
 	deceasedIndex = 5
+	global typeOfAutomation
 
 	if typeOfAutomation == "ocr1":
 		lengthOfArray = 7		
@@ -413,10 +455,12 @@ def UPGetData():
 		recoveredIndex = 3
 		deceasedIndex = 5
 	else:
+		typeOfAutomation = "ocr2"
 		lengthOfArray = 8		
 		activeIndex = 7
 		recoveredIndex = 4
 		deceasedIndex = 6
+	print("--> Using format {}".format(typeOfAutomation))
 		
 	try:
 		with open(".tmp/up.txt", "r") as upFile:
@@ -424,8 +468,19 @@ def UPGetData():
 				splitArray = re.sub('\n', '', line.strip()).split('|')
 				linesArray = splitArray[0].split(',')
 
+				if errorCount > 10:
+					errorCount = 0
+					if typeOfAutomation == "ocr1":
+						typeOfAutomation = "ocr2"
+					else:
+						typeOfAutomation = "ocr1"
+					print("--> Switching to version {}. Error count breached.".format(typeOfAutomation))
+					UPGetData()
+					return
+
 				if len(linesArray) != lengthOfArray:
 					print("--> Issue with {}".format(linesArray))
+					errorCount += 1
 					continue
 
 				districtDictionary = {}
@@ -543,6 +598,7 @@ def RJGetData():
 
 				if len(linesArray) != 12:
 					print("--> Issue with {}".format(linesArray))
+					continue
 				
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip().title()
