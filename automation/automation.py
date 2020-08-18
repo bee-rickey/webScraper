@@ -777,7 +777,7 @@ def KAGetData():
 		print("--> Downloading using: https://docs.google.com/uc?export=download&id={}".format(fileId))
 		os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=" + fileId + "' -O .tmp/ka.pdf")
 		pdfUrl = ""
-	readFileFromURLV2('', "Karnataka", "Bengaluru Urban", "Total")
+	readFileFromURLV2('', "Karnataka", "Bagalakote", "Total")
 	try:
 		with open(".tmp/ka.csv", "r") as upFile:
 			for line in upFile:
