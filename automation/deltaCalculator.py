@@ -22,6 +22,12 @@ class DeltaCalculator:
 
 		return mappedDistrict
 
+	def isDistrictPresent(self, stateName, districtName):
+		try:
+			self.covidDashboardData[stateName][districtName]
+			return True
+		except KeyError:
+			return False
 
 	def loadMetaData(self):
 		with open("nameMapping.meta", "r") as metaFile:

@@ -8,7 +8,7 @@ import datetime
 from deltaCalculator import DeltaCalculator
 
 deltaCalculator = DeltaCalculator(True)
-category = input("Enter c/r/d : ")
+category = "d"
 
 def readPDF():
 	"""
@@ -17,8 +17,16 @@ def readPDF():
 	open(".tmp/ka.pdf", 'wb').write(r.content)
 	"""
 
-	startPid = input("Enter start page number: ")
-	endPid = input("Enter end page number: ")
+	print(sys.argv)
+	if len(sys.argv) == 4:
+		category = sys.argv[1]
+		startPid = sys.argv[2]
+		endPid = sys.argv[3]
+	else:
+		category = input("Enter c/r/d : ")
+		startPid = input("Enter start page number: ")
+		endPid = input("Enter end page number: ")
+
 	pages = ""
 	for i in range(int(startPid), int(endPid) + 1):
 		pages = pages + "," + str(i) if len(pages) != 0 else str(i)
@@ -147,13 +155,15 @@ def deceasedFileWriter(linesArray, linesToWrite):
 	districtName = linesArray[1].strip()
 	districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
 	description = ""
+	if len(linesArray) < 5:
+		return
 	for index, data in enumerate(linesArray):
 		if index < 5:
 			continue
 		else:
 			description = description + ";" + data if len(description) > 0 else data
 #csvWriter.writerow(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
-	if len(linesArray[2]) == 0 and len(linesToWrite) != 0:
+	if len(linesArray) > 3 and len(linesArray[2]) == 0 and len(linesToWrite) != 0:
 		print("Processing: {}".format(linesArray))
 		for index, cellValue in enumerate(linesArray):
 			if len(cellValue) > 0 and index == 3:

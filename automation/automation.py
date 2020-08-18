@@ -484,7 +484,7 @@ def UPGetData():
 					continue
 
 				districtDictionary = {}
-				districtDictionary['districtName'] = linesArray[0]
+				districtDictionary['districtName'] = linesArray[0].strip()
 				districtDictionary['confirmed'] = int(linesArray[recoveredIndex]) + int(linesArray[deceasedIndex]) + int(linesArray[activeIndex])
 				districtDictionary['recovered'] = int(linesArray[recoveredIndex])
 				districtDictionary['deceased'] = int(linesArray[deceasedIndex])
@@ -767,9 +767,16 @@ def PBGetDataThroughOcr():
 		print("pb.txt missing. Generate through pdf or ocr and rerun.")
 
 def KAGetData():
+	global pdfUrl
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
+	if len(pdfUrl) != 0:
+		urlArray = pdfUrl.split('/')
+		fileId = urlArray[len(urlArray) - 2]
+		print("--> Downloading using: https://docs.google.com/uc?export=download&id={}".format(fileId))
+		os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=" + fileId + "' -O .tmp/ka.pdf")
+		pdfUrl = ""
 	readFileFromURLV2('', "Karnataka", "Bengaluru Urban", "Total")
 	try:
 		with open(".tmp/ka.csv", "r") as upFile:
@@ -795,13 +802,17 @@ def HRGetData():
 	districtDictionary = {}
 	districtArray = []
 	if typeOfAutomation == "pdf":
-		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Total")
+		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Comorbidity", "Total")
 	try:
 		with open(".tmp/hr.csv", "r") as upFile:
 			for line in upFile:
 				linesArray = line.split(',')
 				if len(linesArray) != 4:
 					print("--> Issue with {}".format(linesArray))
+					continue
+
+				if deltaCalculator.isDistrictPresent('Haryana', linesArray[0].strip()) == False:
+					print("--> Ignoring {}".format(linesArray))
 					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
@@ -1094,7 +1105,6 @@ def HRFormatLine(row):
 		row[6] = row[6].split('[')[0]
 
 	line = row[1] + "," + row[3] + "," + row[4] + "," + str(int(row[6]) + int (row[7])) + "\n"
-	print(line)
 	return line
 
 
