@@ -127,8 +127,34 @@ def CTGetData():
 def APGetData():
 	if typeOfAutomation == "ocr":
 		APGetDataByOCR()
+	elif typeOfAutomation == "pdf":
+		APGetDataByPdf()
 	else:
 		APGetDataByUrl()
+
+def APGetDataByPdf():
+	linesArray = []
+	districtDictionary = {}
+	districtArray = []
+	readFileFromURLV2(metaDictionary['Andhra Pradesh'].url, "Andhra Pradesh", "Anantapur", "")
+	try:
+		with open(".tmp/ap.csv", "r") as upFile:
+			for line in upFile:
+				linesArray = line.split(',')
+				if len(linesArray) != 4:
+					print("--> Issue with {}".format(linesArray))
+					continue
+				districtDictionary = {}
+				districtDictionary['districtName'] = linesArray[0].strip()
+				districtDictionary['confirmed'] = int(linesArray[1])
+				districtDictionary['recovered'] = int(linesArray[2])
+				districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+				districtArray.append(districtDictionary)
+
+		upFile.close()
+		deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
+	except FileNotFoundError:
+		print("ap.csv missing. Generate through pdf or ocr and rerun.")
 
 def APGetDataByOCR():
 	districtArray = []
@@ -1107,6 +1133,10 @@ def HRFormatLine(row):
 	line = row[1] + "," + row[3] + "," + row[4] + "," + str(int(row[6]) + int (row[7])) + "\n"
 	return line
 
+def APFormatLine(row):
+	line = row[1] + "," + row[3] + "," + row[5] + "," + row[6] + "\n"
+	return line
+
 
 def WBFormatLine(row):
 	row[2] = re.sub(',', '', re.sub('\+.*', '', row[2]))
@@ -1155,7 +1185,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 				line = re.sub("\|+", '|', line)
 				if startKey in line:
 					startedReadingDistricts = True
-				if endKey in line:
+				if len(endKey) > 0 and endKey in line:
 					startedReadingDistricts = False
 					continue
 				if startedReadingDistricts == False:
