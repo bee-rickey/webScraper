@@ -44,7 +44,7 @@ logging.basicConfig(filename='deltaCalculator.log', format='%(asctime)s - %(name
 deltaCalculator = DeltaCalculator()
 metaDictionary = {}
 option = ""
-typeOfAutomation = "pdf"
+typeOfAutomation = "url"
 pdfUrl = ""
 pageId = ""
 
