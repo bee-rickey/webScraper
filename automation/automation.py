@@ -794,12 +794,27 @@ def PBGetDataThroughOcr():
 
 def KAGetData():
 	global pdfUrl
+	global pageId
 	linesArray = []
 	districtDictionary = {}
 	districtArray = []
+	runDeceased = False
+	startId = 0
+	endId = 0
+
+	if ',' in pageId:
+		startId = pageId.split(',')[1]
+		endId = pageId.split(',')[2]
+		pageId = pageId.split(',')[0]
+		runDeceased = True
+
 	if len(pdfUrl) != 0:
 		urlArray = pdfUrl.split('/')
-		fileId = urlArray[len(urlArray) - 2]
+		for index, parts in enumerate(urlArray):
+			if parts == "file":
+				if urlArray[index + 1] == "d":
+					fileId = urlArray[index + 2]
+					break
 		print("--> Downloading using: https://docs.google.com/uc?export=download&id={}".format(fileId))
 		os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=" + fileId + "' -O .tmp/ka.pdf")
 		pdfUrl = ""
@@ -820,6 +835,10 @@ def KAGetData():
 
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Karnataka", districtArray, option)
+
+		if runDeceased == True:
+			os.system("python3 kaautomation.py d " + str(startId) + " " + str(endId) + " && cat kaconfirmed.csv")
+
 	except FileNotFoundError:
 		print("ka.txt missing. Generate through pdf or ocr and rerun.")
 
@@ -850,7 +869,7 @@ def HRGetData():
 		upFile.close()
 		deltaCalculator.getStateDataFromSite("Haryana", districtArray, option)
 	except FileNotFoundError:
-		print("hr.txt missing. Generate through pdf or ocr and rerun.")
+		print("hr.csv missing. Generate through pdf or ocr and rerun.")
 			
 def TNGetData():
 	linesArray = []
@@ -1162,6 +1181,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
 	if len(pdfUrl) > 0:
 		url = pdfUrl
 	if len(url) > 0:
+		print("--> Requesting download from {} ".format(url))
 		r = requests.get(url, allow_redirects=True)
 		open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
 	if len(pageId) > 0:

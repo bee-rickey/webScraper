@@ -17,7 +17,7 @@ def readPDF():
 	open(".tmp/ka.pdf", 'wb').write(r.content)
 	"""
 
-	print(sys.argv)
+	print(10*"-" + " Deceased details (IGNORE THE FIRST TWO LINES) " + 10*"-")
 	if len(sys.argv) == 4:
 		category = sys.argv[1]
 		startPid = sys.argv[2]
@@ -30,7 +30,7 @@ def readPDF():
 	pages = ""
 	for i in range(int(startPid), int(endPid) + 1):
 		pages = pages + "," + str(i) if len(pages) != 0 else str(i)
-	print(pages)
+	print(f"Processing pages {pages}")
 
 	tables = camelot.read_pdf('.tmp/ka.pdf',strip_text='\n', pages=pages, split_text = True)
 
@@ -46,7 +46,6 @@ def processTmpFiles(tables):
 	linesToWrite = []
 	lineNumber = 0
 	for index, table in enumerate(tables):
-		print(index)
 		kaFile = open('.tmp/ka' + str(index) + '.csv', 'r') 
 		with open('.tmp/ka' + str(index) + '.csv', newline='') as kaFile:
 			rowReader = csv.reader(kaFile, delimiter=',', quotechar='"')
@@ -164,7 +163,6 @@ def deceasedFileWriter(linesArray, linesToWrite):
 			description = description + ";" + data if len(description) > 0 else data
 #csvWriter.writerow(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
 	if len(linesArray) > 3 and len(linesArray[2]) == 0 and len(linesToWrite) != 0:
-		print("Processing: {}".format(linesArray))
 		for index, cellValue in enumerate(linesArray):
 			if len(cellValue) > 0 and index == 3:
 				linesToWrite[len(linesToWrite) - 1][2] = str(linesToWrite[len(linesToWrite) - 1][2]) + " " + str(cellValue)
@@ -172,6 +170,5 @@ def deceasedFileWriter(linesArray, linesToWrite):
 				linesToWrite[len(linesToWrite) - 1][3] = str(linesToWrite[len(linesToWrite) - 1][3]) + " " + str(cellValue)
 		return
 	linesToWrite.append(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
-
 
 readPDF()
