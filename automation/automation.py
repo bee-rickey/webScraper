@@ -847,7 +847,7 @@ def HRGetData():
 	districtDictionary = {}
 	districtArray = []
 	if typeOfAutomation == "pdf":
-		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Comorbidity", "Total")
+		readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Faridabad", "Total")
 	try:
 		with open(".tmp/hr.csv", "r") as upFile:
 			for line in upFile:
@@ -856,9 +856,6 @@ def HRGetData():
 					print("--> Issue with {}".format(linesArray))
 					continue
 
-				if deltaCalculator.isDistrictPresent('Haryana', linesArray[0].strip()) == False:
-					print("--> Ignoring {}".format(linesArray))
-					continue
 				districtDictionary = {}
 				districtDictionary['districtName'] = linesArray[0].strip()
 				districtDictionary['confirmed'] = int(linesArray[1])
