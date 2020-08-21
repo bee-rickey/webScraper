@@ -815,9 +815,8 @@ def KAGetData():
         if urlArray[index + 1] == "d":
           fileId = urlArray[index + 2]
           break
-    print("--> Downloading using: https://docs.google.com/uc?export=download&id={}".format(fileId))
-    os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=" + fileId + "' -O .tmp/ka.pdf")
-    pdfUrl = ""
+    pdfUrl = "https://docs.google.com/uc?export=download&id=" + fileId 
+    print("--> Downloading using: {}".format(pdfUrl))  
   readFileFromURLV2('', "Karnataka", "Bagalakote", "Total")
   try:
     with open(".tmp/ka.csv", "r") as upFile:
