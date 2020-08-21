@@ -1189,7 +1189,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
   for index, table in enumerate(tables):
     tables[index].to_csv('.tmp/' + stateFileName + str(index) + '.pdf.txt')
 
-  stateOutputFile = open('.tmp/' + stateFileName + '.csv', 'w')
+  stateOutputFile = open('.tmp/' + stateFileName.lower() + '.csv', 'w')
   csvWriter = csv.writer(stateOutputFile)
   arrayToWrite = []
 
