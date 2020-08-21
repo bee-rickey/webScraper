@@ -32,7 +32,7 @@ def readPDF():
     pages = pages + "," + str(i) if len(pages) != 0 else str(i)
   print(f"Processing pages {pages}")
 
-  tables = camelot.read_pdf('.tmp/ka.pdf',strip_text='\n', pages=pages, split_text = True)
+  tables = camelot.read_pdf('.tmp/KA.pdf',strip_text='\n', pages=pages, split_text = True)
 
   for index, table in enumerate(tables):
     tables[index].to_csv('.tmp/ka' + str(index) + '.csv')
