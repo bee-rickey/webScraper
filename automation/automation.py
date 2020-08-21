@@ -712,7 +712,7 @@ def WBGetData():
   districtArray = []
   readFileFromURLV2(metaDictionary['West Bengal'].url, "West Bengal", "Alipurduar", "TOTAL")
   try:
-    with open(".tmp/WB.csv", "r") as upFile:
+    with open(".tmp/wb.csv", "r") as upFile:
       for line in upFile:
         linesArray = line.split(',')
         if len(linesArray) != 4:
@@ -736,7 +736,7 @@ def PBGetDataThroughPdf():
   districtArray = []
   readFileFromURLV2(metaDictionary['Punjab'].url, "Punjab", "Ludhiana", "Total")
   try:
-    with open(".tmp/PB.csv", "r") as upFile:
+    with open(".tmp/pb.csv", "r") as upFile:
       for line in upFile:
         linesArray = line.split(',')
         if len(linesArray) != 5:
