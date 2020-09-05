@@ -365,6 +365,7 @@ def HPGetData():
         confirmedFound = False
         recoveredFound = False
         deceasedFound = False
+        '''
         for index, data in enumerate(linesArray):
           try:
             if availableColumns[index].strip() == "1":
@@ -385,6 +386,16 @@ def HPGetData():
         if recoveredFound == False or confirmedFound == False or deceasedFound == False:
           print("--> Issue with {}".format(linesArray))
           continue
+        '''
+
+        if len(linesArray) != 10:
+          print("--> Issue with {}".format(linesArray))
+          continue
+
+        districtDictionary['districtName'] = linesArray[0].strip()
+        districtDictionary['confirmed'] = int(linesArray[1].strip())
+        districtDictionary['recovered'] = int(linesArray[7].strip())
+        districtDictionary['deceased'] = int(re.sub('\*', '', linesArray[8].strip()).strip())
 
         districtArray.append(districtDictionary)
 
@@ -871,7 +882,11 @@ def TNGetData():
   linesArray = []
   districtDictionary = {}
   districtArray = []
-  convertTnPDFToCSV()
+  if typeOfAutomation == "ocr":
+    getTNDataThroughOcr()
+    return
+  else:
+    convertTnPDFToCSV()
   try:
     with open(".tmp/tn.csv", "r") as upFile:
       for line in upFile:
@@ -891,6 +906,41 @@ def TNGetData():
     deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
   except FileNotFoundError:
     print("tn.txt missing. Generate through pdf or ocr and rerun.")
+
+def getTNDataThroughOcr():
+  districtArray = []
+  linesArray = []
+  airportDictionary = {'districtName': 'Airport Quarantine', "confirmed": 0, "recovered": 0, "deceased": 0}
+  with open(".tmp/tn.txt") as tnFile:
+    for line in tnFile:
+      line = line.replace('"', '').replace('*', '').replace('#', '').replace('$', '')
+      linesArray = line.split('|')[0].split(',')
+      if len(linesArray) != 5:
+        print("--> Issue with {}".format(linesArray))
+        continue
+
+      if 'Airport' in line:
+        airportDictionary['confirmed'] += int(linesArray[1])
+        airportDictionary['recovered'] += int(linesArray[2])
+        airportDictionary['deceased'] += int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+        continue
+
+      if 'Railway' in line:
+        linesArray[0] = 'Railway Quarantine'
+
+      districtDictionary = {}
+      districtDictionary['districtName'] = linesArray[0].strip()
+      districtDictionary['confirmed'] = int(linesArray[1])
+      districtDictionary['recovered'] = int(linesArray[2])
+      districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+      districtArray.append(districtDictionary)
+
+    districtArray.append(airportDictionary)
+    tnFile.close()
+    print(districtArray)
+    deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
+
+
 
 def NLGetData():
   response = requests.request("GET", metaDictionary['Nagaland'].url)
@@ -1370,3 +1420,4 @@ def main():
 
 if __name__ == '__main__':
   main()
+

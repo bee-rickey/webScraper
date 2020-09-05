@@ -4,4 +4,4 @@ translationFile:@@statename@@_districts.meta
 yInterval:0
 xInterval:0
 houghTransform:True
-configMinLineLength:400
+configMinLineLength:@@linelength@@
