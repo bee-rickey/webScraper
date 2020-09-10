@@ -193,7 +193,7 @@ def ARGetDataByOcr():
         continue
 
       linesArray = line.split('|')[0].split(',')
-      if len(linesArray) != 11:
+      if len(linesArray) != 12:
         print("--> Issue with {}".format(linesArray))
         continue
 
