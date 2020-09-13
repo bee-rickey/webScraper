@@ -117,7 +117,7 @@ fi
 if (( $skipTable != 1 ))
 then
   lineLength=400
-  if (( "$stateCode" == "tn" ))
+  if [ "$stateCode" = "tn" ]
   then
     lineLength=500
   fi
