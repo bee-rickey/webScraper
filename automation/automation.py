@@ -109,7 +109,7 @@ def CTGetData():
         if availableColumns[index].strip() == "4":
           districtDictionary['confirmed'] = int(data.strip())
           confirmedFound = True
-        if availableColumns[index].strip() == "8":
+        if availableColumns[index].strip() == "9":
           districtDictionary['recovered'] = int(data.strip())
           recoveredFound = True
         if availableColumns[index].strip() == "12": 
