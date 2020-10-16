@@ -633,7 +633,7 @@ def RJGetData():
 
         linesArray = line.split('|')[0].split(',')
 
-        if len(linesArray) != 12:
+        if len(linesArray) != 11:
           print("--> Issue with {}".format(linesArray))
           continue
         
@@ -1228,7 +1228,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
     url = pdfUrl
   if len(url) > 0:
     print("--> Requesting download from {} ".format(url))
-    r = requests.get(url, allow_redirects=True)
+    r = requests.get(url, allow_redirects=True, verify=False)
     open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
   if len(pageId) > 0:
     pid = pageId
@@ -1273,7 +1273,7 @@ def readFileFromURL(url, stateName, startKey, endKey):
     url = pdfUrl
 
   if len(url) > 0:
-    r = requests.get(url, allow_redirects=True)
+    r = requests.get(url, allow_redirects=True, verify=False)
     open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
 
   with open(".tmp/" + stateFileName + ".pdf", "rb") as f:
@@ -1313,7 +1313,7 @@ def convertTnPDFToCSV():
   global typeOfAutomation
 
   if len(pdfUrl) > 0:
-    r = requests.get(pdfUrl, allow_redirects=True)  
+    r = requests.get(pdfUrl, allow_redirects=True, verify=False)  
     open(".tmp/tn.pdf", 'wb').write(r.content)
 
   try:
