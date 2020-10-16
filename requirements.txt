@@ -1,4 +1,4 @@
-beautifulsoup4=4.9.3
+beautifulsoup4==4.9.3
 camelot-py==0.8.2
 google-cloud-vision==2.0.0
 html5lib==1.1
