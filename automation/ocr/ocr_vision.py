@@ -13,7 +13,7 @@ def detect_text(path):
   with io.open(path, 'rb') as image_file:
     content = image_file.read()
 
-  image = vision.types.Image(content=content)
+  image = vision.Image(content=content)
 
   response = client.document_text_detection(image=image)
   texts = response.text_annotations
