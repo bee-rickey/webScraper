@@ -456,7 +456,7 @@ def GJGetData():
   deltaCalculator.getStateDataFromSite("Gujarat", districtArray, option)
 
 
-def TSGetData():
+def TGGetData():
   linesArray = []
   with open(".tmp/tg.txt", "r") as tgFile:
     for line in tgFile:
@@ -978,7 +978,7 @@ def NLGetData():
           districtDictionary = {}
           districtDictionary['districtName'] = linesArray[0].strip()
           districtDictionary['confirmed'] = int(linesArray[12])
-          districtDictionary['recovered'] = int(linesArray[8])
+          districtDictionary['recovered'] = -999
           districtDictionary['deceased'] = int(linesArray[9]) if len(re.sub('\n', '', linesArray[9])) != 0 else 0
           districtArray.append(districtDictionary)
 
