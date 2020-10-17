@@ -193,23 +193,23 @@ def ARGetDataByOcr():
         continue
 
       linesArray = line.split('|')[0].split(',')
-      if len(linesArray) != 12:
+      if len(linesArray) != 14:
         print("--> Issue with {}".format(linesArray))
         continue
 
 
       if linesArray[0].strip() == "Capital Complex" or linesArray[0].strip() == "Papum Pare":
         additionalDistrictInfo['confirmed'] += int(linesArray[5])
-        additionalDistrictInfo['recovered'] += int(linesArray[9])
-        additionalDistrictInfo['deceased'] += int(linesArray[10]) if len(re.sub('\n', '', linesArray[10])) != 0 else 0
+        additionalDistrictInfo['recovered'] += int(linesArray[11])
+        additionalDistrictInfo['deceased'] += int(linesArray[12]) if len(re.sub('\n', '', linesArray[12])) != 0 else 0
         continue
 
       districtDictionary = {}
       districtName = linesArray[0].strip()
       districtDictionary['districtName'] = linesArray[0].strip()
       districtDictionary['confirmed'] = int(linesArray[5])
-      districtDictionary['recovered'] = int(linesArray[9])
-      districtDictionary['deceased'] = int(linesArray[10]) if len(re.sub('\n', '', linesArray[10])) != 0 else 0
+      districtDictionary['recovered'] = int(linesArray[11])
+      districtDictionary['deceased'] = int(linesArray[12]) if len(re.sub('\n', '', linesArray[12])) != 0 else 0
       districtArray.append(districtDictionary)
   upFile.close()
   districtArray.append(additionalDistrictInfo)
@@ -457,20 +457,16 @@ def GJGetData():
 
 
 def TSGetData():
-  response = requests.request("GET", metaDictionary['Telangana'].url)
-  #response returns an invalid html and html.parser is not able to parse it properly. so, using html5lib to parse.
-  soup = BeautifulSoup(response.content, 'html5lib')
-  districtArray = []
-  for tr in soup.tbody.find_all("tr", class_=None):
-    data = tr.find_all('td')
-    districtDictionary = {}
-    districtDictionary['districtName'] = tr.find('th').get_text(strip=True)
-    districtDictionary['confirmed'] = int(data[0].get_text(strip=True))
-    districtDictionary['recovered'] = int(data[1].get_text(strip=True))
-    districtDictionary['deceased'] = int(data[2].get_text(strip=True))
-    districtArray.append(districtDictionary)
-
-  deltaCalculator.getStateDataFromSite("Telangana", districtArray, option)
+  linesArray = []
+  with open(".tmp/tg.txt", "r") as tgFile:
+    for line in tgFile:
+      linesArray = line.split('|')[0].split(',')
+      if len(linesArray) != 2:
+        print("--> Issue with {}".format(linesArray))
+        continue
+      if linesArray[0].strip().capitalize() == "Ghmc":
+        linesArray[0] = "Hyderabad"
+      print("{},Telangana,TG,{},Hospitalized".format(linesArray[0].strip().capitalize(), linesArray[1].strip()))
 
 
 def UPGetData():
@@ -804,6 +800,33 @@ def PBGetDataThroughOcr():
     print("pb.txt missing. Generate through pdf or ocr and rerun.")
 
 def KAGetData():
+  if typeOfAutomation == "ocr":
+    KAGetDataByOCR()
+  else:
+    KAGetDataByUrl()
+
+
+def KAGetDataByOCR():
+  districtArray = []
+  linesArray = []
+  with open(".tmp/ka.txt") as kaFile:
+    for line in kaFile:
+      line = line.replace('"', '').replace('*', '').replace('#', '').replace('$', '')
+      linesArray = line.split('|')[0].split(',')
+      if len(linesArray) != 9:
+        print("--> Issue with {}".format(linesArray))
+        continue
+      
+      districtDictionary = {}
+      districtDictionary['districtName'] = linesArray[0].strip()
+      districtDictionary['confirmed'] = int(linesArray[2])
+      districtDictionary['recovered'] = int(linesArray[4])
+      districtDictionary['deceased'] = int(linesArray[7]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
+      districtArray.append(districtDictionary)
+  kaFile.close()
+  deltaCalculator.getStateDataFromSite("Karnataka", districtArray, option)
+
+def KAGetDataByUrl():
   global pdfUrl
   global pageId
   linesArray = []
@@ -937,32 +960,32 @@ def getTNDataThroughOcr():
 
     districtArray.append(airportDictionary)
     tnFile.close()
-    print(districtArray)
     deltaCalculator.getStateDataFromSite("Tamil Nadu", districtArray, option)
 
 
 
 def NLGetData():
-  response = requests.request("GET", metaDictionary['Nagaland'].url)
-  soup = BeautifulSoup(response.content, 'html.parser')
   districtArray = []
-  for row in soup.find_all("tr"):
-    districtDictionary = {}
-    for index, data in enumerate(row.find_all("td")):
-      if index == 0:
-        if len(data.get_text().strip().title()) == 0:
-          continue
-        districtDictionary['districtName'] = data.get_text().strip().title()
-      if index == 5:
-        if 'districtName' not in districtDictionary:
-          continue
-        districtDictionary['active'] = int(data.get_text().strip())
-        districtDictionary['confirmed'] = -999
-        districtDictionary['recovered'] = -999
-        districtDictionary['deceased'] = -999
-        districtArray.append(districtDictionary)
+  if typeOfAutomation == "ocr":
+    try:
+      with open(".tmp/nl.txt", "r") as upFile:
+        for line in upFile:
+          linesArray = line.split('|')[0].split(',')
+          if len(linesArray) != 13:
+            print("--> Issue with {}".format(linesArray))
+            continue
 
-  deltaCalculator.getStateDataFromSite("Nagaland", districtArray, option)
+          districtDictionary = {}
+          districtDictionary['districtName'] = linesArray[0].strip()
+          districtDictionary['confirmed'] = int(linesArray[12])
+          districtDictionary['recovered'] = int(linesArray[8])
+          districtDictionary['deceased'] = int(linesArray[9]) if len(re.sub('\n', '', linesArray[9])) != 0 else 0
+          districtArray.append(districtDictionary)
+
+      upFile.close()
+      deltaCalculator.getStateDataFromSite("Nagaland", districtArray, option)
+    except FileNotFoundError:
+      print("hr.csv missing. Generate through pdf or ocr and rerun.")
 
 def GAGetData():
   response = requests.request("GET", metaDictionary['Goa'].url)

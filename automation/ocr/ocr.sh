@@ -102,6 +102,15 @@ case $2 in
   "Tamil Nadu")
     stateCode="tn"
     ;;
+  "Nagaland")
+    stateCode="nl"
+    ;;
+  "Telangana")
+    stateCode="tg"
+    ;;
+  "Karnataka")
+    stateCode="ka"
+    ;;
   *)
     stateCode="invalid"
 esac
