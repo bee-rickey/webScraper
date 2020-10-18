@@ -597,7 +597,7 @@ def JHGetData():
     with open(".tmp/jh.txt", "r") as upFile:
       for line in upFile:
         linesArray = line.split('|')[0].split(',')
-        if len(linesArray) < 7:
+        if len(linesArray) != 8:
           print("--> Issue with {}".format(linesArray))
           continue
 
