@@ -551,7 +551,7 @@ def UTGetData():
           continue
 
         linesArray = line.split('|')[0].split(',')
-        if len(linesArray) != 7:
+        if len(linesArray) != 6:
           print("--> Issue with {}".format(linesArray))
           continue
         districtDictionary = {}
@@ -629,7 +629,7 @@ def RJGetData():
 
         linesArray = line.split('|')[0].split(',')
 
-        if len(linesArray) != 11:
+        if len(linesArray) != 9:
           print("--> Issue with {}".format(linesArray))
           continue
         
