@@ -111,6 +111,9 @@ case $2 in
   "Karnataka")
     stateCode="ka"
     ;;
+  "Sikkim")
+    stateCode="sk"
+    ;;
   *)
     stateCode="invalid"
 esac
@@ -126,11 +129,17 @@ fi
 if (( $skipTable != 1 ))
 then
   lineLength=400
+  translationValue=`echo $4`
   if [ "$stateCode" = "tn" ]
   then
     lineLength=500
   fi
-  sed "s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$4/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
+  if [ "$stateCode" = "tg" ]
+  then
+    translationValue="True"
+  fi
+
+  sed "s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
   echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
   cat ocrconfig.meta
   echo -e "******** ++++++++ *******"
