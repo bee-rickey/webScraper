@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import csv
 import requests
+import json
 import pdftotext
 import sys
 import os
@@ -268,20 +269,20 @@ def APGetDataByUrl():
   deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
-  os.system("curl -sk https://health.odisha.gov.in/js/distDtls.js | grep -i 'District_id' | sed 's/\"//g' | sed 's/,/:/g'| cut -d':' -f4,8,12,14,16,18,22 |sed 's/:/,/g' > orsite.csv")
+  os.system("curl -sk https://statedashboard.odisha.gov.in/ | grep -i string | grep -v legend | sed 's/var result = JSON.stringify(//' |sed 's/);//' > orsite.csv")
 
   districtArray = []
+  districtsData = []
   with open("orsite.csv", "r") as metaFile:
     for line in metaFile:
-      districtDictionary = {}
-      lineArray = line.strip().split(',') 
-      districtDictionary['districtName'] = lineArray[0].strip()
-      districtDictionary['confirmed'] = int(lineArray[1].strip())
-      districtDictionary['recovered'] = int(lineArray[2].strip())
-      # Deceased due to other reasons also to deceased count
-      districtDictionary['deceased'] = int(lineArray[3].strip()) + int(lineArray[4].strip())
-    
-      districtArray.append(districtDictionary)
+      districtsData = json.loads(line)
+  for data in districtsData:
+    districtDictionary = {}
+    districtDictionary['districtName'] =  data['vchDistrictName']
+    districtDictionary['confirmed'] =  int(data['intConfirmed'])
+    districtDictionary['recovered'] =  int(data['intRecovered'])
+    districtDictionary['deceased'] =  int(data['intDeceased']) + int(data['intOthDeceased'])
+    districtArray.append(districtDictionary)
 
   deltaCalculator.getStateDataFromSite("Odisha", districtArray, option)
 

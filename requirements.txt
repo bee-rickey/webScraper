@@ -10,3 +10,4 @@ requests==2.24.0
 opencv-python==4.4.0.40
 fuzzywuzzy==0.18.0
 python-Levenshtein==0.12.0
+json
