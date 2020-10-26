@@ -467,7 +467,7 @@ def TGGetData():
         continue
       if linesArray[0].strip().capitalize() == "Ghmc":
         linesArray[0] = "Hyderabad"
-      print("{},Telangana,TG,{},Hospitalized".format(linesArray[0].strip().capitalize(), linesArray[1].strip()))
+      print("{},Telangana,TG,{},Hospitalized".format(linesArray[0].strip().title(), linesArray[1].strip()))
 
 
 def UPGetData():
