@@ -114,6 +114,9 @@ case $2 in
   "Sikkim")
     stateCode="sk"
     ;;
+  "Mizoram")
+    stateCode="mz"
+    ;;
   *)
     stateCode="invalid"
 esac

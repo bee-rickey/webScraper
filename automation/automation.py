@@ -201,16 +201,16 @@ def ARGetDataByOcr():
 
       if linesArray[0].strip() == "Capital Complex" or linesArray[0].strip() == "Papum Pare":
         additionalDistrictInfo['confirmed'] += int(linesArray[5])
-        additionalDistrictInfo['recovered'] += int(linesArray[11])
-        additionalDistrictInfo['deceased'] += int(linesArray[12]) if len(re.sub('\n', '', linesArray[12])) != 0 else 0
+        additionalDistrictInfo['recovered'] += int(linesArray[12])
+        additionalDistrictInfo['deceased'] += int(linesArray[13]) if len(re.sub('\n', '', linesArray[13])) != 0 else 0
         continue
 
       districtDictionary = {}
       districtName = linesArray[0].strip()
       districtDictionary['districtName'] = linesArray[0].strip()
       districtDictionary['confirmed'] = int(linesArray[5])
-      districtDictionary['recovered'] = int(linesArray[11])
-      districtDictionary['deceased'] = int(linesArray[12]) if len(re.sub('\n', '', linesArray[12])) != 0 else 0
+      districtDictionary['recovered'] = int(linesArray[12])
+      districtDictionary['deceased'] = int(linesArray[13]) if len(re.sub('\n', '', linesArray[13])) != 0 else 0
       districtArray.append(districtDictionary)
   upFile.close()
   districtArray.append(additionalDistrictInfo)
@@ -979,7 +979,7 @@ def NLGetData():
           districtDictionary = {}
           districtDictionary['districtName'] = linesArray[0].strip()
           districtDictionary['confirmed'] = int(linesArray[12])
-          districtDictionary['recovered'] = -999
+          districtDictionary['recovered'] = int(linesArray[8])
           districtDictionary['deceased'] = int(linesArray[9]) if len(re.sub('\n', '', linesArray[9])) != 0 else 0
           districtArray.append(districtDictionary)
 
@@ -1129,6 +1129,26 @@ def MLGetData():
     districtDictionary['deceased'] = districtDetails['attributes']['Deceasesd']
     districtArray.append(districtDictionary)
   deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
+
+def MZGetData():
+  districtArray = []
+  with open(".tmp/mz.txt") as mzFile:
+    for line in mzFile:
+      line = line.replace('Nil', '0')
+      linesArray = line.split('|')[0].split(',')
+      if len(linesArray) != 4:
+        print("--> Issue with {}".format(linesArray))
+        continue
+
+      districtDictionary = {}
+      districtDictionary['districtName'] = linesArray[0].strip()
+      districtDictionary['confirmed'] = int(linesArray[1]) + int(linesArray[2]) + int(linesArray[3])
+      districtDictionary['recovered'] = int(linesArray[2])
+      districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+      districtArray.append(districtDictionary)
+
+    mzFile.close()
+    deltaCalculator.getStateDataFromSite("Mizoram", districtArray, option)
 
 
 def LAGetData():
