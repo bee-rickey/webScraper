@@ -142,7 +142,13 @@ then
     translationValue="True"
   fi
 
-  sed "s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
+  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" ]
+  then
+    sed "s/@@houghTransform@@/False/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
+  else
+    sed "s/@@houghTransform@@/True/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
+  fi
+
   echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
   cat ocrconfig.meta
   echo -e "******** ++++++++ *******"

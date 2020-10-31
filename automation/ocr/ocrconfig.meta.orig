@@ -3,5 +3,5 @@ enableTranslation:@@translationvalue@@
 translationFile:@@statename@@_districts.meta
 yInterval:0
 xInterval:0
-houghTransform:True
+houghTransform:@@houghTransform@@
 configMinLineLength:@@linelength@@
