@@ -117,6 +117,9 @@ case $2 in
   "Mizoram")
     stateCode="mz"
     ;;
+  "Meghalaya")
+    stateCode="ml"
+    ;;
   *)
     stateCode="invalid"
 esac
@@ -142,12 +145,25 @@ then
     translationValue="True"
   fi
 
-  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" ]
+
+	yInterval=0
+	if [ "$stateCode" = "ml" ]
+	then
+  	yInterval=10
+	fi
+
+  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" -o "$stateCode" = "hp" ]
+  then
+    sed "s/@@yinterval@@/$yInterval/g; s/@@houghTransform@@/False/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
+  else
+    sed "s/@@yinterval@@/$yInterval/g; s/@@houghTransform@@/True/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
+  fi
+
+  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" -o "$stateCode" = "hp" ]
   then
     sed "s/@@houghTransform@@/False/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
-  else
-    sed "s/@@houghTransform@@/True/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
-  fi
+	fi
+
 
   echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
   cat ocrconfig.meta

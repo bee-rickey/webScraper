@@ -1085,6 +1085,9 @@ def CHGetData():
 
 
 def KLGetData():
+  if typeOfAutomation == "pdf":
+    KLGetDataByPDF()
+    return
   response = requests.request("GET", 'https://dashboard.kerala.gov.in/index.php')
   sessionId = (response.headers['Set-Cookie']).split(';')[0].split('=')[1]
 
@@ -1117,8 +1120,36 @@ def KLGetData():
     districtArray.append(districtDictionary)
   deltaCalculator.getStateDataFromSite("Kerala", districtArray, option)
 
+def KLGetDataByPDF():
+  linesArray = []
+  districtDictionary = {}
+  districtArray = []
+  readFileFromURLV2(metaDictionary[''].url, "Kerala", "Anantapur", "")
+  try:
+    with open(".tmp/ap.csv", "r") as upFile:
+      for line in upFile:
+        linesArray = line.split(',')
+        if len(linesArray) != 4:
+          print("--> Issue with {}".format(linesArray))
+          continue
+        districtDictionary = {}
+        districtDictionary['districtName'] = linesArray[0].strip()
+        districtDictionary['confirmed'] = int(linesArray[1])
+        districtDictionary['recovered'] = int(linesArray[2])
+        districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+        districtArray.append(districtDictionary)
+
+    upFile.close()
+    deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
+  except FileNotFoundError:
+    print("ap.csv missing. Generate through pdf or ocr and rerun.")
+  
 
 def MLGetData():
+  if typeOfAutomation == "ocr":
+    MLGetDataByOCR()
+    return
+
   stateDashboard = requests.get(metaDictionary['Meghalaya'].url).json()
   districtArray = []
   for districtDetails in stateDashboard['features']:
@@ -1129,6 +1160,23 @@ def MLGetData():
     districtDictionary['deceased'] = districtDetails['attributes']['Deceasesd']
     districtArray.append(districtDictionary)
   deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
+
+def MLGetDataByOCR():
+  districtArray = []
+  with open(".tmp/ml.txt", "r") as mlFile:
+    for line in mlFile:
+      linesArray = line.split('|')[0].split(',')
+      if len(linesArray) != 5:
+        print("--> Issue with {}".format(linesArray))
+        continue
+
+      districtDictionary = {}
+      districtDictionary['districtName'] = linesArray[0].strip()
+      districtDictionary['confirmed'] = int(linesArray[1].strip())
+      districtDictionary['recovered'] = int(linesArray[3].strip())
+      districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+      districtArray.append(districtDictionary)
+    deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
 
 def MZGetData():
   districtArray = []

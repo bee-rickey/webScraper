@@ -1,7 +1,7 @@
 startingText:@@startingtext@@
 enableTranslation:@@translationvalue@@
 translationFile:@@statename@@_districts.meta
-yInterval:0
+yInterval:@@yinterval@@
 xInterval:0
 houghTransform:@@houghTransform@@
 configMinLineLength:@@linelength@@
