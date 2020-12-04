@@ -881,7 +881,7 @@ def HRGetData():
   districtDictionary = {}
   districtArray = []
   if typeOfAutomation == "pdf":
-    readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Faridabad", "Total")
+    readFileFromURLV2(metaDictionary['Haryana'].url, "Haryana", "Gurugram", "Total")
   try:
     with open(".tmp/hr.csv", "r") as upFile:
       for line in upFile:
