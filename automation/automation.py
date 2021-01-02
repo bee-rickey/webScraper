@@ -1150,7 +1150,42 @@ def MLGetData():
     MLGetDataByOCR()
     return
 
-  stateDashboard = requests.get(metaDictionary['Meghalaya'].url).json()
+  #stateDashboard = requests.get(metaDictionary['Meghalaya'].url).json()
+
+  url = "https://mbdasankalp.in/api/elasticsearch/aggregation/or/db/merge?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWZkNjM0ZTE0MDllZTZmMGZmMzZmNDIiLCJpYXQiOjE2MDk2MTEwOTgsImV4cCI6MTYwOTYzOTg5OH0.bZlox285ARKzjNTeJpuJ8pI_h8sV6lnNQxZxVHKdwuc"
+
+  payload = "{\"aggregation\":{\"XAxisHeaders\":[{\"TagId\":\"5dd151b22fc63e490ca55ad6\",\"Header\":false,\"dbId\":\"5f395a260deffa1bd752be4e\"}],\"IsXaxisParallel\":false,\"YAxisHeaders\":[{\"Operator\":\"COUNT_DISTINCT\",\"isHousehold\":true,\"Header\":false,\"dbId\":\"5f395a260deffa1bd752be4e\"}],\"IsYaxisParallel\":true,\"YAxisFormulae\":[{\"isHousehold\":false,\"Instance\":\"\",\"axisId\":\"9100b461-5d86-47f9-b11c-6d48f90f9cf9\",\"isFormulaAxis\":true,\"formulaId\":\"5f395d6f0deffa1bd752bee8\",\"dbIds\":[\"5f395a260deffa1bd752be4e\"]},{\"isHousehold\":false,\"Instance\":\"\",\"axisId\":\"5b94c49f-7c8e-4bdf-9c8b-e7af4e53e14d\",\"isFormulaAxis\":true,\"formulaId\":\"5f395dba0deffa1bd752bef2\",\"dbIds\":[\"5f395a260deffa1bd752be4e\"]},{\"isHousehold\":false,\"Instance\":\"\",\"axisId\":\"3a36866c-956d-48b2-a47c-1149a0334f29\",\"isFormulaAxis\":true,\"formulaId\":\"5f395dd80deffa1bd752bef5\",\"dbIds\":[\"5f395a260deffa1bd752be4e\"]},{\"isHousehold\":false,\"Instance\":\"\",\"axisId\":\"a714425e-e78f-4dd7-833a-636a3bb850ca\",\"isFormulaAxis\":true,\"formulaId\":\"5f395d9a0deffa1bd752beef\",\"dbIds\":[\"5f395a260deffa1bd752be4e\"]}]},\"dbId\":\"5f395a260deffa1bd752be4e\",\"tagFilters\":[],\"sorting\":{\"axis\":{\"id\":\"5f395d6f0deffa1bd752bee8\",\"axisId\":\"9100b461-5d86-47f9-b11c-6d48f90f9cf9\",\"operator\":\"rowcount\"},\"sort\":{\"orderBy\":\"count\",\"order\":\"desc\"},\"size\":9999,\"enabled\":true,\"histogram\":false,\"timeseries\":false},\"customBins\":[],\"tagStatus\":true,\"boxplot\":false,\"requestedDbs\":{\"5f395a260deffa1bd752be4e\":{}}}"
+  headers = {
+  'Origin': 'https://mbdasankalp.in',
+  'Referer': 'https://mbdasankalp.in/render/chart/5f4a8e961dbba63b625ff002?c=f7f7f7&bc=121212&key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZWZkNjM0ZTE0MDllZTZmMGZmMzZmNDIiLCJpYXQiOjE2MDk2MTEwOTgsImV4cCI6MTYwOTYzOTg5OH0.bZlox285ARKzjNTeJpuJ8pI_h8sV6lnNQxZxVHKdwuc',
+  'Host': 'mbdasankalp.in',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json, text/plain, */*',
+  'Content-Length': '1399'
+  }
+
+  response = requests.request("POST", url, headers=headers, data = payload)
+  stateDashboard = json.loads(response.text.encode('utf8'))
+
+  districtArray = []
+  for data in stateDashboard[0]:
+    districtDictionary = {}
+    districtDictionary['districtName'] = data["name"]
+    print(data["name"])
+    for value in data["value"]:
+      try:
+        if value["formulaId"] == "5f395d6f0deffa1bd752bee8":
+          districtDictionary['confirmed'] = int(value["value"])
+        if value["formulaId"] == "5f395dba0deffa1bd752bef2":
+          districtDictionary['recovered'] = int(value["value"])
+        if value["formulaId"] == "5f395dd80deffa1bd752bef5":
+          districtDictionary['deceased'] = int(value["value"])
+      except KeyError:
+        continue
+    districtArray.append(districtDictionary)
+  deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
+  return
+
   districtArray = []
   for districtDetails in stateDashboard['features']:
     districtDictionary = {}
