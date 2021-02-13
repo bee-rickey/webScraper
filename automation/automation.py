@@ -389,14 +389,14 @@ def HPGetData():
           continue
         '''
 
-        if len(linesArray) != 10:
+        if len(linesArray) != 11:
           print("--> Issue with {}".format(linesArray))
           continue
 
         districtDictionary['districtName'] = linesArray[0].strip()
         districtDictionary['confirmed'] = int(linesArray[1].strip())
-        districtDictionary['recovered'] = int(linesArray[7].strip())
-        districtDictionary['deceased'] = int(re.sub('\*', '', linesArray[8].strip()).strip())
+        districtDictionary['recovered'] = int(linesArray[8].strip())
+        districtDictionary['deceased'] = int(re.sub('\*', '', linesArray[9].strip()).strip())
 
         districtArray.append(districtDictionary)
 
@@ -522,6 +522,7 @@ def UPGetData():
         districtDictionary['confirmed'] = int(linesArray[recoveredIndex]) + int(linesArray[deceasedIndex]) + int(linesArray[activeIndex])
         districtDictionary['recovered'] = int(linesArray[recoveredIndex])
         districtDictionary['deceased'] = int(linesArray[deceasedIndex])
+#        districtDictionary['active'] = int(linesArray[activeIndex])
         """
 
         districtDictionary['confirmed'] = int(linesArray[2]) 
@@ -552,7 +553,7 @@ def UTGetData():
           continue
 
         linesArray = line.split('|')[0].split(',')
-        if len(linesArray) != 6:
+        if len(linesArray) != 7:
           print("--> Issue with {}".format(linesArray))
           continue
         districtDictionary = {}
@@ -1124,23 +1125,18 @@ def KLGetDataByPDF():
   linesArray = []
   districtDictionary = {}
   districtArray = []
-  readFileFromURLV2(metaDictionary[''].url, "Kerala", "Anantapur", "")
+  readFileFromURLV2(metaDictionary['Kerala'].url, "Kerala", "District", "Total")
   try:
-    with open(".tmp/ap.csv", "r") as upFile:
+    with open(".tmp/kl.csv", "r") as upFile:
       for line in upFile:
         linesArray = line.split(',')
-        if len(linesArray) != 4:
+        if len(linesArray) != 3:
           print("--> Issue with {}".format(linesArray))
           continue
-        districtDictionary = {}
-        districtDictionary['districtName'] = linesArray[0].strip()
-        districtDictionary['confirmed'] = int(linesArray[1])
-        districtDictionary['recovered'] = int(linesArray[2])
-        districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
-        districtArray.append(districtDictionary)
+        print("{},Kerala,KL,{},Hospitalized".format(linesArray[0].strip().title(), linesArray[1].strip()))
+        print("{},Kerala,KL,{},Recovered".format(linesArray[0].strip().title(), linesArray[2].strip()))
 
     upFile.close()
-    deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
   except FileNotFoundError:
     print("ap.csv missing. Generate through pdf or ocr and rerun.")
   
@@ -1266,6 +1262,9 @@ def LAGetData():
       
 def PBFormatLine(row):
   return row[1] + "," + row[2] + "," + row[3] + "," + row[4] + "," + row[5] + "\n"
+
+def KLFormatLine(row):
+  return row[0] + "," + row[1] + "," + row[2] + "\n"
 
 def KAFormatLine(row):
   district = ""
@@ -1452,7 +1451,7 @@ def convertTnPDFToCSV():
     print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
     return
 
-  tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="6", split_text = True)
+  tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="7", split_text = True)
   tables[0].to_csv('.tmp/tn.pdf.txt')
 
   tnFile = open(".tmp/" + 'tn.pdf.txt', 'r') 
