@@ -120,6 +120,10 @@ case $2 in
   "Meghalaya")
     stateCode="ml"
     ;;
+  "Kerala")
+    stateCode="kl"
+    ;;
+    
   *)
     stateCode="invalid"
 esac
@@ -136,7 +140,7 @@ if (( $skipTable != 1 ))
 then
   lineLength=400
   translationValue=`echo $4`
-  if [ "$stateCode" = "tn" ]
+  if [ "$stateCode" = "tn" -o "$stateCode" = "ct" ]
   then
     lineLength=500
   fi
