@@ -344,6 +344,7 @@ def VCGetData():
     url = re.sub('@@date@@', today, metaDictionary['Vaccine'].url)
     url_nation = re.sub('@@state_id@@', '', url)
     vaccineDashboardNation = requests.request("get", url_nation).json()
+    print(vaccineDashboardNation)
     for data in range(1, 38, 1):
       url_state = re.sub('@@state_id@@', str(data), url)
       vaccineDashboard = requests.request("get", url_state).json()
