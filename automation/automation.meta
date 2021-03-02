@@ -1,3 +1,4 @@
+Vaccine, VC, https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=@@state_id@@&district_id=&date=@@date@@
 Andhra Pradesh, AP, http://hmfw.ap.gov.in/covid_dashboard.aspx
 Arunachal Pradesh, AR, 
 #Goa, GA, https://www.goa.gov.in/covid-19/

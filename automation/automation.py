@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import datetime 
 import csv
 import requests
 import json
@@ -291,6 +292,92 @@ def MHGetData():
     MHGetDataByOcr()
   else:
     MHGetDataByUrl()
+
+def VCGetData():
+  today = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
+  vaccineDashboardNation = requests.request("get", "https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=&district_id=&date=2021-03-01").json()
+  stateKeys = {
+    '36': 'West Bengal',
+    '7': 'Chhattisgarh',
+    '31': 'Tamil Nadu',
+    '20': 'Madhya Pradesh',
+    '13': 'Himachal Pradesh',
+    '4': 'Assam',
+    '15': 'Jharkhand',
+    '11': 'Gujarat',
+    '28': 'Punjab',
+    '17': 'Kerala',
+    '32': 'Telangana',
+    '33': 'Tripura',
+    '10': 'Goa',
+    '14': 'Jammu and Kashmir',
+    '34': 'Uttar Pradesh',
+    '29': 'Rajasthan',
+    '5': 'Bihar',
+    '21': 'Maharashtra',
+    '2': 'Andhra Pradesh',
+    '16': 'Karnataka',
+    '35': 'Uttarakhand',
+    '26': 'Odisha',
+    '12': 'Haryana',
+    '3': 'Arunachal Pradesh',
+    '9': 'Delhi',
+    '1': 'Andaman and Nicobar Islands',
+    '24': 'Mizoram',
+    '23': 'Meghalaya',
+    '27': 'Puducherry',
+    '18': 'Ladakh',
+    '30': 'Sikkim',
+    '25': 'Nagaland',
+    '37': 'Daman and Diu',
+    '22': 'Manipur',
+    '39': 'Himachal',
+    '6': 'Chandigarh',
+    '8': 'Dadra and Nagar Haveli',
+    '19': 'Lakshadweep',
+  }
+
+  print("date, state, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
+  for day in range (0, -1, -1):
+    today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
+    todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
+    url = re.sub('@@date@@', today, metaDictionary['Vaccine'].url)
+    url_nation = re.sub('@@state_id@@', '', url)
+    vaccineDashboardNation = requests.request("get", url_nation).json()
+    for data in range(1, 38, 1):
+      url_state = re.sub('@@state_id@@', str(data), url)
+      vaccineDashboard = requests.request("get", url_state).json()
+      gender = {'male': 0, 'female': 0, 'others': 0}
+      for i in range (0, 3, 1):
+        if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'male':
+          gender['male'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+        if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'female':
+          gender['female'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+        if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'others':
+          gender['others'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+
+      typeOfVaccine = {'covaxin': 0, 'covishield': 0}
+      for i in range (0, 2, 1):
+        if vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['material_name'].lower() == 'covaxin':
+          typeOfVaccine['covaxin'] = vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['count']
+        if vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['material_name'].lower() == 'covishield':
+          typeOfVaccine['covishield'] = vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['count']
+
+      print("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
+          format(todayStr, \
+            stateKeys[str(data)], \
+            vaccineDashboard['dailyVaccineData']['vaccine_given'], \
+            vaccineDashboard['overAllReports']['Beneficiaries'], \
+            vaccineDashboard['overAllReports']['Sessions'], \
+            vaccineDashboard['overAllReports']['Sites'], \
+            vaccineDashboard['overAllReports']['Vaccine Given'], \
+            vaccineDashboard['overAllReports']['Vaccine Given Dose Two'], \
+            gender['male'], \
+            gender['female'], \
+            gender['others'], \
+            typeOfVaccine['covaxin'], \
+            typeOfVaccine['covishield']
+            ))
 
 def MHGetDataByOcr():
   linesArray = []
