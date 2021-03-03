@@ -295,7 +295,8 @@ def MHGetData():
 
 def VCGetData():
   today = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
-  vaccineDashboardNation = requests.request("get", "https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=&district_id=&date=2021-03-01").json()
+  proxy = {"https":"http://159.65.153.14:8080"}
+  vaccineDashboardNation = requests.request("get", "https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=&district_id=&date=2021-03-01", proxies=proxy).json()
   stateKeys = {
     '36': 'West Bengal',
     '7': 'Chhattisgarh',
@@ -343,11 +344,11 @@ def VCGetData():
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
     url = re.sub('@@date@@', today, metaDictionary['Vaccine'].url)
     url_nation = re.sub('@@state_id@@', '', url)
-    vaccineDashboardNation = requests.request("get", url_nation).json()
+    vaccineDashboardNation = requests.request("get", url_nation, proxies=proxy).json()
     print(vaccineDashboardNation)
     for data in range(1, 38, 1):
       url_state = re.sub('@@state_id@@', str(data), url)
-      vaccineDashboard = requests.request("get", url_state).json()
+      vaccineDashboard = requests.request("get", url_state, proxies=proxy).json()
       gender = {'male': 0, 'female': 0, 'others': 0}
       for i in range (0, 3, 1):
         if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'male':
