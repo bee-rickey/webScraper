@@ -295,7 +295,7 @@ def MHGetData():
 
 def VCGetData():
   today = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
-  proxy = {"https":"http://159.65.153.14:8080"}
+  proxy = {"https":"http://35.244.23.205:3128"}
   vaccineDashboardNation = requests.request("get", "https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=&district_id=&date=2021-03-01", proxies=proxy).json()
   stateKeys = {
     '36': 'West Bengal',
