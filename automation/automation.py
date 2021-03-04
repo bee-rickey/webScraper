@@ -339,7 +339,7 @@ def VCGetData():
   }
 
   print("date, state, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
-  for day in range (0, -1, -1):
+  for day in range (2, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
     url = re.sub('@@date@@', today, metaDictionary['Vaccine'].url)
