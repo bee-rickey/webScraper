@@ -295,8 +295,8 @@ def MHGetData():
 
 def VCGetData():
   today = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
-  proxy = {"https":"http://159.65.153.14:8080"}
-  vaccineDashboardNation = requests.request("get", "https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=&district_id=&date=2021-03-01", proxies=proxy).json()
+#proxy = {"https":"http://159.65.153.14:8080"}
+#vaccineDashboardNation = requests.request("get", "https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=&district_id=&date=2021-03-01").json()
   stateKeys = {
     '36': 'West Bengal',
     '7': 'Chhattisgarh',
@@ -339,16 +339,22 @@ def VCGetData():
   }
 
   print("date, state, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
-  for day in range (0, -1, -1):
+  for day in range (3, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
     url = re.sub('@@date@@', today, metaDictionary['Vaccine'].url)
     url_nation = re.sub('@@state_id@@', '', url)
-    vaccineDashboardNation = requests.request("get", url_nation, proxies=proxy).json()
+#vaccineDashboardNation = requests.request("get", url_nation).json()
     #print(vaccineDashboardNation)
     for data in range(1, 38, 1):
       url_state = re.sub('@@state_id@@', str(data), url)
-      vaccineDashboard = requests.request("get", url_state, proxies=proxy).json()
+      vaccineDashboard = requests.request("get", url_state)
+      if vaccineDashboard.status_code != 200:
+        while True:
+          vaccineDashboard = requests.request("get", url_state)
+          if vaccineDashboard.status_code == 200:
+            break
+      vaccineDashboard = vaccineDashboard.json()
       gender = {'male': 0, 'female': 0, 'others': 0}
       for i in range (0, 3, 1):
         if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'male':
