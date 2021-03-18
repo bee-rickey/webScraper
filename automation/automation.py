@@ -336,56 +336,157 @@ def VCGetData():
     '6': 'Chandigarh',
     '8': 'Dadra and Nagar Haveli',
     '19': 'Lakshadweep',
+    '0': 'India'
   }
 
-  print("date, state, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
-  for day in range (3, -1, -1):
+  print("date, state, district, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
+  for day in range (9, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
+    if option == "V2":
+      metaDictionary['Vaccine'].url = "https://api.cowin.gov.in/api/v1/reports/v2/getPublicReports?state_id=@@state_id@@&district_id=@@district_id@@&date=@@date@@"
     url = re.sub('@@date@@', today, metaDictionary['Vaccine'].url)
-    url_nation = re.sub('@@state_id@@', '', url)
-#vaccineDashboardNation = requests.request("get", url_nation).json()
-    #print(vaccineDashboardNation)
-    for data in range(1, 38, 1):
-      url_state = re.sub('@@state_id@@', str(data), url)
-      vaccineDashboard = requests.request("get", url_state)
-      if vaccineDashboard.status_code != 200:
-        while True:
-          vaccineDashboard = requests.request("get", url_state)
-          if vaccineDashboard.status_code == 200:
-            break
-      vaccineDashboard = vaccineDashboard.json()
-      gender = {'male': 0, 'female': 0, 'others': 0}
-      for i in range (0, 3, 1):
-        if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'male':
-          gender['male'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
-        if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'female':
-          gender['female'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
-        if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'others':
-          gender['others'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+    url_nation = re.sub('@@district_id@@', '', re.sub('@@state_id@@', '', url))
 
-      typeOfVaccine = {'covaxin': 0, 'covishield': 0}
-      for i in range (0, 2, 1):
-        if vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['material_name'].lower() == 'covaxin':
-          typeOfVaccine['covaxin'] = vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['count']
-        if vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['material_name'].lower() == 'covishield':
-          typeOfVaccine['covishield'] = vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['count']
+    districtCount = 1
 
-      print("{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
-          format(todayStr, \
-            stateKeys[str(data)], \
-            vaccineDashboard['dailyVaccineData']['vaccine_given'], \
-            vaccineDashboard['overAllReports']['Beneficiaries'], \
-            vaccineDashboard['overAllReports']['Sessions'], \
-            vaccineDashboard['overAllReports']['Sites'], \
-            vaccineDashboard['overAllReports']['Vaccine Given'], \
-            vaccineDashboard['overAllReports']['Vaccine Given Dose Two'], \
-            gender['male'], \
-            gender['female'], \
-            gender['others'], \
-            typeOfVaccine['covaxin'], \
-            typeOfVaccine['covishield']
-            ))
+    if option == "V2":
+      districtArray = getAndPrintVaccineDataV2(url_nation, '0', todayStr, stateKeys, '')
+    else:
+      districtArray = getAndPrintVaccineDataV1(url_nation, '0', todayStr, stateKeys, '')
+
+
+    for state_code in range(1, 38, 1):
+      url_state = re.sub('@@district_id@@', '', re.sub('@@state_id@@', str(state_code), url))
+      districtArray = []
+  
+      if option == "V2":
+        districtArray = getAndPrintVaccineDataV2(url_state, state_code, todayStr, stateKeys, '')
+      else:
+        districtArray = getAndPrintVaccineDataV1(url_state, state_code, todayStr, stateKeys, '')
+        
+      if not districtArray:
+        continue
+      for district in districtArray:
+        url_district = re.sub('@@district_id@@', str(district['district_id']), re.sub('@@state_id@@', str(state_code), url))
+        if option == "V2":
+          getAndPrintVaccineDataV2(url_district, state_code, todayStr, stateKeys, district['district_name'])
+        else:
+          getAndPrintVaccineDataV1(url_district, state_code, todayStr, stateKeys, district['district_name'])
+
+
+
+def getAndPrintVaccineDataV1(url, state_code, todayStr, stateKeys, districtName):
+
+  vaccineDashboard = requests.request("get", url)
+  if vaccineDashboard.status_code != 200:
+    while True:
+      vaccineDashboard = requests.request("get", url)
+      if vaccineDashboard.status_code == 200:
+        break
+  vaccineDashboard = vaccineDashboard.json()
+  if not vaccineDashboard:
+    return
+  gender = {'male': 0, 'female': 0, 'others': 0}
+  #print(vaccineDashboard)
+  for i in range (0, 3, 1):
+    if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'male':
+      gender['male'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+    if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'female':
+      gender['female'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+    if vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['gender_label'].lower() == 'others':
+      gender['others'] = vaccineDashboard['vaccinatedBeneficiaryByGender'][i]['count']
+
+  typeOfVaccine = {'covaxin': 0, 'covishield': 0}
+  for i in range (0, 2, 1):
+    if vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['material_name'].lower() == 'covaxin':
+      typeOfVaccine['covaxin'] = vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['count']
+    if vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['material_name'].lower() == 'covishield':
+      typeOfVaccine['covishield'] = vaccineDashboard['vaccinatedBeneficiaryByMaterial'][i]['count']
+
+  print("{}, {}, '{}', {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
+      format(todayStr, \
+        stateKeys[str(state_code)], \
+        districtName, \
+        vaccineDashboard['dailyVaccineData']['vaccine_given'], \
+        vaccineDashboard['overAllReports']['Beneficiaries'], \
+        vaccineDashboard['overAllReports']['Sessions'], \
+        vaccineDashboard['overAllReports']['Sites'], \
+        vaccineDashboard['overAllReports']['Vaccine Given'], \
+        vaccineDashboard['overAllReports']['Vaccine Given Dose Two'], \
+        gender['male'], \
+        gender['female'], \
+        gender['others'], \
+        typeOfVaccine['covaxin'], \
+        typeOfVaccine['covishield']
+        ))
+  with open('output.out','a') as file:
+    print("{}, {}, '{}', {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
+    format(todayStr, \
+      stateKeys[str(state_code)], \
+      districtName, \
+      vaccineDashboard['dailyVaccineData']['vaccine_given'], \
+      vaccineDashboard['overAllReports']['Beneficiaries'], \
+      vaccineDashboard['overAllReports']['Sessions'], \
+      vaccineDashboard['overAllReports']['Sites'], \
+      vaccineDashboard['overAllReports']['Vaccine Given'], \
+      vaccineDashboard['overAllReports']['Vaccine Given Dose Two'], \
+      gender['male'], \
+      gender['female'], \
+      gender['others'], \
+      typeOfVaccine['covaxin'], \
+      typeOfVaccine['covishield']
+      ), file = file)
+  return vaccineDashboard['getBeneficiariesGroupBy']
+
+def getAndPrintVaccineDataV2(url, state_code, todayStr, stateKeys, districtName):
+  vaccineDashboard = requests.request("get", url)
+  if vaccineDashboard.status_code != 200:
+    while True:
+      vaccineDashboard = requests.request("get", url)
+      if vaccineDashboard.status_code == 200:
+        break
+  vaccineDashboard = vaccineDashboard.json()
+  if not vaccineDashboard:
+    return
+  
+  print("{}, {}, \"{}\", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
+    format(todayStr, \
+      stateKeys[str(state_code)], \
+      districtName, \
+      vaccineDashboard['topBlock']['vaccination']['today'], \
+      vaccineDashboard['topBlock']['vaccination']['total'], \
+      vaccineDashboard['topBlock']['sessions']['total'], \
+      vaccineDashboard['topBlock']['sites']['total'], \
+      vaccineDashboard['topBlock']['vaccination']['tot_dose_1'], \
+      vaccineDashboard['topBlock']['vaccination']['tot_dose_2'], \
+      vaccineDashboard['topBlock']['vaccination']['male'], \
+      vaccineDashboard['topBlock']['vaccination']['female'], \
+      vaccineDashboard['topBlock']['vaccination']['others'], \
+      vaccineDashboard['topBlock']['vaccination']['covaxin'], \
+      vaccineDashboard['topBlock']['vaccination']['covishield']
+    )
+  )
+
+  with open('output2.out','a') as file:
+    print("{}, {}, \"{}\", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
+    format(todayStr, \
+      stateKeys[str(state_code)], \
+      districtName, \
+      vaccineDashboard['topBlock']['vaccination']['today'], \
+      vaccineDashboard['topBlock']['vaccination']['total'], \
+      vaccineDashboard['topBlock']['sessions']['total'], \
+      vaccineDashboard['topBlock']['sites']['total'], \
+      vaccineDashboard['topBlock']['vaccination']['tot_dose_1'], \
+      vaccineDashboard['topBlock']['vaccination']['tot_dose_2'], \
+      vaccineDashboard['topBlock']['vaccination']['male'], \
+      vaccineDashboard['topBlock']['vaccination']['female'], \
+      vaccineDashboard['topBlock']['vaccination']['others'], \
+      vaccineDashboard['topBlock']['vaccination']['covaxin'], \
+      vaccineDashboard['topBlock']['vaccination']['covishield'], \
+      ), file = file)
+  return vaccineDashboard['getBeneficiariesGroupBy']  
+
 
 def MHGetDataByOcr():
   linesArray = []
