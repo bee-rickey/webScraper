@@ -340,7 +340,7 @@ def VCGetData():
   }
 
   print("date, state, district, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
-  for day in range (9, -1, -1):
+  for day in range (2, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
     if option == "V2":
