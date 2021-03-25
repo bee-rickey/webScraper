@@ -790,12 +790,10 @@ def BRGetData():
     print("br.txt missing. Generate through pdf or ocr and rerun.")
 
 def JHGetData():
-  if typeOfAutomation == "url":
-    JHGetDataByURL2()
   if typeOfAutomation == "ocr":
     JHGetDataByOCR()
-  if typeOfAutomation == "pdf":
-    JHGetDataByPDF()
+  else:
+    JHGetDataByURL2()
 
 def JHGetDataByURL():
   
