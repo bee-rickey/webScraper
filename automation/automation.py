@@ -118,6 +118,7 @@ def CTGetData():
           districtDictionary['deceased'] += int(data.strip())
           deceasedFound = True
 
+      #print(districtDictionary)
       if recoveredFound == False or confirmedFound == False:
         print("--> Issue with {}".format(linesArray))
         continue
@@ -467,6 +468,7 @@ def getAndPrintVaccineDataV2(url, state_code, todayStr, stateKeys, districtName)
       vaccineDashboard['topBlock']['vaccination']['covishield']
     )
   )
+  
 
   with open('output2.out','a') as file:
     print("{}, {}, \"{}\", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
@@ -788,6 +790,82 @@ def BRGetData():
     print("br.txt missing. Generate through pdf or ocr and rerun.")
 
 def JHGetData():
+  if typeOfAutomation == "url":
+    JHGetDataByURL2()
+  if typeOfAutomation == "ocr":
+    JHGetDataByOCR()
+  if typeOfAutomation == "pdf":
+    JHGetDataByPDF()
+
+def JHGetDataByURL():
+  
+  url = "https://covid19dashboard.jharkhand.gov.in/Home/mapData?action=\"total\"&district_id=0"
+
+  payload="action=total&district_id=0"
+  headers = {
+    'Origin': 'https://covid19dashboard.jharkhand.gov.in',
+    'Referer': 'https://covid19dashboard.jharkhand.gov.in/',
+    'Host': 'covid19dashboard.jharkhand.gov.in',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Content-Length': '26',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Cookie': 'ci_session=9n007bqlfk2q8joa9igknjpq6vpl2gmm'
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload).json()
+
+  districtArray = []
+  for data in response:
+    districtDictionary = {}
+    districtDictionary['districtName'] = data['district']
+    districtDictionary['confirmed'] = int(data['positive_cases'])
+    districtDictionary['recovered'] = int(data['recovered_cases'])
+    districtDictionary['deceased'] = int(data['deaths'])
+    print(districtDictionary)
+    districtArray.append(districtDictionary)
+
+  deltaCalculator.getStateDataFromSite("Jharkhand", districtArray, option)
+
+def JHGetDataByURL2():
+  url = "https://covid19dashboard.jharkhand.gov.in/Bulletin/GetTestCaseData?date=2021-03-25"
+
+  payload="date=" + (datetime.date.today() - datetime.timedelta(days = 0)).strftime("%Y-%m-%d")
+  headers = {
+    'Host': 'covid19dashboard.jharkhand.gov.in',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Content-Length': '15',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Cookie': 'ci_session=i6qt39o41i7gsopt23ipm083hla6994c'
+  }
+
+  response = requests.request("POST", url, headers=headers, data=payload)
+  soup = BeautifulSoup(response.content, 'html.parser')
+  districts = soup.find("table").find_all("tr")
+  
+  districtArray = []
+
+  districtStart = False
+  for district in districts:
+
+    if "Bokaro" in district.get_text() and districtStart == False:
+      districtStart = True
+
+    if districtStart == False:
+      continue
+
+    data = district.find_all("td")
+
+    if int(data[3].get_text()) != 0:
+      print("{},Jharkhand,JH,{},Hospitalized".format(data[1].get_text(), data[3].get_text()))
+    if int(data[4].get_text()) != 0:
+      print("{},Jharkhand,JH,{},Recovered".format(data[1].get_text(), data[4].get_text()))
+    if int(data[6].get_text()) != 0:
+      print("{},Jharkhand,JH,{},Deceased".format(data[1].get_text(), data[6].get_text()))
+    
+
+
+def JHGetDataByOCR():
   linesArray = []
   districtDictionary = {}
   districtArray = []
