@@ -123,6 +123,9 @@ case $2 in
   "Kerala")
     stateCode="kl"
     ;;
+  "Assam")
+    stateCode="as"
+    ;;
     
   *)
     stateCode="invalid"

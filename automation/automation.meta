@@ -1,4 +1,5 @@
 Vaccine, VC, https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=@@state_id@@&district_id=@@district_id@@&date=@@date@@
+VCMohfw, VCM, 
 Andhra Pradesh, AP, http://hmfw.ap.gov.in/covid_dashboard.aspx
 Arunachal Pradesh, AR, 
 #Goa, GA, https://www.goa.gov.in/covid-19/
@@ -17,6 +18,7 @@ Tripura, TR, https://covid19.tripura.gov.in/Visitor/ViewStatus.aspx
 Puducherry, PY, https://covid19dashboard.py.gov.in/Reporting/DateWise
 Chandigarh, CH, http://chdcovid19.in/
 Kerala, KL, https://dashboard.kerala.gov.in/maps/outside.geojson
+KeralaDeaths, KLD, https://dashboard.kerala.gov.in/maps/outside.geojson
 Ladakh, LA, http://covid.ladakh.gov.in/#dataInsights
 Punjab, PB,
 Tamil Nadu, TN,

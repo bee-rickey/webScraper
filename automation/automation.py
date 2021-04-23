@@ -294,6 +294,35 @@ def MHGetData():
   else:
     MHGetDataByUrl()
 
+def VCMGetData():
+  global pageId
+  print("Date, State, First Dose, Second Dose, Total Doses")
+
+  for day in range(40, 0, -1):
+    today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
+    fileName=today+"-at-07-00-AM.pdf"
+    
+    os.system("cp ./cumulative_vaccination_coverage/" + fileName + " .tmp/VCM.pdf")
+    pageId = "1"
+  
+  
+    readFileFromURLV2(metaDictionary['VCMohfw'].url, "VCMohfw", "A & N Islands", "")
+    dadra = {'firstDose': 0, 'secondDose': 0, 'totalDose': 0}
+    
+    try:
+      with open(".tmp/vcm.csv", "r") as upFile:
+        for line in upFile:
+          if "Dadra" in line or "Daman" in line:
+            dadra['firstDose'] += int(line.split(',')[1])
+            dadra['secondDose'] += int(line.split(',')[2])
+            dadra['totalDose'] += int(line.split(',')[3])
+            continue
+          print(today + "," + line, end = "")
+
+      print("{}, DnH, {}, {}, {}".format(today, dadra['firstDose'], dadra['secondDose'], dadra['totalDose']))
+    except FileNotFoundError:
+      print("br.txt missing. Generate through pdf or ocr and rerun.")
+
 def VCGetData():
   today = (datetime.date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
 #proxy = {"https":"http://159.65.153.14:8080"}
@@ -751,7 +780,7 @@ def UTGetData():
           continue
 
         linesArray = line.split('|')[0].split(',')
-        if len(linesArray) != 7:
+        if len(linesArray) != 6:
           print("--> Issue with {}".format(linesArray))
           continue
         districtDictionary = {}
@@ -1411,6 +1440,27 @@ def KLGetDataByPDF():
     upFile.close()
   except FileNotFoundError:
     print("ap.csv missing. Generate through pdf or ocr and rerun.")
+
+
+def KLDGetData():
+  linesArray = []
+  districtDictionary = {}
+  districtArray = []
+  readFileFromURLV2(metaDictionary['KeralaDeaths'].url, "KeralaDeaths", "District", "")
+  try:
+    with open(".tmp/kld.csv", "r") as upFile:
+      for line in upFile:
+        linesArray = line.split(',')
+        if len(linesArray) != 3:
+          print("--> Issue with {}".format(linesArray))
+          continue
+        gender = "M" if linesArray[2].strip() == "Male" else "F"
+        print("{},{},,{},Kerala,KL,1,Deceased".format(linesArray[1], gender, linesArray[0].strip().title()))
+        
+
+    upFile.close()
+  except FileNotFoundError:
+    print("ap.csv missing. Generate through pdf or ocr and rerun.")
   
 
 def MLGetData():
@@ -1532,11 +1582,32 @@ def LAGetData():
 
   deltaCalculator.getStateDataFromSite("Ladakh", districtArray, option)
       
+def VCMFormatLine(row):
+
+  state = " "
+  firstDose = 0
+  secondDose = 0
+  totalDose = 0 
+
+  if len(row) < 5:
+    row = re.sub("\s+", " ", " ".join(row)).split(" ")
+  state = row[1]
+  firstDose = re.sub(",", "", row[2])
+  secondDose = re.sub(",", "", row[3])
+  totalDose = re.sub(",", "", row[4])
+
+  return state + "," + firstDose + "," + secondDose + "," + totalDose + "\n"
+  #return row[1] + "," + re.sub(",", "", row[2]) + "," + re.sub(",", "", row[3]) + "," + re.sub(",", "", row[4]) + "\n"
+
 def PBFormatLine(row):
   return row[1] + "," + row[2] + "," + row[3] + "," + row[4] + "," + row[5] + "\n"
 
 def KLFormatLine(row):
   return row[0] + "," + row[1] + "," + row[2] + "\n"
+
+def KLDFormatLine(row):
+  return row[1] + "," + row[2] + "," + row[3] + "\n"
+
 
 def KAFormatLine(row):
   district = ""
@@ -1634,7 +1705,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
     pid = pageId
   else:
     pid = input("Enter district page:")
-  tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid)
+  tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid, split_text = True)
   for index, table in enumerate(tables):
     tables[index].to_csv('.tmp/' + stateFileName + str(index) + '.pdf.txt')
 
