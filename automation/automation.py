@@ -298,15 +298,14 @@ def VCMGetData():
   global pageId
   print("Date, State, First Dose, Second Dose, Total Doses")
 
-  for day in range(40, 0, -1):
+  for day in range(6, 0, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     fileName=today+"-at-07-00-AM.pdf"
     
-    os.system("cp ./cumulative_vaccination_coverage/" + fileName + " .tmp/VCM.pdf")
     pageId = "1"
   
   
-    readFileFromURLV2(metaDictionary['VCMohfw'].url, "VCMohfw", "A & N Islands", "")
+    readFileFromURLV2(metaDictionary['VCMohfw'].url + fileName, "VCMohfw", "A & N Islands", "")
     dadra = {'firstDose': 0, 'secondDose': 0, 'totalDose': 0}
     
     try:
@@ -1698,7 +1697,7 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
   if len(pdfUrl) > 0:
     url = pdfUrl
   if len(url) > 0:
-    print("--> Requesting download from {} ".format(url))
+    #print("--> Requesting download from {} ".format(url))
     r = requests.get(url, allow_redirects=True, verify=False)
     open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
   if len(pageId) > 0:

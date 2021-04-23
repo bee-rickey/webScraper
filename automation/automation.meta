@@ -1,5 +1,5 @@
 Vaccine, VC, https://api.cowin.gov.in/api/v1/reports/getPublicReports?state_id=@@state_id@@&district_id=@@district_id@@&date=@@date@@
-VCMohfw, VCM, 
+VCMohfw, VCM,https://raw.githubusercontent.com/datameet/covid19/master/downloads/mohfw-backup/cumulative_vaccination_coverage/ 
 Andhra Pradesh, AP, http://hmfw.ap.gov.in/covid_dashboard.aspx
 Arunachal Pradesh, AR, 
 #Goa, GA, https://www.goa.gov.in/covid-19/
