@@ -298,7 +298,15 @@ def VCMGetData():
   global pageId
   print("Date, State, First Dose, Second Dose, Total Doses")
 
-  for day in range(6, 0, -1):
+  '''
+    lookback is the number of days you want to lookback from today. 
+    If you want only today's data, give this as 0. 
+    If you want todays and yesterday's data, give this as 1.
+    If you want today - 7 days till today's data, give this as 7. Eg: for data from 16th April to 23rd April, give look back = 7
+  '''
+  
+  lookback = 7
+  for day in range(lookback, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     fileName=today+"-at-07-00-AM.pdf"
     
