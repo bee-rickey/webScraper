@@ -59,6 +59,7 @@ class DeltaCalculator:
     recoveredDeltaArray = []
     deceasedDeltaArray = []
     activeDeltaArray = []
+    migratedDeltaArray = []
     districts = []
     stateTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
     siteTotalFromStateDashboard = {'confirmed': 0, 'recovered': 0, 'deceased': 0}
@@ -82,6 +83,10 @@ class DeltaCalculator:
         recoveredDelta = districtDetails['recovered'] - stateData[districtName]['recovered'] if districtDetails['recovered'] != -999 else "NA"
         deceasedDelta = districtDetails['deceased'] - stateData[districtName]['deceased'] if districtDetails['deceased'] != -999 else "NA"
         activeDelta = 0
+        migratedDelta = 0
+
+        if 'migrated' in districtDetails.keys():
+          migratedDelta = districtDetails['migrated'] - stateData[districtName]['migratedother'] 
 
         if 'active' in districtDetails.keys():
           activeDelta = districtDetails['active'] - (stateData[districtName]['confirmed'] - stateData[districtName]['deceased'] - stateData[districtName]['recovered'])
@@ -98,6 +103,7 @@ class DeltaCalculator:
         recoveredDeltaArray.append(recoveredDelta)
         deceasedDeltaArray.append(deceasedDelta)
         activeDeltaArray.append(activeDelta)
+        migratedDeltaArray.append(migratedDelta)
 
     stateConfirmedDelta = stateTotalFromStateDashboard['confirmed'] - siteTotalFromStateDashboard['confirmed'] 
     stateRecoveredDelta = stateTotalFromStateDashboard['recovered'] - siteTotalFromStateDashboard['recovered']
@@ -116,6 +122,8 @@ class DeltaCalculator:
       self.printFullDetails(confirmedDeltaArray, "Hospitalized", stateName, stateCode, districts)
       self.printFullDetails(recoveredDeltaArray, "Recovered", stateName, stateCode, districts)
       self.printFullDetails(deceasedDeltaArray, "Deceased", stateName, stateCode, districts)
+      if 'migrated' in districtDetails.keys():
+        self.printFullDetails(migratedDeltaArray, "Migrated_Other", stateName, stateCode, districts)
     elif options == "fullActive":
       self.printFullDetails(activeDeltaArray, "Active", stateName, stateCode, districts)
       return

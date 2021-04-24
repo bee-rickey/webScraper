@@ -787,6 +787,7 @@ def UTGetData():
         districtDictionary['confirmed'] = int(linesArray[1])
         districtDictionary['recovered'] = int(linesArray[2])
         districtDictionary['deceased'] = int(linesArray[4])
+        districtDictionary['migrated'] = int(linesArray[5]) 
         districtArray.append(districtDictionary)
 
     upFile.close()
