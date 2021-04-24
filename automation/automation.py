@@ -543,6 +543,7 @@ def MHGetDataByOcr():
           districtDictionary['confirmed'] = int(linesArray[1])
           districtDictionary['recovered'] = int(linesArray[2])
           districtDictionary['deceased'] = int(linesArray[3])
+          districtDictionary['migrated'] = int(linesArray[4])
           districtArray.append(districtDictionary)
         except ValueError:
           print("--> Ignoring: {}".format(linesArray))
