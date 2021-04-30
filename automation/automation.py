@@ -368,8 +368,13 @@ def VCGetData():
     '0': 'India'
   }
 
-  print("date, state, district, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield")
-  for day in range (2, -1, -1):
+  lookback = int(pageId) if len(pageId) != 0 else 0
+  lookbackMaxDate = datetime.date(2021, 4, 27)
+  if datetime.date.today() - datetime.timedelta(days = lookback) < lookbackMaxDate:
+    lookback = (datetime.date.today() - lookbackMaxDate).days
+    print("------------ Data beyond 27th has different data ranges hence defaulting max lookback to max {} days--------- ".format(lookback))
+  print("date, state, district, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield, aefi, 18-30, 30-45, 45-60, 60+")
+  for day in range (lookback, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
     if option == "V2":
@@ -479,7 +484,12 @@ def getAndPrintVaccineDataV2(url, state_code, todayStr, stateKeys, districtName)
   if not vaccineDashboard:
     return
   
-  print("{}, {}, \"{}\", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
+  
+  category = vaccineDashboard['topBlock']['vaccination']
+  if 'vaccinationByAge' in vaccineDashboard.keys():
+    category = vaccineDashboard['vaccinationByAge']
+  
+  print("{}, {}, \"{}\", {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} ". \
     format(todayStr, \
       stateKeys[str(state_code)], \
       districtName, \
@@ -493,7 +503,12 @@ def getAndPrintVaccineDataV2(url, state_code, todayStr, stateKeys, districtName)
       vaccineDashboard['topBlock']['vaccination']['female'], \
       vaccineDashboard['topBlock']['vaccination']['others'], \
       vaccineDashboard['topBlock']['vaccination']['covaxin'], \
-      vaccineDashboard['topBlock']['vaccination']['covishield']
+      vaccineDashboard['topBlock']['vaccination']['covishield'], \
+      vaccineDashboard['topBlock']['vaccination']['aefi'], \
+      category['vac_18_30'], \
+      category['vac_30_45'], \
+      category['vac_45_60'], \
+      category['above_60']
     )
   )
   
@@ -624,6 +639,7 @@ def HPGetData():
         districtDictionary['confirmed'] = int(linesArray[1].strip())
         districtDictionary['recovered'] = int(linesArray[8].strip())
         districtDictionary['deceased'] = int(re.sub('\*', '', linesArray[9].strip()).strip())
+        #districtDictionary['migrated'] = int(linesArray[10].strip())
 
         districtArray.append(districtDictionary)
 
