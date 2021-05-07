@@ -159,7 +159,7 @@ then
   	yInterval=10
 	fi
 
-  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" -o "$stateCode" = "hp" ]
+  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" -o "$stateCode" = "hp" -o "$stateCode" = "br" ]
   then
     sed "s/@@yinterval@@/$yInterval/g; s/@@houghTransform@@/False/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
   else
