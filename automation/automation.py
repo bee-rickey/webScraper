@@ -545,7 +545,7 @@ def MHGetDataByOcr():
         if 'Total' in line or isIgnoreFlagSet == True:
           isIgnoreFlagSet = True
           print("--> Ignoring {} ".format(line))
-        if len(linesArray) < 5:
+        if len(linesArray) != 6:
           print("--> Ignoring due to invalid length: {}".format(linesArray))
           continue
         districtDictionary = {}
