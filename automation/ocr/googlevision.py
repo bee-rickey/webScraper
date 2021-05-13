@@ -1,3 +1,4 @@
+import re
 import cv2
 import os
 import sys
@@ -388,6 +389,7 @@ def printOutput():
 #Merge those texts separated by spaces - these have the same column value due to proximity but belong to different objects
     columnList = ""
     for index, value in enumerate(outputString):
+      value.value = re.sub(",", "", value.value)
       if index == 0:
         mergedValue = value.value 
         previousCol = value.col
