@@ -271,7 +271,7 @@ def APGetDataByUrl():
   deltaCalculator.getStateDataFromSite("Andhra Pradesh", districtArray, option)
 
 def ORGetData():
-  os.system("curl -sk https://statedashboard.odisha.gov.in/ | grep -i string | grep -v legend | sed 's/var result = JSON.stringify(//' |sed 's/);//' > orsite.csv")
+  os.system("curl -sk https://statedashboard.odisha.gov.in/ | grep -i string | grep -v legend | sed 's/var result = JSON.stringify(//' |sed 's/);//' | head -1 > orsite.csv")
 
   districtArray = []
   districtsData = []
@@ -1322,7 +1322,27 @@ def GAGetData():
   return
   deltaCalculator.getStateDataFromSite("Goa", districtArray, option)
 
+
+def ASGetDataThroughOCR():	
+  linesArray = []
+  districtDictionary = {}
+  districtArray = []
+  splitArray = []
+  try:
+    with open(".tmp/as.txt", "r") as upFile:
+      for line in upFile:
+        splitArray = re.sub('\n', '', line.strip()).split('|')
+        linesArray = splitArray[0].split(',')
+        if int(linesArray[len(linesArray) - 1]) > 0:
+          print("{},Assam,AS,{},Hospitalized".format(linesArray[0].strip(), linesArray[len(linesArray) - 1].strip()))
+
+  except FileNotFoundError:
+    print("pb.txt missing. Generate through pdf or ocr and rerun.")
+
 def ASGetData():
+  if typeOfAutomation == "ocr":
+    ASGetDataThroughOCR()
+    return
   response = requests.request("GET", metaDictionary['Assam'].url)
   soup = BeautifulSoup(response.content, 'html.parser')
   table = soup.find("tbody").find_all("tr")
