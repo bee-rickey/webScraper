@@ -28,3 +28,4 @@ __pycache__
 !requirements.txt
 
 .vscode
+automation/ocr/ocrconfig.meta
