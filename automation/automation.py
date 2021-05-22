@@ -369,11 +369,11 @@ def VCGetData():
   }
 
   lookback = int(pageId) if len(pageId) != 0 else 0
-  lookbackMaxDate = datetime.date(2021, 4, 27)
+  lookbackMaxDate = datetime.date(2021, 5, 21)
   if datetime.date.today() - datetime.timedelta(days = lookback) < lookbackMaxDate:
     lookback = (datetime.date.today() - lookbackMaxDate).days
-    print("------------ Data beyond 27th has different data ranges hence defaulting max lookback to max {} days--------- ".format(lookback))
-  print("date, state, district, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield, aefi, 18-30, 30-45, 45-60, 60+")
+    print("------------ Data beyond 21st May has different data ranges hence defaulting max lookback to max {} days--------- ".format(lookback))
+  print("date, state, district, daily vaccine count, beneficiaries, sessions, sites, vaccines given, vaccines given dose two, male, female, others, covaxin, covishield, sputnik, aefi, 18-45, 45-60, 60+")
   for day in range (lookback, -1, -1):
     today = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%Y-%m-%d")
     todayStr = (datetime.date.today() - datetime.timedelta(days = day)).strftime("%d-%m-%Y")
@@ -504,9 +504,9 @@ def getAndPrintVaccineDataV2(url, state_code, todayStr, stateKeys, districtName)
       vaccineDashboard['topBlock']['vaccination']['others'], \
       vaccineDashboard['topBlock']['vaccination']['covaxin'], \
       vaccineDashboard['topBlock']['vaccination']['covishield'], \
+      vaccineDashboard['topBlock']['vaccination']['sputnik'], \
       vaccineDashboard['topBlock']['vaccination']['aefi'], \
-      category['vac_18_30'], \
-      category['vac_30_45'], \
+      category['vac_18_45'], \
       category['vac_45_60'], \
       category['above_60']
     )
