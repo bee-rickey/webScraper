@@ -1739,9 +1739,19 @@ def readFileFromURLV2(url, stateName, startKey, endKey):
     r = requests.get(url, allow_redirects=True, verify=False)
     open(".tmp/" + stateFileName + ".pdf", 'wb').write(r.content)
   if len(pageId) > 0:
-    pid = pageId
+    pid = ""
+    if ',' in pageId:
+      startPage = int(pageId.split(',')[0])
+      endPage = int(pageId.split(',')[1])
+      for pages in range(startPage, endPage + 1, 1):
+        print(pages)
+        pid = pid + "," + str(pages) if len(pid) > 0 else str(pages)
+        print(pid)
+    else:
+      pid = pageId
   else:
     pid = input("Enter district page:")
+  print("Running for {} pages".format(pid))
   tables = camelot.read_pdf(".tmp/" + stateFileName + ".pdf", strip_text = '\n', pages = pid, split_text = True)
   for index, table in enumerate(tables):
     tables[index].to_csv('.tmp/' + stateFileName + str(index) + '.pdf.txt')
