@@ -1298,8 +1298,9 @@ def NLGetData():
           districtDictionary = {}
           districtDictionary['districtName'] = linesArray[0].strip()
           districtDictionary['confirmed'] = int(linesArray[12])
-          districtDictionary['recovered'] = int(linesArray[8])
-          districtDictionary['deceased'] = int(linesArray[9]) if len(re.sub('\n', '', linesArray[9])) != 0 else 0
+          districtDictionary['recovered'] = int(linesArray[7])
+          districtDictionary['migrated'] = int(linesArray[11])
+          districtDictionary['deceased'] = int(linesArray[8]) if len(re.sub('\n', '', linesArray[8])) != 0 else 0
           districtArray.append(districtDictionary)
 
       upFile.close()
