@@ -164,6 +164,8 @@ then
   replacementLine="s/@@statename@@/\$stateCode/g;s/@@yInterval@@/\$yInterval/g;s/@@xInterval@@/\$xInterval/g;s/@@houghTransform@@/\$houghTransform/g;s/@@enableTranslation@@/\$enableTranslation/g;s/@@startingText@@/\$startingText/g;s/@@configMinLineLength@@/\$configMinLineLength/g;"
 
   replacementLine=$( customiseMetaConfig $stateCode $replacementLine "hp:houghTransform=False,yInterval=5" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "br:houghTransform=False" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "mp:houghTransform=False" )
   replacementLine=$( customiseMetaConfig $stateCode $replacementLine "ap:configMinLineLength=300" )
   replacementLine=$( customiseMetaConfig $stateCode $replacementLine "tn:configMinLineLength=500" )
   replacementLine=$( customiseMetaConfig $stateCode $replacementLine "tg:enableTranslation=True" )
@@ -184,8 +186,6 @@ then
 	echo $finalReplacementString
 
 	sed "$finalReplacementString" ocrconfig.meta.orig > ocrconfig.meta
-
-
 
   echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
   cat ocrconfig.meta
