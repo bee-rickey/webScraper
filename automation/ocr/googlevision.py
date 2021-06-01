@@ -104,6 +104,7 @@ class ColumnHandler:
     for col in self.columnList:
       if xCoordinate > int(col.x1) and xCoordinate < int(col.x2):
         return col.x1
+    return 0
       
   def getColumnNumber(self, cell):      
     for col in self.columnList:
@@ -202,7 +203,7 @@ def buildCells():
     yMean = (int(lowerLeft[1]) + int(upperLeft[1]))/2
 
     if startingText == "auto":
-      if value.title() in translationDictionary:
+      if len(value.title()) > 1 and any(value.title() in district for district in list(translationDictionary.keys())):
         if xStartThreshold == 0:
           xStartThreshold = xMean
           autoStartingText = value
@@ -216,7 +217,7 @@ def buildCells():
           
 
     if endingText == "auto":
-      if value.title() in translationDictionary:
+      if len(value.title()) > 1 and any(value.title() in district for district in list(translationDictionary.keys())):
         if xEndThreshold == 0:
           xEndThreshold = xMean
         if yEndThreshold == 0:
@@ -274,11 +275,10 @@ def buildReducedArray():
   print("Starting text: {} ... Ending text: {}".format(startingText, endingText)) 
   xLimit = columnHandler.getNearestLineToTheLeft(xStartThreshold) if houghTransform == True else xStartThreshold - 20
   for cell in dataDictionaryArray:
-    if cell.y < yStartThreshold - 10 or cell.x < xLimit:
-#print("Skipping {} {} {}, {}".format(cell.value, cell.x, xStartThreshold, columnHandler.getNearestLineToTheLeft(cell)))
+    if cell.y < yStartThreshold - 10 or (xLimit is not None and cell.x < xLimit):
       continue
 
-    if len(endingText) != 0 and (cell.y > yEndThreshold + 10 or cell.x < xEndThreshold - 30):
+    if len(endingText) != 0 and (cell.y > yEndThreshold + 10): # or cell.x < xEndThreshold - 30):
       continue
 
     tempDictionaryArray.append(cell)

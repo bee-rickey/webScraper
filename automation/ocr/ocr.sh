@@ -1,3 +1,23 @@
+customiseMetaConfig() {
+  stateCode=$( echo $1 )
+	replacementLine=$( echo $2 )
+  sedString=$( echo $3 )
+  parameterStateCode=$( echo $3 | cut -d':' -f1 )
+  parametersToReplace=$( echo $3 | cut -d':' -f2 )
+  if [ "$stateCode" = "$parameterStateCode" ]
+	then
+		for param in $(echo $parametersToReplace | sed "s/,/ /g")  
+		do
+			parameterToReplace=$( echo $param | cut -d'=' -f1 )
+			value=$( echo $param | cut -d'=' -f2 )
+			replacementSubString=$( echo "$replacementSubString;s/\\\$$parameterToReplace/$value/g" )
+		done
+	fi
+  echo $replacementLine | sed "$replacementSubString"
+}
+
+
+
 if (( $# != 4 && $# != 5 ))
 then
   echo "Usage: ./ocr.sh <Image Name> <State Name> [Starting String] <IsTranslationRequired>"
@@ -141,35 +161,30 @@ fi
 
 if (( $skipTable != 1 ))
 then
-  lineLength=400
-  translationValue=`echo $4`
-  if [ "$stateCode" = "tn" -o "$stateCode" = "ct" ]
-  then
-    lineLength=500
-  fi
-  if [ "$stateCode" = "tg" ]
-  then
-    translationValue="True"
-  fi
+  replacementLine="s/@@statename@@/\$stateCode/g;s/@@yInterval@@/\$yInterval/g;s/@@xInterval@@/\$xInterval/g;s/@@houghTransform@@/\$houghTransform/g;s/@@enableTranslation@@/\$enableTranslation/g;s/@@startingText@@/\$startingText/g;s/@@configMinLineLength@@/\$configMinLineLength/g;"
 
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "hp:houghTransform=False,yInterval=5" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "ap:configMinLineLength=300" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "tn:configMinLineLength=500" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "tg:enableTranslation=True" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "mz:houghTransform=False" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "ml:configMinLineLength=250" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "ut:houghTransform=False" )
+  replacementLine=$( customiseMetaConfig $stateCode $replacementLine "nl:configMinLineLength=250" )
 
-	yInterval=0
-	if [ "$stateCode" = "ml" ]
-	then
-  	yInterval=10
-	fi
+  configMinLineLength=400
+  enableTranslation=`echo $4`
+  startingText=`echo $3`
+  houghTransform="True"
+  yInterval=0
+  xInterval=0
 
-  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" -o "$stateCode" = "hp" -o "$stateCode" = "br" ]
-  then
-    sed "s/@@yinterval@@/$yInterval/g; s/@@houghTransform@@/False/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
-  else
-    sed "s/@@yinterval@@/$yInterval/g; s/@@houghTransform@@/True/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
-  fi
+	finalReplacementString=$( echo $replacementLine | sed "s/\$stateCode/$stateCode/g; s/\$yInterval/$yInterval/g; s/\$xInterval/$xInterval/g; s/\$houghTransform/$houghTransform/g; s/\$enableTranslation/$enableTranslation/g; s/\$startingText/$startingText/g; s/\$configMinLineLength/$configMinLineLength/g" )
 
-  if [ "$stateCode" = "mz" -o "$stateCode" = "nl" -o "$stateCode" = "hp" ]
-  then
-    sed "s/@@yinterval@@/$yInterval/g; s/@@houghTransform@@/False/g; s/@@statename@@/$stateCode/g; s/@@startingtext@@/$3/g; s/@@translationvalue@@/$translationValue/g; s/@@linelength@@/$lineLength/g;" ocrconfig.meta.orig > ocrconfig.meta
-	fi
+	echo $finalReplacementString
+
+	sed "$finalReplacementString" ocrconfig.meta.orig > ocrconfig.meta
+
 
 
   echo -e "\n******** Using ocrconfig.meta, change ocrconfig.meta.orig for x and y intervals ******* "
@@ -185,17 +200,4 @@ then
   cd ..
   echo -e "\n******** Calling automation.py for $2  ******* "
   python3 ./automation.py "$2" "full" $format
-fi
-
-if (( $individualRecords == 1 ))
-then
-  cd ..
-  case $2 in
-    "Bihar")
-      python3 ./biharIndividual.py
-      ;;
-    *)
-      echo "No custom script found"
-      ;;
-  esac
 fi

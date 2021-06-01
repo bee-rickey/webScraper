@@ -1842,7 +1842,7 @@ def convertTnPDFToCSV():
     print("Make sure tn.pdf is present in the current folder and rerun the script! Arigatou gozaimasu.")
     return
 
-  tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="7", split_text = True)
+  tables = camelot.read_pdf('.tmp/tn.pdf',strip_text='\n', pages="6", split_text = True)
   tables[0].to_csv('.tmp/tn.pdf.txt')
 
   tnFile = open(".tmp/" + 'tn.pdf.txt', 'r') 
