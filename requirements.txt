@@ -5,7 +5,7 @@ html5lib==1.1
 matplotlib==3.3.2
 pandas==1.1.3
 pdftotext==2.1.5
-Pillow>=8.1.2
+Pillow==8.2.0
 requests==2.24.0
 opencv-python==4.4.0.40
 fuzzywuzzy==0.18.0
