@@ -1,3 +1,9 @@
+*A scrapper for multiple covid state websites. Triedcatched's ghost!*
+
+*Used by www.covid19india.org admin teams. Not for general consumption :P :D*
+
+
+# Usage  
 Currently there are three types of bulletins:
 
 1. Images - AP, AR, BR, CT, JH, JK, HP, MH, MP, PB, RJ, TG, TN, UK, UP
@@ -5,7 +11,7 @@ Currently there are three types of bulletins:
 3. Dashboards - GJ, OR, PY, TR, Vaccines
 
 For all those where ocr is supported (optical character recognition using google vision api), the command to run is:  
-*./ocr.sh "fully qualified path to image" "State Name" "starting text, ending text" "True/False" "ocr/table/automation"*
+```./ocr.sh "fully qualified path to image" "State Name" "starting text, ending text" "True/False" "ocr/table/automation"```
 
 Parameter description:
 1. "fully qualified path to image": Example "./home/covid/mh.jpg" The path cannot be relative path but it should have the fully qualified path.  
