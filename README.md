@@ -8,7 +8,7 @@ Currently there are three types of bulletins:
 
 1. Images - AP, AR, BR, CT, JH, JK, HP, MH, MP, PB, RJ, TG, TN, UK, UP
 2. PDFs - HR, KA, KL, PB, TN, WB
-3. Dashboards - GJ, OR, PY, TR, Vaccines
+3. Dashboards - CH, GJ, OR, PY, TR, Vaccines
 
 For all those where ocr is supported (optical character recognition using google vision api), the command to run is:  
 ```./ocr.sh "fully qualified path to image" "State Name" "starting text, ending text" "True/False" "ocr/table/automation"```
