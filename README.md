@@ -15,7 +15,7 @@ Parameter description:
 5. "ocr/table/automation": This is an option provided where in case you want to skip one or more of the steps (ocr, table creation or automation.py run), you can provide those steps in comma separated manner. Example: "ocr,automation" will skip both ocr step and the automation step. "ocr,table" will skip image reading and table creation, but will run automation.py step to compute the delta.
 
 
-**How does ocr.sh work?**
+# How does ocr.sh work?
 ![Detailed Flow of ocr.sh](detailedflow.png)
 
 For any bulletin to be parsed, we use Google Vision API free tier. All the steps are called via ocr.sh. 
@@ -30,7 +30,7 @@ NOTES:
 - Since googlevision.py script tries to auto identify the bulletin table, it alwalys searches for district names and assumes the line with the first occurance of a district name is the starting of the table. Hence, in case there are notes above a table with district names, the image has to be cropped to remove the text above the table.
 
 
-**How does googlevision.py work?**  
+# How does googlevision.py work?  
   1. Google Vision API gives each text that it recognises and coordinates of a rectangle around the text it matches. 
   Example:
   ```
@@ -76,3 +76,40 @@ NOTES:
   7. In case the district names are in Hindi, then before printing, the text has to be converted into English using a translation dictionary which is used.
   8. The output is put into a file named output.txt. This file will have a 1-1 conversion of the bulletin table that has districts information.
   
+# How does automation.py work?
+  1. automation.py uses api endpoint at covid19india.org to figure out the difference per district from bulletin to the api endpoint.
+  2. automation.py has different modes of operation - ocr, pdf, dashboard.  
+    - For ocr, the .tmp/statecode.txt file is used to compute the delta (this comes from ocr.sh run).  
+    - For pdfs, pdftotext and camelot are used to convert a pdf into a csv file and then use it for delta calculation.  
+    - For dashboards, beautifulsoup or sometimes plain json pulls are used to get the information to calculate the delta. 
+  3. In case of pdfs, there's an option to specify which page number to read and parse. The format is:
+  ```
+    ./automation.py "statename" full pdf=<urlOfThepdf>=<pageNumber> 
+    ./automation.py "stateName" full pdf==<pageNumber> (this in case you manually place the pdf as .tmp/stateCode.pdf)
+  ```
+  4. For dashboards, a meta file automation.meta has the dashboard endpoint from which to read and parse the data.
+  5. For each state, there has to be an entry in automation.meta file (even if it's driven by ocr). The meta file has the stateCode to consider for picking up the file from .tmp folder. The state code also allows for standardization of code. Each state has a <stateCode>GetData() function which acts as the entry point for the calculations. Example:
+  ```
+  def TRGetData():
+    response = requests.request("GET", metaDictionary['Tripura'].url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find("tbody").find_all("tr")
+
+    districtArray = []
+    for index, row in enumerate(table):
+      dataPoints = row.find_all("td")
+      
+      districtDictionary = {}
+      districtDictionary['districtName'] = dataPoints[1].get_text().strip()
+      districtDictionary['confirmed'] = int(dataPoints[8].get_text().strip())
+      districtDictionary['recovered'] = int(dataPoints[10].get_text().strip())
+      districtDictionary['deceased'] = int(dataPoints[12].get_text().strip())
+      districtArray.append(districtDictionary)
+
+    deltaCalculator.getStateDataFromSite("Tripura", districtArray, option)
+  ```
+  
+  
+  # How does this code sit in the grand scheme of automation at covid19india.org?
+botto.png![image](https://user-images.githubusercontent.com/63364562/130059654-f5257e6a-6ed3-412b-b728-641d39794203.png)
+Essentially, the idea is that volunteers send the request over a telegram bot that is then [configured to trigger the script](https://github.com/covid19india/automation-bot/blob/master/src/ocr_functions.py) when a command is required. 
