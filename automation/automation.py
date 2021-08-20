@@ -745,7 +745,7 @@ def UPGetData():
         splitArray = re.sub('\n', '', line.strip()).split('|')
         linesArray = splitArray[0].split(',')
 
-        if errorCount > 10:
+        if errorCount > 100:
           errorCount = 0
           if typeOfAutomation == "ocr1":
             typeOfAutomation = "ocr2"
@@ -827,7 +827,7 @@ def BRGetData():
         districtDictionary['districtName'] = linesArray[0]
         districtDictionary['confirmed'] = int(linesArray[1])
         districtDictionary['recovered'] = int(linesArray[2])
-        districtDictionary['deceased'] = int(linesArray[3])
+        districtDictionary['deceased'] = int(linesArray[3]) 
         districtArray.append(districtDictionary)
 
     upFile.close()
@@ -1577,15 +1577,15 @@ def MZGetData():
     for line in mzFile:
       line = line.replace('Nil', '0')
       linesArray = line.split('|')[0].split(',')
-      if len(linesArray) != 4:
+      if len(linesArray) != 5:
         print("--> Issue with {}".format(linesArray))
         continue
 
       districtDictionary = {}
       districtDictionary['districtName'] = linesArray[0].strip()
-      districtDictionary['confirmed'] = int(linesArray[1]) + int(linesArray[2]) + int(linesArray[3])
+      districtDictionary['confirmed'] = int(linesArray[4]) #+ int(linesArray[2]) + int(linesArray[3])
       districtDictionary['recovered'] = int(linesArray[2])
-      districtDictionary['deceased'] = int(linesArray[3]) if len(re.sub('\n', '', linesArray[3])) != 0 else 0
+      districtDictionary['deceased'] = int(linesArray[3]) #if len(re.sub('\n', '', linesArray[3])) != 0 else 0
       districtArray.append(districtDictionary)
 
     mzFile.close()
