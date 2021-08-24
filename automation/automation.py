@@ -745,7 +745,7 @@ def UPGetData():
         splitArray = re.sub('\n', '', line.strip()).split('|')
         linesArray = splitArray[0].split(',')
 
-        if errorCount > 100:
+        if errorCount > 10:
           errorCount = 0
           if typeOfAutomation == "ocr1":
             typeOfAutomation = "ocr2"
