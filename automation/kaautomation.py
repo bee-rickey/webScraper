@@ -11,6 +11,7 @@ deltaCalculator = DeltaCalculator(True)
 category = "d"
 
 def readPDF():
+  global category
   """
   r = requests.get(sys.argv[1], allow_redirects=True)  
   print("URL: " + sys.argv[1])
@@ -122,17 +123,17 @@ def recoveredFileWriter(linesArray, linesToWrite):
     return ""
   """
 
-  districtName = linesArray[2].split('(')[0].strip()
+  districtName = linesArray[1].split('(')[0].strip()
   districtName = deltaCalculator.getNameMapping('Karnataka', districtName)
 
-  patientIds = re.sub('\.', '', re.sub('&', ',', re.sub(' +', ',', linesArray[4])))
+  patientIds = re.sub('\.', '', re.sub('&', ',', re.sub(' +', ',', linesArray[3])))
   patientIdArray = patientIds.split(',')
 
   if len(linesArray[2]) == 0 and len(linesToWrite) != 0 and len(patientIdArray) > 0:
     districtName = linesToWrite[len(linesToWrite) - 1][5]
 
   for item in patientIdArray:
-    if len(item) == 0: #or is_number(item) or '(' in item:  
+    if len(item) == 0 or item == "0": #or is_number(item) or '(' in item:  
       continue
     if item == "\n":
       continue
