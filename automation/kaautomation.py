@@ -137,7 +137,7 @@ def recoveredFileWriter(linesArray, linesToWrite):
       continue
     if item == "\n":
       continue
-    patientNumber = item.replace('P-', 'KA-P').replace('\n', '') if 'P' in item else "KA-P" + str(item)
+    patientNumber = item.replace('P-', '').replace('\n', '') if 'P' in item else str(item)
     linesToWrite.append([patientNumber, datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
 #csvWriter.writerow([item.replace('P-', 'KA-P').replace('\n', ''), datetime.date.today().strftime("%d/%m/%Y"), '', '','',districtName,'Karnataka', 'KA', 1, 'Recovered'])
   
@@ -170,6 +170,6 @@ def deceasedFileWriter(linesArray, linesToWrite):
       if len(cellValue) > 0 and index == 4:
         linesToWrite[len(linesToWrite) - 1][3] = str(linesToWrite[len(linesToWrite) - 1][3]) + " " + str(cellValue)
     return
-  linesToWrite.append(["KA-P" + str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
+  linesToWrite.append([str(linesArray[2]), datetime.date.today().strftime("%d/%m/%Y"), linesArray[3], linesArray[4], '', districtName, 'Karnataka', 'KA', 1, 'Deceased', '', description])
 
 readPDF()
