@@ -1571,6 +1571,22 @@ def MLGetDataByOCR():
       districtArray.append(districtDictionary)
     deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
 
+def MNGetData():
+  districtArray = []
+  with open(".tmp/mn.txt") as mnFile:
+    for line in mnFile:
+      linesArray = line.split('|')[0].split(',')
+      if len(linesArray) != 8:
+        print("--> Issue with {}".format(linesArray))
+        continue
+
+      if (linesArray[2].strip()) != "0":
+        print("{},Manipur,MN,{},Hospitalized".format(linesArray[0].strip().title(), linesArray[2].strip()))
+      if (linesArray[4].strip()) != "0":
+        print("{},Manipur,MN,{},Deceased".format(linesArray[0].strip().title(), linesArray[4].strip()))
+
+  mnFile.close()
+
 def MZGetData():
   districtArray = []
   with open(".tmp/mz.txt") as mzFile:
@@ -1644,7 +1660,7 @@ def KLFormatLine(row):
   return row[0] + "," + row[1] + "," + row[2] + "\n"
 
 def KLDFormatLine(row):
-  return row[1] + "," + row[2] + "," + row[3] + "\n"
+  return row[1] + "," + row[4] + "," + row[5] + "\n"
 
 
 def KAFormatLine(row):

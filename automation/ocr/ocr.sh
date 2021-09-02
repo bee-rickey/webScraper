@@ -145,6 +145,9 @@ case $2 in
     ;;
   "Assam")
     stateCode="as"
+		;;
+  "Manipur")
+    stateCode="mn"
     ;;
     
   *)
