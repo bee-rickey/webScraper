@@ -1559,15 +1559,15 @@ def MLGetDataByOCR():
   with open(".tmp/ml.txt", "r") as mlFile:
     for line in mlFile:
       linesArray = line.split('|')[0].split(',')
-      if len(linesArray) != 5:
+      if len(linesArray) != 8:
         print("--> Issue with {}".format(linesArray))
         continue
 
       districtDictionary = {}
       districtDictionary['districtName'] = linesArray[0].strip()
-      districtDictionary['confirmed'] = int(linesArray[1].strip())
-      districtDictionary['recovered'] = int(linesArray[3].strip())
-      districtDictionary['deceased'] = int(linesArray[4]) if len(re.sub('\n', '', linesArray[4])) != 0 else 0
+      districtDictionary['confirmed'] = int(linesArray[5].strip())
+      districtDictionary['recovered'] = int(linesArray[6].strip())
+      districtDictionary['deceased'] = int(linesArray[7]) if len(re.sub('\n', '', linesArray[7])) != 0 else 0
       districtArray.append(districtDictionary)
     deltaCalculator.getStateDataFromSite("Meghalaya", districtArray, option)
 
