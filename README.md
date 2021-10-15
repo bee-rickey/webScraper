@@ -1,3 +1,5 @@
+***A newer, cleaner version is being written [here](https://github.com/bee-rickey/covid_bulletin_automator). WIP***
+
 ***A scrapper for multiple covid state websites. Triedcatched's ghost!***
 
 ***Used by www.covid19india.org admin teams. Not for general consumption :P :D***
